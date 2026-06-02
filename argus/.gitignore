@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Data files
+*.pkl
+*.pth
+*.csv
+regulations/pdfs/*.pdf
+regulations/updates/*.txt
+regulations/updates/*.processed
+
+# Outputs
+audit_outputs/
+*.log
+
+# Tests
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Dashboard
+dashboard/node_modules/
+dashboard/build/
+dashboard/.next/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.temp

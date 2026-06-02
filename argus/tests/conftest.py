@@ -1,0 +1,47 @@
+"""
+Pytest configuration and fixtures for ARGUS tests.
+"""
+import asyncio
+import pytest
+from unittest.mock import AsyncMock, MagicMock, patch
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create event loop for async tests."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture
+def mock_anthropic():
+    """Mock Anthropic API client."""
+    with patch("argus.core.agents.registrar.Anthropic") as mock_client_class:
+        mock_client = MagicMock()
+        mock_client_class.return_value = mock_client
+        
+        # Mock response
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text='{"inferred_model_type": "neural_network", "inferred_output_type": "binary_classification", "inferred_affected_demographics": ["age"], "data_sensitivity": "HIGH", "model_card": "# Model Card"}')]
+        mock_client.messages.create.return_value = mock_response
+        
+        yield mock_client
+
+
+@pytest.fixture
+def sample_system_payload():
+    """Sample AISystemCreate payload for testing."""
+    return {
+        "name": "Credit Scoring System",
+        "version": "1.0.0",
+        "purpose": "Assess creditworthiness of loan applicants using demographic and financial data",
+        "model_type": "xgboost",
+        "output_type": "binary_classification",
+        "owner_team": "Finance AI",
+        "owner_email": "finance-ai@bank.com",
+        "data_sources": ["credit_bureau_data", "transaction_history"],
+        "affected_demographics": ["age", "income"],
+        "jurisdictions": ["EU", "IN"],
+        "prediction_endpoint": "http://api.bank.com/credit-score",
+    }

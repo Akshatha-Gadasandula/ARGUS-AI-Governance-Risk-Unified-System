@@ -1,0 +1,9 @@
+{
+  "name": "Credit Scoring Model v2",
+  "purpose": "Predicts probability of loan default using 24-month applicant transaction history and credit bureau data to approve or reject loan applications",
+  "owner_team": "retail-credit-engineering",
+  "owner_email": "credit-team@bank.com",
+  "data_sources": ["transaction_history", "credit_bureau", "income_data"],
+  "affected_demographics": ["age", "income_band", "geography"],
+  "jurisdictions": ["EU", "IN"]
+}

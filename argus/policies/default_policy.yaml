@@ -1,0 +1,37 @@
+fairness:
+  demographic_parity:
+    warning: 0.05
+    critical: 0.10
+  equalized_odds:
+    warning: 0.05
+    critical: 0.10
+  calibration:
+    warning: 0.10
+    critical: 0.15
+drift:
+  psi:
+    warning: 0.20
+    critical: 0.25
+  stable_window_days: 30
+  alert_threshold: 0.20
+monitoring:
+  evaluation_interval_minutes: 60
+  alert_retention_days: 180
+  snapshot_history_limit: 30
+regulatory_frameworks:
+  enabled:
+    - EU_AI_ACT
+    - RBI
+    - DPDP
+    - EBA
+  required_documents:
+    EU_AI_ACT: true
+    RBI: true
+    DPDP: false
+    EBA: false
+notifications:
+  slack_enabled: false
+  slack_webhook_url: ""
+audit:
+  output_dir: "./audit_outputs"
+  retention_days: 365
