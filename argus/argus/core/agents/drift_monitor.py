@@ -308,9 +308,13 @@ class DriftFairnessMonitor:
                     ref_counts, _ = np.histogram(ref_col, bins=bins)
                     curr_counts, _ = np.histogram(curr_col, bins=bins)
 
-                    # Convert to proportions with Laplace smoothing
-                    ref_pct = (ref_counts + 1e-6) / ref_counts.sum()
-                    curr_pct = (curr_counts + 1e-6) / curr_counts.sum()
+                    # Convert to normalized, smoothed proportions
+                    ref_pct = ref_counts / ref_counts.sum()
+                    curr_pct = curr_counts / curr_counts.sum()
+                    ref_pct = np.clip(ref_pct, 1e-4, None)
+                    curr_pct = np.clip(curr_pct, 1e-4, None)
+                    ref_pct /= ref_pct.sum()
+                    curr_pct /= curr_pct.sum()
 
                     # Calculate PSI
                     psi = np.sum((curr_pct - ref_pct) * np.log(curr_pct / ref_pct))

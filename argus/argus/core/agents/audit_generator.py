@@ -41,8 +41,12 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         
         body {
             color: #333;
-            line-height: 1.6;
+            line-height: 1.5;
             margin: 0;
+            font-size: 10.5pt;
+            overflow: visible;
+            word-wrap: break-word;
+            white-space: normal;
         }
         
         .cover-page {
@@ -81,34 +85,44 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
             color: #1f3a93;
             border-bottom: 3px solid #1f3a93;
             padding-bottom: 8px;
-            margin-top: 2cm;
-            margin-bottom: 1cm;
+            margin-top: 1.2cm;
+            margin-bottom: 0.6cm;
+            page-break-after: avoid;
         }
         
         h3 {
             font-size: 14pt;
             color: #2a5cbc;
-            margin-top: 1cm;
-            margin-bottom: 0.5cm;
+            margin-top: 0.6cm;
+            margin-bottom: 0.3cm;
+            page-break-after: avoid;
         }
         
         .system-overview {
             background-color: #f5f5f5;
-            padding: 1cm;
-            margin-bottom: 1cm;
+            padding: 0.6cm;
+            margin-bottom: 0.7cm;
             border-left: 5px solid #1f3a93;
+            page-break-inside: avoid;
+            overflow: visible;
+            white-space: normal;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1cm;
+            margin-bottom: 0.7cm;
+            page-break-inside: auto;
         }
         
         th, td {
-            padding: 8px;
+            padding: 7px 8px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #c9d2e3;
+            vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
         
         th {
@@ -238,6 +252,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         
         .page-break {
             page-break-after: always;
+            margin-top: 0.4cm;
         }
         
         blockquote {
@@ -251,9 +266,12 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         .footer-note {
             font-size: 9pt;
             color: #999;
-            margin-top: 2cm;
+            margin-top: 1.2cm;
             padding-top: 0.5cm;
             border-top: 1px solid #ddd;
+            page-break-inside: avoid;
+            overflow: visible;
+            white-space: normal;
         }
     </style>
 </head>
@@ -271,9 +289,19 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
             <p><strong>System ID:</strong> {{ system.system_id }}</p>
         </div>
     </div>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <h2>Executive Summary</h2>
+    <div class="system-overview">
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>What this report covers:</strong> {{ system.name }} is monitored in {{ system.jurisdictions | join(', ') }}.</p>
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>Plain-language risk note:</strong> {{ risk_plain }}</p>
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>Current status:</strong> {{ alert_plain }} {{ fairness_plain }} {{ remediation_plain }}</p>
+        <p style="margin: 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>What to do next:</strong> Review the open alerts, confirm the assigned owners, and verify whether any fairness or drift issues still need action.</p>
+    </div>
     
     <!-- SECTION 1: SYSTEM OVERVIEW -->
     <h2>1. System Overview</h2>
+    <p>This section gives the basic facts about the system in a simple format.</p>
     
     <table>
         <tr>
@@ -298,11 +326,11 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
         <tr>
             <td><strong>Owner Email</strong></td>
-            <td>{{ system.owner_email or 'Not specified' }}</td>
+            <td>{{ safe_text(system.owner_email) or 'Not specified' }}</td>
         </tr>
         <tr>
             <td><strong>Registered</strong></td>
-            <td>{{ system.registered_at }}</td>
+            <td>{{ format_optional_datetime(system.registered_at) }}</td>
         </tr>
         <tr>
             <td><strong>Monitoring Status</strong></td>
@@ -312,37 +340,40 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <div class="system-overview">
         <h3>Purpose</h3>
-        <p>{{ system.purpose }}</p>
+        <p>{{ safe_text(system.purpose) }}</p>
     </div>
     
     <h3>Data Sources</h3>
     {% if system.data_sources %}
-        <ul>{% for source in system.data_sources %}<li>{{ source }}</li>{% endfor %}</ul>
+        <ul>{% for source in system.data_sources %}<li>{{ safe_text(source) }}</li>{% endfor %}</ul>
     {% else %}
         <p>Not specified</p>
     {% endif %}
     
     <h3>Affected Demographics</h3>
     {% if system.affected_demographics %}
-        <ul>{% for demo in system.affected_demographics %}<li>{{ demo }}</li>{% endfor %}</ul>
+        <ul>{% for demo in system.affected_demographics %}<li>{{ safe_text(demo) }}</li>{% endfor %}</ul>
     {% else %}
         <p>Not specified</p>
     {% endif %}
     
     <h3>Jurisdictions</h3>
     <p>{% for jurisdiction in system.jurisdictions %}
-        <span style="background-color: #e8f4f8; padding: 2px 6px; border-radius: 3px; margin-right: 4px;">{{ jurisdiction }}</span>
+        <span style="background-color: #e8f4f8; padding: 2px 6px; border-radius: 3px; margin-right: 4px;">{{ safe_text(jurisdiction) }}</span>
     {% endfor %}</p>
     
     <div class="page-break"></div>
     
     <!-- SECTION 2: RISK CLASSIFICATION -->
     <h2>2. Risk Classification</h2>
+    <p>This section explains why the system is classified this way and what that means operationally.</p>
     
     <div style="text-align: center; margin: 1cm 0;">
         <p style="font-size: 11pt; color: #666; margin-bottom: 0.5cm;">Current Risk Tier:</p>
-        <div class="risk-badge risk-{{ system.risk_tier }}">{{ system.risk_tier }}</div>
+        <div class="risk-badge risk-{{ display_value(system.risk_tier) }}">{{ display_value(system.risk_tier) }}</div>
     </div>
+
+    <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>In plain language:</strong> {{ risk_plain }}</p>
     
     {% if system.risk_classification_reasoning %}
     <h3>Classification Reasoning</h3>
@@ -365,9 +396,9 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
         {% for citation in data.citations %}
         <tr>
-            <td><code>{{ citation.article }}</code></td>
-            <td>{{ citation.title }}</td>
-            <td>{{ citation.excerpt[:100] }}...</td>
+            <td><code>{{ safe_text(citation.article) }}</code></td>
+            <td>{{ safe_text(citation.title) }}</td>
+            <td>{{ safe_text(citation.excerpt)[:100] }}...</td>
         </tr>
         {% endfor %}
     </table>
@@ -388,6 +419,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SECTION 3: FAIRNESS & DRIFT HISTORY -->
     <h2>3. Fairness & Drift Monitoring History</h2>
+    <p>This section shows whether recent monitoring results stayed inside policy limits.</p>
     
     {% if fairness_snapshots %}
     <table>
@@ -401,7 +433,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
         {% for snapshot in fairness_snapshots[:10] %}
         <tr {% if snapshot.demographic_parity_diff > 0.10 or snapshot.equalized_odds_diff > 0.10 or snapshot.psi_score > 0.25 %}class="critical-row"{% elif snapshot.demographic_parity_diff > 0.05 or snapshot.equalized_odds_diff > 0.05 %}class="alert-row"{% endif %}>
-            <td>{{ snapshot.evaluated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ format_optional_datetime(snapshot.evaluated_at) }}</td>
             <td>{{ snapshot.sample_size }}</td>
             <td>{{ "%.4f" | format(snapshot.demographic_parity_diff) }}</td>
             <td>{{ "%.4f" | format(snapshot.equalized_odds_diff) }}</td>
@@ -418,6 +450,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SECTION 4: GOVERNANCE ALERTS -->
     <h2>4. Governance Alerts</h2>
+    <p>This section lists the open governance issues that still need attention.</p>
     
     {% if alerts %}
     <table>
@@ -430,9 +463,9 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
         {% for alert in alerts[:20] %}
         <tr {% if alert.severity == 'CRITICAL' %}class="critical-row"{% elif alert.severity == 'WARNING' %}class="alert-row"{% endif %}>
-            <td>{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td><span class="severity-{{ alert.severity }}">{{ alert.severity }}</span></td>
-            <td>{{ alert.alert_type }}</td>
+            <td>{{ format_optional_datetime(alert.created_at) }}</td>
+            <td><span class="severity-{{ display_value(alert.severity) }}">{{ display_value(alert.severity) }}</span></td>
+                <td>{{ display_value(alert.alert_type) }}</td>
             <td>{{ alert.title }}</td>
             <td>{% if alert.resolved %}✓ Resolved{% else %}⏳ Open{% endif %}</td>
         </tr>
@@ -446,6 +479,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SECTION 5: REMEDIATION TASKS -->
     <h2>5. Open Remediation Tasks</h2>
+    <p>This section shows the work already assigned to fix open issues.</p>
     
     {% if remediation_tasks %}
     <table>
@@ -459,8 +493,8 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         <tr>
             <td>{{ task.title }}</td>
             <td>{{ task.assigned_to or 'Unassigned' }}</td>
-            <td>{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No deadline' }}</td>
-            <td>{{ task.status }}</td>
+            <td>{{ format_optional_datetime(task.due_date, '%Y-%m-%d') if task.due_date else 'No deadline' }}</td>
+            <td>{{ display_value(task.status) }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -472,6 +506,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SECTION 6: AUDIT TRAIL -->
     <h2>6. Audit Trail & Metadata</h2>
+    <p>This section records when the report was created and how it can be traced later.</p>
     
     <table>
         <tr>
@@ -557,6 +592,69 @@ class AuditGeneratorAgent:
 
         # Build template context
         generated_at = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        def display_value(value):
+            return getattr(value, "value", value)
+
+        risk_tier = display_value(system.risk_tier)
+        alert_count = len(alerts)
+        open_alert_count = len([a for a in alerts if not a.resolved])
+        fairness_flag_count = len(
+            [
+                snapshot
+                for snapshot in snapshots
+                if snapshot.demographic_parity_diff > 0.05
+                or snapshot.equalized_odds_diff > 0.05
+                or (snapshot.psi_score or 0) > 0.25
+            ]
+        )
+
+        if risk_tier == "HIGH_RISK":
+            risk_plain = (
+                "This system can affect access to credit, so it needs stronger oversight, \
+                closer monitoring, and clear documentation."
+            )
+        elif risk_tier == "LIMITED_RISK":
+            risk_plain = "This system has some governance requirements, but the controls are lighter than for high-risk systems."
+        elif risk_tier == "MINIMAL_RISK":
+            risk_plain = "This system has low governance burden, with routine oversight and documentation."
+        else:
+            risk_plain = "This system has not been fully classified yet."
+
+        def format_optional_datetime(value, fmt="%Y-%m-%d %H:%M"):
+            if not value:
+                return "Not available"
+            if isinstance(value, str):
+                return value
+            try:
+                return value.strftime(fmt)
+            except Exception:
+                return str(value)
+
+        def safe_text(value):
+            if value is None:
+                return ""
+            if isinstance(value, str):
+                return value
+            return str(value)
+
+        if open_alert_count:
+            alert_plain = f"There are {open_alert_count} open alerts that need review."
+        else:
+            alert_plain = "There are no open alerts at the moment."
+
+        if fairness_flag_count:
+            fairness_plain = (
+                f"Recent monitoring found {fairness_flag_count} fairness or drift checks above the configured threshold."
+            )
+        else:
+            fairness_plain = "Recent monitoring does not show active fairness or drift concerns."
+
+        if remediation_tasks:
+            remediation_plain = f"There are {len(remediation_tasks)} remediation tasks in progress."
+        else:
+            remediation_plain = "There are no open remediation tasks."
+
         context = {
             "system": system,
             "fairness_snapshots": snapshots,
@@ -565,6 +663,17 @@ class AuditGeneratorAgent:
             "generated_at": generated_at,
             "generated_by": requested_by,
             "content_hash": "placeholder",  # Will be computed after HTML generation
+            "display_value": display_value,
+            "format_optional_datetime": format_optional_datetime,
+            "safe_text": safe_text,
+            "risk_tier": risk_tier,
+            "alert_count": alert_count,
+            "open_alert_count": open_alert_count,
+            "fairness_flag_count": fairness_flag_count,
+            "risk_plain": risk_plain,
+            "alert_plain": alert_plain,
+            "fairness_plain": fairness_plain,
+            "remediation_plain": remediation_plain,
         }
 
         try:

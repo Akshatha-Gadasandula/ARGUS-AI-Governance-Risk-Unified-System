@@ -24,9 +24,31 @@ export async function fetchAlerts() {
   return response.data;
 }
 
+export async function fetchAuditRecords(systemId?: string) {
+  const response = await client.get('/audit/records', {
+    params: systemId ? { system_id: systemId } : {},
+  });
+  return response.data;
+}
+
 export async function generateAudit(systemId: string) {
   const response = await client.post('/audit/generate-dossier', { system_id: systemId, requested_by: 'dashboard@argus.local' });
   return response.data;
+}
+
+export async function downloadAuditPdf(recordId: string) {
+  const response = await client.get(`/audit/records/${recordId}/download`, {
+    responseType: 'blob',
+  });
+
+  const blobUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = `${recordId}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(blobUrl);
 }
 
 export default client;

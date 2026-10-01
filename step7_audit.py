@@ -35,14 +35,14 @@ async def main():
             )
             print(f"Status: {response.status_code}")
             
-            if response.status_code == 200:
+            if response.status_code in (200, 201):
                 result = response.json()
-                print(f"Dossier ID: {result.get('dossier_id', 'N/A')}")
+                print(f"Dossier ID: {result.get('id', 'N/A')}")
                 print(f"System: {result.get('system_id', 'N/A')}")
                 print(f"Generated At: {result.get('generated_at', 'N/A')}")
-                print(f"File Path: {result.get('file_path', 'N/A')}")
-                print(f"File Size: {result.get('file_size', 'N/A')} bytes")
-                print(f"\nSummary:\n{result.get('summary', 'N/A')}")
+                print(f"File Path: {result.get('pdf_path', 'N/A')}")
+                print(f"Content Hash: {result.get('content_hash', 'N/A')}")
+                print(f"\nSummary:\n{json.dumps(result.get('compliance_summary', {}), indent=2)}")
             else:
                 print(f"Error: {response.text}")
         except Exception as e:

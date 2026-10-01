@@ -25,6 +25,19 @@ router = APIRouter()
 audit_generator = None
 
 
+def _serialize_audit_record(record: AuditRecord) -> AuditRecordResponse:
+    """Convert an ORM audit record into the API response schema."""
+    return AuditRecordResponse(
+        id=str(record.id),
+        system_id=str(record.system_id),
+        generated_by=record.generated_by,
+        pdf_path=record.pdf_path,
+        content_hash=record.content_hash,
+        compliance_summary=record.compliance_summary,
+        generated_at=record.generated_at,
+    )
+
+
 @router.post("/generate-dossier", response_model=AuditRecordResponse, status_code=status.HTTP_201_CREATED)
 async def generate_dossier(
     request: AuditRequest,
@@ -84,16 +97,7 @@ async def generate_dossier(
 
         logger.info(f"Audit dossier generated: {request.system_id}")
         
-        # Convert UUID fields to strings for serialization
-        record_dict = {
-            "id": str(record.id),
-            "system_id": str(record.system_id),
-            "generated_by": record.generated_by,
-            "content_hash": record.content_hash,
-            "compliance_summary": record.compliance_summary,
-            "generated_at": record.generated_at,
-        }
-        return AuditRecordResponse(**record_dict)
+        return _serialize_audit_record(record)
 
     except HTTPException:
         raise
@@ -140,7 +144,7 @@ async def get_audit_records(
         result = await session.execute(query)
         records = result.scalars().all()
 
-        return [AuditRecordResponse.model_validate(r) for r in records]
+        return [_serialize_audit_record(r) for r in records]
 
     except Exception as e:
         logger.error(f"Failed to retrieve audit records: {e}")
@@ -190,7 +194,7 @@ async def get_audit_record(
                 detail=f"Audit record not found: {record_id}",
             )
 
-        return AuditRecordResponse.model_validate(record)
+        return _serialize_audit_record(record)
 
     except HTTPException:
         raise

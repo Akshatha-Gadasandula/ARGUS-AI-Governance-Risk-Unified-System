@@ -4,14 +4,17 @@ Handles system monitoring, alert management, and compliance status.
 """
 import logging
 import traceback
+import uuid
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 import numpy as np
 
 from argus.api.deps import get_session, get_current_user
 from argus.core.agents.drift_monitor import DriftFairnessMonitor
+from argus.core.registry.models import GovernanceAlert
 from argus.core.registry.service import RegistryService
 from argus.core.schemas import (
     AlertResponse,
@@ -257,7 +260,18 @@ async def get_alert(
         HTTPException: 404 if alert not found
     """
     try:
-        alert = await RegistryService.resolve_alert(session, alert_id)
+        try:
+            alert_uuid = uuid.UUID(alert_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid alert ID format",
+            )
+
+        result = await session.execute(
+            select(GovernanceAlert).where(GovernanceAlert.id == alert_uuid)
+        )
+        alert = result.scalar_one_or_none()
         if not alert:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

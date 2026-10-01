@@ -142,6 +142,13 @@ docker-compose up --build
 
 Visit `http://localhost:3000` for the dashboard, `http://localhost:8000/docs` for the API.
 
+Frontend preview:
+
+```bash
+cd dashboard
+npm start
+```
+
 ### Ingest Regulatory Documents
 ```bash
 # Download EU AI Act PDF and place in regulations/pdfs/
@@ -201,7 +208,7 @@ Drop any `.txt` file into `regulations/updates/` describing a policy change. The
 - [x] Risk classification agent with article-level citations
 - [ ] Fairness monitoring dashboard (PSI, demographic parity, equalized odds)
 - [ ] Regulatory change propagation agent
-- [ ] Audit evidence PDF generator
+- [x] Audit evidence PDF generator
 - [ ] DPDP Act 2023 integration
 - [ ] Governance Q&A interface
 - [ ] Prometheus metrics + Grafana dashboard
