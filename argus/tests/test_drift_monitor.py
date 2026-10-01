@@ -25,3 +25,16 @@ def test_demographic_parity_difference_is_021_for_known_rates():
     difference = monitor._demographic_parity(y_true, y_pred, sensitive_feature)
 
     assert np.isclose(difference, 0.21)
+
+
+def test_psi_reference_bins_handle_uniform_scale_shift():
+    monitor = DriftFairnessMonitor()
+    rng = np.random.default_rng(42)
+    reference_values = rng.uniform(0, 1, 5000)
+    reference = pd.DataFrame({"x": reference_values})
+    current = pd.DataFrame({"x": reference_values * 1.5})
+
+    psi = monitor._compute_psi(reference, current)["x"]
+
+    assert np.isfinite(psi)
+    assert psi > 0.25

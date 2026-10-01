@@ -30,6 +30,7 @@ env/
 *.pkl
 *.pth
 *.csv
+demo_models/*/artifacts/
 regulations/pdfs/*.pdf
 regulations/updates/*.txt
 regulations/updates/*.processed

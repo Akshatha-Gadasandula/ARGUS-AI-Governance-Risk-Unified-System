@@ -300,9 +300,13 @@ class DriftFairnessMonitor:
                     if len(ref_col) == 0 or len(curr_col) == 0:
                         continue
 
-                    # Create bins from reference data
+                    # Create bins from reference data and retain out-of-range values
                     bins = np.percentile(ref_col, np.linspace(0, 100, 11))
                     bins = np.unique(bins)  # Remove duplicates
+                    if len(bins) < 2:
+                        continue
+                    bins[0] = -np.inf
+                    bins[-1] = np.inf
 
                     # Histogram counts
                     ref_counts, _ = np.histogram(ref_col, bins=bins)
