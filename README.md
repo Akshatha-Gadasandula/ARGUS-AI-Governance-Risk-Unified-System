@@ -4,7 +4,6 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com)
-[![LangGraph](https://img.shields.io/badge/LangGraph-0.2+-orange.svg)](https://langchain-ai.github.io/langgraph/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-In%20Development-red.svg)]()
 
@@ -55,10 +54,10 @@ Today, most banks manage this through Excel spreadsheets and manual Confluence p
 | Agent | Responsibility |
 |---|---|
 | **Registrar** | Ingests new AI system submissions, extracts metadata, generates model cards |
-| **Risk Classifier** | Classifies systems by EU AI Act / RBI / DPDP Act risk tier with article-level citations via RAG |
+| **Risk Classifier** | Classifies systems by EU AI Act / RBI risk tier; RAG/Claude-backed citations are not yet validated |
 | **Drift & Fairness Monitor** | Tracks demographic parity, equalized odds, PSI drift — raises tiered alerts |
 | **Regulatory Propagation** | Monitors regulatory update feeds, maps changes to affected systems, assigns remediation tasks |
-| **Audit Evidence Generator** | Produces regulator-ready PDF dossiers on demand in under 30 seconds |
+| **Audit Evidence Generator** | Produces PDF audit dossiers on demand; generation timing is not yet measured |
 
 ---
 
@@ -66,10 +65,10 @@ Today, most banks manage this through Excel spreadsheets and manual Confluence p
 
 | Framework | Jurisdiction | Status |
 |---|---|---|
-| EU AI Act (2024/1689) | European Union | ✅ Implemented |
-| RBI Guidelines on Model Risk Management | India | ✅ Implemented |
-| DPDP Act 2023 | India | 🔄 In Progress |
-| EBA Guidelines on Internal Governance | EU Banking | 🔄 In Progress |
+| EU AI Act (2024/1689) | European Union | Code exists; fallback verified |
+| RBI Guidelines on Model Risk Management | India | Code exists; fallback verified |
+| DPDP Act 2023 | India | Planned |
+| EBA Guidelines on Internal Governance | EU Banking | Planned |
 
 ---
 
@@ -77,14 +76,14 @@ Today, most banks manage this through Excel spreadsheets and manual Confluence p
 
 ```
 Backend:         Python 3.11, FastAPI
-Agent Framework: LangGraph (multi-agent orchestration)
-LLM:             Anthropic Claude API (claude-sonnet-4-6)
-RAG Pipeline:    pgvector + LangChain (EU AI Act, RBI Guidelines indexed)
+Agent Framework: Standalone Python agents (LangGraph orchestration planned)
+LLM:             Anthropic Claude API (optional; real Claude path not validated)
+RAG Pipeline:    pgvector + LangChain (PDF corpus/index not included)
 Database:        PostgreSQL 16
 Fairness:        fairlearn, scipy (PSI, demographic parity, equalized odds)
 PDF Generation:  WeasyPrint + Jinja2
 Frontend:        React 18 + TypeScript + shadcn/ui
-Auth:            OAuth2 + JWT, Role-based access control
+Auth:            Development JWT stub; OAuth2/RBAC planned
 Infra:           Docker + Docker Compose (fully self-hostable)
 Monitoring:      Prometheus metrics endpoint
 ```
@@ -99,7 +98,7 @@ Monitoring:      Prometheus metrics endpoint
 argus/
 ├── argus/
 │   ├── core/
-│   │   ├── agents/             # Five LangGraph agents
+│   │   ├── agents/             # Five Python agents
 │   │   │   ├── registrar.py
 │   │   │   ├── risk_classifier.py
 │   │   │   ├── drift_monitor.py
@@ -114,7 +113,7 @@ argus/
 │   └── db/                     # Database connection + migrations
 ├── dashboard/                  # React frontend
 ├── demo_models/                # Sample AI models for demonstration
-│   ├── credit_scoring/         # XGBoost credit risk model (public dataset)
+│   ├── credit_scoring/         # XGBoost credit risk model (synthetic data)
 │   ├── fraud_detection/        # Fraud detection model with drift injection
 │   └── doc_classifier/         # Document type classifier
 ├── regulations/                # Regulatory document ingestion pipeline
@@ -173,7 +172,7 @@ curl -X POST http://localhost:8000/api/v1/registry/systems \
   }'
 ```
 
-ARGUS will automatically classify its risk tier, cite relevant regulatory articles, and begin monitoring.
+ARGUS will classify its risk tier and begin monitoring. Article-level citations require indexed regulatory documents and a validated Claude/RAG path.
 
 ---
 
@@ -182,37 +181,51 @@ ARGUS will automatically classify its risk tier, cite relevant regulatory articl
 Three pre-built demo models are included to showcase ARGUS capabilities out of the box.
 
 ### Demo Scenario 1 — Bias Detection
-The included credit scoring model (`demo_models/credit_scoring/`) is trained with a deliberate demographic imbalance. ARGUS's fairness monitor detects and raises:
+The included credit scoring model uses synthetic data. Bias is injected deliberately with `--inject-bias`: a fraction of under-30 good labels are flipped to default labels before training. Run from the nested `argus` project directory in PowerShell:
 
+```powershell
+python demo_models/credit_scoring/train.py --inject-bias --output demo_models/credit_scoring/artifacts
+$env:ANTHROPIC_API_KEY=''
+uvicorn argus.api.main:app --host 127.0.0.1 --port 8000
+$body = @{ name = 'Credit Scoring Engine v2'; purpose = 'Evaluate creditworthiness of loan applicants using credit history, income, and debt ratios'; owner_team = 'Risk Analytics'; data_sources = @('credit_bureau','income_verification','transaction_data'); affected_demographics = @('age','gender','income_level'); jurisdictions = @('EU','IN') } | ConvertTo-Json
+$system = Invoke-RestMethod -Uri 'http://127.0.0.1:8000/api/v1/registry/systems' -Method Post -ContentType 'application/json' -Body $body
+python scripts/run_bias_demo.py --system-id $system.system_id
 ```
-CRITICAL ALERT — Model: credit-scoring-v2 (High-Risk, EU AI Act Article 6)
-Demographic parity violation detected.
-Approval rate age < 30: 61.2% | age ≥ 30: 74.8%
-Disparity: 13.6% — exceeds 10% policy threshold
-Regulatory reference: EU AI Act Article 10(2), Annex III Point 5(b)
-Action required within: 72 hours
-```
+
+Measured output: approval rate under 30 was 10.96%, approval rate for 30+ was 35.76%, and the demographic parity gap was 24.8%. ARGUS created a CRITICAL alert referencing `EU AI Act Article 10(2); RBI Model Risk Section 4.3`.
 
 ### Demo Scenario 2 — Input Drift
-The fraud detection model (`demo_models/fraud_detection/`) includes a drift injection script. Run it to watch ARGUS raise a PSI-based drift alert with automatic feature attribution.
+The fraud model uses an additive stress shift on V1, V3, and V14. Run from the nested `argus` project directory in PowerShell:
+
+```powershell
+python demo_models/fraud_detection/train.py --drift --drift-strength 1.5 --output demo_models/fraud_detection/artifacts
+$body = @{ name = 'Fraud Detection Engine'; purpose = 'Classify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features'; owner_team = 'Financial Crime AI'; data_sources = @('transaction_stream','device_data','merchant_data'); affected_demographics = @('geography'); jurisdictions = @('EU','IN') } | ConvertTo-Json
+$system = Invoke-RestMethod -Uri 'http://127.0.0.1:8000/api/v1/registry/systems' -Method Post -ContentType 'application/json' -Body $body
+python scripts/run_drift_demo.py --system-id $system.system_id
+```
+
+Measured output with the default strength `1.5`: V1 PSI was 0.893621, V3 PSI was 1.019934, V14 PSI was 0.828686, and overall PSI was 0.132430. Three CRITICAL input-drift alerts fired, each referencing `RBI Model Risk Guidelines Section 5.1`.
 
 ### Demo Scenario 3 — Regulatory Change Propagation
-Drop any `.txt` file into `regulations/updates/` describing a policy change. The propagation agent identifies affected systems and generates remediation tasks automatically.
+The propagation agent code exists, but this workflow has not been validated end to end. Treat dropping an update file into `regulations/updates/` as planned demo work.
 
 ---
+
+`[~]` means implemented in code but not fully validated against real Claude, regulatory PDFs, or production services.
 
 ## Roadmap
 
 - [x] AI System Registry with structured metadata schema
-- [x] RAG pipeline over EU AI Act + RBI guidelines
-- [x] Risk classification agent with article-level citations
-- [ ] Fairness monitoring dashboard (PSI, demographic parity, equalized odds)
-- [ ] Regulatory change propagation agent
-- [x] Audit evidence PDF generator
-- [ ] DPDP Act 2023 integration
-- [ ] Governance Q&A interface
-- [ ] Prometheus metrics + Grafana dashboard
-- [ ] Role-based access control (Owner / Compliance Officer / Admin)
+- [~] RAG pipeline over EU AI Act + RBI guidelines (code exists; corpus/search not validated)
+- [~] Risk classification agent with article-level citations (fallback verified; Claude/RAG not validated)
+- [~] Fairness monitoring metrics and alerts (backend validated; dashboard is limited)
+- [~] Regulatory change propagation agent (code exists; end-to-end path not validated)
+- [~] Audit evidence PDF generator (test validated; timing not measured)
+- [ ] DPDP Act 2023 integration (planned)
+- [~] Governance Q&A endpoint (fallback path exists; Claude path/dashboard not validated)
+- [~] Prometheus metrics endpoint (Grafana dashboard planned)
+- [ ] OAuth2 and role-based access control (development auth stub currently accepts anonymous requests)
+- [ ] LangGraph orchestration (planned)
 
 ---
 

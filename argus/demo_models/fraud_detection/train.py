@@ -1,6 +1,8 @@
 """
 Fraud Detection Model - Demo AI system for transaction monitoring.
-Trains a Random Forest model to detect fraudulent transactions.
+Trains a Random Forest model to detect fraudulent transactions. Use
+--drift-strength with --drift to simulate an economic stress event by shifting
+selected transaction features in the production batch.
 """
 import argparse
 import json
@@ -151,6 +153,12 @@ def save_outputs(model, scaler, X_test, y_test, df_train, output_dir):
 def main():
     parser = argparse.ArgumentParser(description="Train fraud detection model")
     parser.add_argument("--drift", action="store_true", help="Generate drifted batch")
+    parser.add_argument(
+        "--drift-strength",
+        type=float,
+        default=1.5,
+        help="Additive stress shift applied to selected features when --drift is used",
+    )
     parser.add_argument("--output", default=".", help="Output directory")
     
     args = parser.parse_args()
@@ -169,10 +177,10 @@ def main():
         logger.info("Generating drifted test batch...")
         X_test_drifted = X_test.copy()
         
-        # Drift key predictive features
-        X_test_drifted['V1'] *= np.random.uniform(1.3, 1.6, len(X_test))
-        X_test_drifted['V3'] *= np.random.uniform(1.2, 1.5, len(X_test))
-        X_test_drifted['V14'] *= np.random.uniform(1.3, 1.6, len(X_test))
+        # Shift key transaction features to represent stressed conditions.
+        X_test_drifted['V1'] += args.drift_strength
+        X_test_drifted['V3'] += args.drift_strength
+        X_test_drifted['V14'] -= args.drift_strength
         
         X_test_scaled_drifted = scaler.transform(X_test_drifted)
         y_pred_drifted = model.predict(X_test_scaled_drifted)
