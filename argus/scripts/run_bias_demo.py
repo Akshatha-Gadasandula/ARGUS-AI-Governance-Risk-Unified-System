@@ -31,6 +31,7 @@ def main():
     predictions = model.predict(scaler.transform(test_batch[feature_columns]))
     probabilities = model.predict_proba(scaler.transform(test_batch[feature_columns]))[:, 1]
     age_groups = test_batch["age"].apply(lambda age: "under_30" if age < 30 else "30_plus")
+    approval_rates = pd.Series(predictions).groupby(age_groups.to_numpy()).mean()
 
     reference_data = reference[feature_columns].to_dict(orient="records")
     current_data = test_batch[feature_columns].to_dict(orient="records")
@@ -54,6 +55,8 @@ def main():
     result = response.json()
     snapshot = result["snapshot"]
 
+    for group in ["under_30", "30_plus"]:
+        print(f"Approval rate {group}: {approval_rates.get(group, 0.0):.6f}")
     print(f"Demographic parity difference: {snapshot['demographic_parity_diff']:.6f}")
     print(f"Equalized odds difference: {snapshot['equalized_odds_diff']:.6f}")
     print(f"Alerts created: {result['alerts_created']}")

@@ -1,6 +1,7 @@
 """
-Credit Scoring Model - Demo AI system with potential bias.
-Trains an XGBoost model for credit risk prediction with intentional data bias.
+Credit Scoring Model - Demo AI system with optional bias injection.
+Use --inject-bias to flip a fraction of under-30 good labels to default labels,
+simulating historically biased training data at the same underlying risk.
 """
 import argparse
 import json
@@ -49,22 +50,22 @@ def create_synthetic_data(n_samples=5000):
     return df
 
 
-def introduce_bias(df, factor=0.35):
-    """Introduce demographic bias: reduce approved loans for young people."""
-    age_groups = pd.cut(df['age'], bins=[0, 29, 45, 60, 120], labels=['under_30', '30_45', '45_60', 'over_60'])
-    
-    # Identify young approved applicants
-    young_approved = (age_groups == 'under_30') & (df['label'] == 0)
-    
-    # Remove a fraction of them to create bias
-    indices_to_drop = np.random.choice(
-        df[young_approved].index,
-        size=int(len(df[young_approved]) * factor),
-        replace=False
+def inject_bias(df, factor=0.35):
+    """Flip a fraction of under-30 good labels to default labels."""
+    age_groups = pd.cut(
+        df['age'],
+        bins=[0, 29, 45, 60, 120],
+        labels=['under_30', '30_45', '45_60', 'over_60'],
     )
-    
-    df_biased = df.drop(indices_to_drop)
-    return df_biased.reset_index(drop=True)
+    young_good = (age_groups == 'under_30') & (df['label'] == 1)
+    indices_to_flip = np.random.choice(
+        df[young_good].index,
+        size=int(len(df[young_good]) * factor),
+        replace=False,
+    )
+    biased = df.copy()
+    biased.loc[indices_to_flip, 'label'] = 0
+    return biased
 
 
 def train_model(df, fair=False):
@@ -154,6 +155,17 @@ def save_outputs(model, scaler, X_test, y_test, df_train, output_dir, fair=False
 def main():
     parser = argparse.ArgumentParser(description="Train credit scoring model")
     parser.add_argument("--fair", action="store_true", help="Train fair model without bias")
+    parser.add_argument(
+        "--inject-bias",
+        action="store_true",
+        help="Flip under-30 good labels to default labels in training data",
+    )
+    parser.add_argument(
+        "--bias-flip-fraction",
+        type=float,
+        default=0.35,
+        help="Fraction of under-30 good labels to flip when bias is injected",
+    )
     parser.add_argument("--drift", action="store_true", help="Generate drifted batch")
     parser.add_argument("--output", default=".", help="Output directory")
     
@@ -162,9 +174,9 @@ def main():
     logger.info("Generating synthetic credit data...")
     df = create_synthetic_data(5000)
     
-    if not args.fair:
-        logger.info("Introducing demographic bias...")
-        df = introduce_bias(df, factor=0.35)
+    if args.inject_bias and not args.fair:
+        logger.info("Injecting historical under-30 label bias...")
+        df = inject_bias(df, factor=args.bias_flip_fraction)
     
     logger.info(f"Training model ({len(df)} samples)...")
     model, scaler, X_test, y_test = train_model(df)
