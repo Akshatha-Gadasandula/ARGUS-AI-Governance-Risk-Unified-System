@@ -48,7 +48,7 @@ function SystemDetailPage() {
         <div className="grid-two">
           <div className="card">
             <h3>Risk Profile</h3>
-            <p>{system.overall_risk_tier}</p>
+            <p>{system.risk_tier}</p>
           </div>
           <div className="card">
             <h3>Owner</h3>

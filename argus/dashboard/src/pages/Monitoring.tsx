@@ -28,7 +28,7 @@ function MonitoringPage() {
               </tr>
             ) : (
               alerts.map((alert) => (
-                <tr key={alert.alert_id}>
+                <tr key={alert.id}>
                   <td>{alert.title}</td>
                   <td>{alert.severity}</td>
                   <td>{alert.resolved ? 'Resolved' : 'Open'}</td>

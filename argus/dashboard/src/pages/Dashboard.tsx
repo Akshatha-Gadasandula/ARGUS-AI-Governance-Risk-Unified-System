@@ -4,7 +4,7 @@ import { fetchSystems, fetchAlerts } from '../api/argusApi';
 interface SystemSummary {
   system_id: string;
   name: string;
-  overall_risk_tier: string;
+  risk_tier: string;
   owner_team: string;
   jurisdictions: string[];
 }
@@ -24,7 +24,7 @@ function DashboardPage() {
     fetchAlerts().then(setAlerts).catch(console.error);
   }, []);
 
-  const highRiskCount = systems.filter((s) => s.overall_risk_tier === 'HIGH_RISK').length;
+  const highRiskCount = systems.filter((s) => s.risk_tier === 'HIGH_RISK').length;
   const totalSystems = systems.length;
   const activeAlerts = alerts.length;
 
@@ -63,7 +63,7 @@ function DashboardPage() {
               {systems.slice(0, 5).map((system) => (
                 <tr key={system.system_id}>
                   <td>{system.name}</td>
-                  <td>{system.overall_risk_tier}</td>
+                  <td>{system.risk_tier}</td>
                   <td>{system.owner_team}</td>
                 </tr>
               ))}

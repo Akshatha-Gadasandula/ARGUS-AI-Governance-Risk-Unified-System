@@ -5,7 +5,7 @@ import { fetchSystems } from '../api/argusApi';
 interface SystemSummary {
   system_id: string;
   name: string;
-  overall_risk_tier: string;
+  risk_tier: string;
   owner_team: string;
   jurisdictions: string[];
 }
@@ -37,7 +37,7 @@ function RegistryPage() {
                 <td>
                   <Link to={`/systems/${system.system_id}`}>{system.name}</Link>
                 </td>
-                <td>{system.overall_risk_tier}</td>
+                <td>{system.risk_tier}</td>
                 <td>{system.owner_team}</td>
                 <td>{system.jurisdictions.join(', ')}</td>
               </tr>
