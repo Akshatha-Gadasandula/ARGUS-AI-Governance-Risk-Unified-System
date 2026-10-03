@@ -6,6 +6,7 @@ import logging
 
 from langchain.schema import Document
 from langchain_huggingface import HuggingFaceEmbeddings
+from sqlalchemy.engine import make_url
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ class RegulatoryRetriever:
         Args:
             db_url: PostgreSQL connection URL
         """
-        self.db_url = db_url
+        self.db_url = make_url(db_url).set(drivername="postgresql+psycopg").render_as_string(hide_password=False)
         self.embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
         )
@@ -56,12 +57,11 @@ class RegulatoryRetriever:
                 from langchain_postgres import PGVector
 
                 self.stores[collection_name] = PGVector(
-                    connection_string=self.db_url,
-                    embedding_function=self.embeddings,
+                    connection=self.db_url,
+                    embeddings=self.embeddings,
                     collection_name=collection_name,
                 )
             except Exception as e:
-                logger = logging.getLogger(__name__)
                 logger.warning(
                     f"Could not load collection {collection_name}: {e}. "
                     f"Regulatory documents may not be ingested yet."
@@ -93,8 +93,10 @@ class RegulatoryRetriever:
 
         formatted = []
         for i, doc in enumerate(docs, 1):
-            article = doc.metadata.get("article", "Unknown")
+            article = doc.metadata.get("citation", doc.metadata.get("article", "Unknown"))
             source = doc.metadata.get("source", "Unknown")
+            if "page_number" in doc.metadata:
+                source += f", p. {doc.metadata['page_number']}"
             content = doc.page_content.strip()
 
             formatted.append(f"[{article} - {source}]\n{content}")

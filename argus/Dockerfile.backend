@@ -5,11 +5,12 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     libpango-1.0-0 libpangoft2-1.0-0 libpangocairo-1.0-0 \
-    libgdk-pixbuf-2.0-0 libcairo2 libpq-dev gcc \
+    libgdk-pixbuf-2.0-0 libcairo2 libcairo2-dev libpq-dev pkg-config gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt .
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code

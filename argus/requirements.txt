@@ -12,7 +12,7 @@ sqlalchemy[asyncio]==2.0.29
 asyncpg==0.29.0
 alembic==1.13.1
 psycopg2-binary==2.9.9
-psycopg==3.2.0
+psycopg[binary]==3.2.1
 pgvector==0.2.5
 
 # LLM + Agents
@@ -28,6 +28,7 @@ langchain-huggingface==0.0.3
 # RAG
 sentence-transformers==3.0.1
 pypdf==4.2.0
+pymupdf==1.28.2
 tiktoken==0.7.0
 
 # ML + Fairness
