@@ -1,14 +1,15 @@
 """
-Risk Classifier Agent - classifies AI systems under EU AI Act and RBI guidelines using RAG + Claude.
+Risk Classifier Agent - classifies AI systems under EU AI Act and RBI guidelines using RAG and the configured LLM provider.
 Core governance engine that determines regulatory obligations and risk tiers.
 """
-import json
 import logging
 from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Optional
 
 from argus.config import settings
+from argus.core.llm import get_llm
+from argus.core.llm_schemas import ClassificationOutput
 from argus.rag.retriever import RegulatoryRetriever
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,9 @@ class RegulatoryClassification:
     reasoning: str
     citations: list[dict]  # [{article, title, excerpt}]
     obligations: list[str]
+    llm_provider: str = "none"
+    llm_model: str | None = None
+    needs_review: bool = True
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -46,6 +50,9 @@ class ClassificationResult:
     overall_risk_tier: str
     regulatory_citations: dict
     summary: str
+    llm_provider: str = "none"
+    llm_model: str | None = None
+    needs_review: bool = True
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -55,6 +62,9 @@ class ClassificationResult:
             "overall_risk_tier": self.overall_risk_tier,
             "regulatory_citations": self.regulatory_citations,
             "summary": self.summary,
+            "llm_provider": self.llm_provider,
+            "llm_model": self.llm_model,
+            "needs_review": self.needs_review,
         }
 
 
@@ -324,20 +334,6 @@ class RiskClassifierAgent:
         self.client = None
         self.retriever = RegulatoryRetriever(self.settings.database_url)
 
-    def get_client(self):
-        if self.client is None:
-            if not self.settings.anthropic_api_key:
-                logger.warning("Anthropic API key not configured for RiskClassifierAgent")
-                return None
-            try:
-                from anthropic import Anthropic
-
-                self.client = Anthropic(api_key=self.settings.anthropic_api_key)
-            except Exception as e:
-                logger.warning(f"Failed to initialize Anthropic client for RiskClassifierAgent: {e}")
-                self.client = None
-        return self.client
-
     def _fallback_classification(
         self,
         framework_name: str,
@@ -366,7 +362,7 @@ class RiskClassifierAgent:
             risk_tier=risk_tier,
             confidence=confidence,
             reasoning=reasoning,
-            citations=[{"article": "N/A", "title": "Fallback classification", "excerpt": "Deterministic fallback used."}],
+            citations=[],
             obligations=["Document risk decision", "Monitor performance", "Apply governance controls"],
         )
 
@@ -425,6 +421,9 @@ class RiskClassifierAgent:
                 classifications.append(classification)
                 regulatory_citations[framework_name] = {
                     "risk_tier": classification.risk_tier,
+                    "llm_provider": classification.llm_provider,
+                    "llm_model": classification.llm_model,
+                    "needs_review": classification.needs_review,
                     "citations": classification.citations,
                     "obligations": classification.obligations,
                 }
@@ -444,12 +443,17 @@ class RiskClassifierAgent:
         summary = f"Classified across {len(classifications)} framework(s): "
         summary += ", ".join([f"{c.framework}={c.risk_tier}" for c in classifications])
 
+        producers = {(c.llm_provider, c.llm_model) for c in classifications}
+        provider, model = next(iter(producers)) if len(producers) == 1 else ("mixed", None) if producers else ("none", None)
         result = ClassificationResult(
             system_id=system_id,
             classifications=classifications,
             overall_risk_tier=overall_tier,
             regulatory_citations=regulatory_citations,
             summary=summary,
+            llm_provider=provider,
+            llm_model=model,
+            needs_review=any(c.needs_review for c in classifications) or not classifications,
         )
 
         logger.info(f"Classification complete: {overall_tier} (confidence: "
@@ -512,68 +516,36 @@ class RiskClassifierAgent:
             retrieved_passages=retrieved_text,
         )
 
-        try:
-            client = self.get_client()
-            if client is None:
-                logger.warning("LLM client unavailable for RiskClassifierAgent; using fallback classification")
-                return self._fallback_classification(
-                    framework_name=framework_name,
-                    system_name=system_name,
-                    system_purpose=system_purpose,
-                    model_type=model_type,
-                    output_type=output_type,
-                )
+        fallback = self._fallback_classification(
+            framework_name, system_name, system_purpose, model_type, output_type,
+        )
+        result = await get_llm(self.settings).generate_json(
+            formatted_prompt, ClassificationOutput, fallback.to_dict(),
+            chunks=retrieved_passages, max_tokens=1500,
+        )
 
-            response = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=1500,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": formatted_prompt,
-                    }
-                ],
-            )
+        # Map tier values (normalize RBI tiers to standard risk_tier format)
+        risk_tier = result.get("risk_tier", "UNCLASSIFIED")
+        if "TIER" in risk_tier:
+            # RBI tier format
+            if "CRITICAL" in risk_tier or "1" in risk_tier:
+                risk_tier = "HIGH_RISK"
+            elif "MEDIUM" in risk_tier or "2" in risk_tier:
+                risk_tier = "LIMITED_RISK"
+            else:
+                risk_tier = "MINIMAL_RISK"
 
-            response_text = response.content[0].text.strip()
+        classification = RegulatoryClassification(
+            framework=framework_name,
+            risk_tier=risk_tier,
+            confidence=float(result.get("confidence", 0.5)),
+            reasoning=result.get("reasoning", ""),
+            citations=result.get("citations", []),
+            obligations=result.get("obligations", []),
+            llm_provider=result["llm_provider"],
+            llm_model=result["llm_model"],
+            needs_review=result["needs_review"],
+        )
 
-            # Parse JSON
-            try:
-                result = json.loads(response_text)
-            except json.JSONDecodeError:
-                # Try extracting from markdown code blocks
-                if "```json" in response_text:
-                    json_str = response_text.split("```json")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                elif "```" in response_text:
-                    json_str = response_text.split("```")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                else:
-                    raise
-
-            # Map tier values (normalize RBI tiers to standard risk_tier format)
-            risk_tier = result.get("risk_tier", "UNCLASSIFIED")
-            if "TIER" in risk_tier:
-                # RBI tier format
-                if "CRITICAL" in risk_tier or "1" in risk_tier:
-                    risk_tier = "HIGH_RISK"
-                elif "MEDIUM" in risk_tier or "2" in risk_tier:
-                    risk_tier = "LIMITED_RISK"
-                else:
-                    risk_tier = "MINIMAL_RISK"
-
-            classification = RegulatoryClassification(
-                framework=framework_name,
-                risk_tier=risk_tier,
-                confidence=float(result.get("confidence", 0.5)),
-                reasoning=result.get("reasoning", ""),
-                citations=result.get("citations", []),
-                obligations=result.get("obligations", []),
-            )
-
-            logger.info(f"{framework_name} classification: {risk_tier} (confidence: {classification.confidence:.2f})")
-            return classification
-
-        except Exception as e:
-            logger.error(f"Error classifying under {framework_name}: {e}")
-            return None
+        logger.info(f"{framework_name} classification: {risk_tier} (confidence: {classification.confidence:.2f})")
+        return classification

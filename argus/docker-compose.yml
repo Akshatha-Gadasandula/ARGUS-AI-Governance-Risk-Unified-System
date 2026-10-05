@@ -28,6 +28,12 @@ services:
     container_name: argus-backend
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-}
+      CLAUDE_MODEL: ${CLAUDE_MODEL:-}
+      LLM_MAX_CALLS: ${LLM_MAX_CALLS:-12}
+      LLM_MAX_RPM: ${LLM_MAX_RPM:-5}
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-argus}:${POSTGRES_PASSWORD:-argus_secret}@db:5432/${POSTGRES_DB:-argus}
       JWT_SECRET: ${JWT_SECRET:-replace_with_64_char_random_string}
       ENVIRONMENT: ${ENVIRONMENT:-development}
@@ -42,6 +48,8 @@ services:
       - ./regulations:/app/regulations
       - ./policies:/app/policies
       - ./audit_outputs:/app/audit_outputs
+      - ./.llm_cache:/app/.llm_cache
+      - ./logs:/app/logs
     networks:
       - argus-network
 

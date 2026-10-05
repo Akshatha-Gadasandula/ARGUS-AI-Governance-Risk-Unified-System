@@ -17,7 +17,7 @@ def event_loop():
 @pytest.fixture
 def mock_anthropic():
     """Mock Anthropic API client."""
-    with patch("argus.core.agents.registrar.Anthropic") as mock_client_class:
+    with patch("anthropic.Anthropic") as mock_client_class:
         mock_client = MagicMock()
         mock_client_class.return_value = mock_client
         
@@ -27,6 +27,18 @@ def mock_anthropic():
         mock_client.messages.create.return_value = mock_response
         
         yield mock_client
+
+
+@pytest.fixture(autouse=True)
+def no_real_llm_calls(monkeypatch):
+    """The suite must never send paid/provider requests, even with local keys set."""
+    import httpx
+
+    def blocked(*args, **kwargs):
+        raise AssertionError("External HTTP calls must be mocked in this test suite")
+
+    monkeypatch.setattr(httpx.Client, "send", blocked)
+    monkeypatch.setattr(httpx.AsyncClient, "send", blocked)
 
 
 @pytest.fixture

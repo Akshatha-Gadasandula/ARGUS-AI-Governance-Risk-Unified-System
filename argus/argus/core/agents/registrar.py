@@ -2,10 +2,11 @@
 Registrar Agent - processes new AI system intake and generates model cards via LLM.
 Infers missing metadata and enriches system descriptions with AI-generated model cards.
 """
-import json
 import logging
 
 from argus.config import settings
+from argus.core.llm import get_llm
+from argus.core.llm_schemas import RegistrationOutput
 from argus.core.schemas import AISystemCreate
 
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 class RegistrarAgent:
     """
     Autonomous agent for system registration and model card generation.
-    Uses Claude API to extract metadata and generate comprehensive model cards.
+    Uses the configured LLM provider to extract metadata and generate comprehensive model cards.
     """
 
     SYSTEM_PROMPT = """You are an AI governance specialist with deep expertise in model risk management, 
@@ -52,20 +53,6 @@ Return ONLY valid JSON (no markdown, no code blocks) with this structure:
         # Client will be initialized lazily to avoid import-time and environment issues
         self.client = None
 
-    def get_client(self):
-        if self.client is None:
-            if not self.settings.anthropic_api_key:
-                logger.warning("Anthropic API key not configured for RegistrarAgent")
-                return None
-            try:
-                from anthropic import Anthropic
-
-                self.client = Anthropic(api_key=self.settings.anthropic_api_key)
-            except Exception as e:
-                logger.warning(f"Failed to initialize Anthropic client: {e}")
-                self.client = None
-        return self.client
-
     async def process(
         self,
         payload: AISystemCreate,
@@ -93,65 +80,39 @@ Return ONLY valid JSON (no markdown, no code blocks) with this structure:
             affected_demographics=", ".join(payload.affected_demographics) or "Not specified",
         )
 
-        try:
-            # Call Claude API via Anthropic client (if available)
-            client = self.get_client()
-            if client is None:
-                raise RuntimeError("LLM client unavailable for RegistrarAgent")
+        text = (payload.purpose or "").lower()
+        inferred_output = "other"
+        inferred_model = "other"
+        inferred_affected = payload.affected_demographics or []
 
-            response = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=2000,
-                system=self.SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": prompt}],
-            )
+        if any(k in text for k in ["predict", "probability", "class", "approve", "reject", "loan", "default"]):
+            inferred_output = "binary_classification"
+        if any(k in text for k in ["text", "nlp", "language", "token"]):
+            inferred_model = "nlp"
+        elif any(k in text for k in ["image", "vision", "pixel"]):
+            inferred_model = "computer_vision"
+        elif any(k in text for k in ["tree", "forest", "xgboost", "gradient"]):
+            inferred_model = "gradient_boosting"
 
-            response_text = response.content[0].text.strip()
+        fallback = {
+            "inferred_model_type": inferred_model,
+            "inferred_output_type": inferred_output,
+            "inferred_affected_demographics": inferred_affected,
+            "data_sensitivity": "MEDIUM",
+            "model_card": f"# Model Card: {payload.name}\n\n## Purpose\n{payload.purpose or 'N/A'}\n\n## Model Type\n{inferred_model}\n\n## Output Type\n{inferred_output}\n\n## Known Limitations\nFallback model card generated without LLM."
+        }
 
-            # Parse JSON response
-            try:
-                result = json.loads(response_text)
-            except json.JSONDecodeError:
-                # Try to extract JSON from markdown code blocks
-                if "```json" in response_text:
-                    json_str = response_text.split("```json")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                elif "```" in response_text:
-                    json_str = response_text.split("```")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                else:
-                    raise
 
-            logger.info(f"Successfully extracted metadata for {payload.name}")
-
-        except Exception as e:
-            # Fallback deterministic inference when LLM is unavailable or fails
-            logger.warning(f"LLM extraction failed or unavailable ({e}); using deterministic fallback")
-            text = (payload.purpose or "").lower()
-            inferred_output = "other"
-            inferred_model = "other"
-            inferred_affected = payload.affected_demographics or []
-
-            if any(k in text for k in ["predict", "probability", "class", "approve", "reject", "loan", "default"]):
-                inferred_output = "binary_classification"
-            if any(k in text for k in ["text", "nlp", "language", "token"]):
-                inferred_model = "nlp"
-            elif any(k in text for k in ["image", "vision", "pixel"]):
-                inferred_model = "computer_vision"
-            elif any(k in text for k in ["tree", "forest", "xgboost", "gradient"]):
-                inferred_model = "gradient_boosting"
-
-            result = {
-                "inferred_model_type": inferred_model,
-                "inferred_output_type": inferred_output,
-                "inferred_affected_demographics": inferred_affected,
-                "data_sensitivity": "MEDIUM",
-                "model_card": f"# Model Card: {payload.name}\n\n## Purpose\n{payload.purpose or 'N/A'}\n\n## Model Type\n{inferred_model}\n\n## Output Type\n{inferred_output}\n\n## Known Limitations\nFallback model card generated without LLM."
-            }
+        result = await get_llm(self.settings).generate_json(
+            prompt, RegistrationOutput, fallback, system=self.SYSTEM_PROMPT, max_tokens=2000,
+        )
 
         # Enrich payload with inferred fields (from LLM or fallback)
         enriched_payload = AISystemCreate(
             name=payload.name,
+            llm_provider=result["llm_provider"],
+            llm_model=result["llm_model"],
+            needs_review=result["needs_review"],
             version=payload.version,
             purpose=payload.purpose,
             model_type=payload.model_type or result.get("inferred_model_type"),
@@ -168,4 +129,5 @@ Return ONLY valid JSON (no markdown, no code blocks) with this structure:
 
         model_card = result.get("model_card", f"# Model Card: {payload.name}\n\nNo model card generated.")
 
+        model_card += f"\n\nLLM provider: {result['llm_provider']}\nLLM model: {result['llm_model'] or 'none'}\nNeeds review: {result['needs_review']}"
         return enriched_payload, model_card

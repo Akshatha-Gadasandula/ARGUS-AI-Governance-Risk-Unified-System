@@ -36,6 +36,8 @@ regulations/updates/*.txt
 regulations/updates/*.processed
 
 # Outputs
+.llm_cache/
+logs/llm_usage.jsonl
 audit_outputs/
 *.log
 

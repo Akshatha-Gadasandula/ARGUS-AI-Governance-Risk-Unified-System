@@ -3,16 +3,16 @@ Regulatory Propagation Agent - watches for regulation updates and creates remedi
 Autonomous agent that detects regulatory changes and identifies affected AI systems.
 """
 import asyncio
-import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
-from anthropic import Anthropic
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from argus.config import settings
+from argus.core.llm import get_llm
+from argus.core.llm_schemas import UpdateOutput, AffectedSystemsOutput
 from argus.core.registry.models import AISystem
 from argus.core.registry.service import RegistryService
 
@@ -33,7 +33,7 @@ class RegPropagationAgent:
             settings_obj: Settings object (defaults to global settings)
         """
         self.settings = settings_obj or settings
-        self.client = Anthropic(api_key=self.settings.anthropic_api_key)
+        self.last_impact_result = {"llm_provider": "none", "llm_model": None, "needs_review": True}
 
     async def watch(
         self,
@@ -122,7 +122,7 @@ class RegPropagationAgent:
             session,
             framework=update_info.get("framework", "OTHER"),
             title=update_info.get("title", "Regulatory Update"),
-            summary=update_info.get("summary", ""),
+            summary=update_info.get("summary", "") + f"\nLLM provider: {update_info['llm_provider']}; LLM model: {update_info['llm_model']}; needs_review: {update_info['needs_review']}",
             affected_articles=update_info.get("affected_articles", []),
         )
 
@@ -179,40 +179,16 @@ Return JSON with exactly this structure:
   "required_actions": ["Action 1", "Action 2", "Action 3"]
 }}"""
 
-        try:
-            response = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=1000,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-            )
-
-            response_text = response.content[0].text.strip()
-
-            # Parse JSON
-            try:
-                result = json.loads(response_text)
-            except json.JSONDecodeError:
-                # Try extracting from markdown
-                if "```json" in response_text:
-                    json_str = response_text.split("```json")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                elif "```" in response_text:
-                    json_str = response_text.split("```")[1].split("```")[0].strip()
-                    result = json.loads(json_str)
-                else:
-                    raise
-
-            logger.info(f"Extracted update: {result['title']} ({result['framework']})")
-            return result
-
-        except Exception as e:
-            logger.error(f"Error extracting update: {e}")
-            return None
+        # Without retrieved regulatory chunks, article references are ungrounded.
+        # The shared layer removes them and marks the result for review.
+        fallback = {
+            "framework": "OTHER", "title": "Regulatory update requiring review",
+            "summary": content[:500], "affected_articles": [], "urgency": "MEDIUM",
+            "required_actions": ["Review and assess the regulatory update"],
+        }
+        return await get_llm(self.settings).generate_json(
+            prompt, UpdateOutput, fallback, max_tokens=1000,
+        )
 
     async def _find_affected_systems(
         self,
@@ -237,7 +213,7 @@ Return JSON with exactly this structure:
         if not systems:
             return []
 
-        # Build list for Claude to analyze
+        # Build list for the configured provider to analyze
         systems_list = [
             f"- {s.name} ({s.system_id}): {s.purpose[:100]}"
             for s in systems
@@ -255,48 +231,16 @@ Affected Articles: {', '.join(update_info.get('affected_articles', []))}
 AI SYSTEMS IN GOVERNANCE:
 {chr(10).join(systems_list)}
 
-Return ONLY a JSON array of system_ids that are affected. Example:
-["system-a1b2c3", "system-d4e5f6"]
+Return ONLY a JSON object with a system_ids array listing affected systems.
+If no systems are affected, return: {{"system_ids": []}}"""
 
-If no systems are affected, return: []"""
-
-        try:
-            response = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=500,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-            )
-
-            response_text = response.content[0].text.strip()
-
-            # Parse JSON array
-            try:
-                affected_ids = json.loads(response_text)
-            except json.JSONDecodeError:
-                # Try extracting from markdown
-                if "```json" in response_text:
-                    json_str = response_text.split("```json")[1].split("```")[0].strip()
-                    affected_ids = json.loads(json_str)
-                elif "```" in response_text:
-                    json_str = response_text.split("```")[1].split("```")[0].strip()
-                    affected_ids = json.loads(json_str)
-                else:
-                    affected_ids = []
-
-            # Map to system objects
-            affected_systems = [s for s in systems if s.system_id in affected_ids]
-            logger.info(f"Identified {len(affected_systems)} affected systems")
-
-            return affected_systems
-
-        except Exception as e:
-            logger.error(f"Error identifying affected systems: {e}")
-            return []
+        # Rule-based fallback: conservatively request review for every active system.
+        self.last_impact_result = await get_llm(self.settings).generate_json(
+            prompt, AffectedSystemsOutput,
+            {"system_ids": [system.system_id for system in systems]}, max_tokens=500,
+        )
+        affected_ids = self.last_impact_result["system_ids"]
+        return [system for system in systems if system.system_id in affected_ids]
 
     async def _create_tasks(
         self,
@@ -336,6 +280,7 @@ If no systems are affected, return: []"""
                 description=(
                     f"Required action from regulatory update: {update_info.get('title')}\n\n"
                     f"Summary: {update_info.get('summary')}\n\n"
+                    f"LLM provider: {update_info['llm_provider']}; LLM model: {update_info['llm_model']}\n"
                     f"Affected articles: {', '.join(update_info.get('affected_articles', []))}"
                 ),
                 due_date=due_date,
@@ -353,6 +298,10 @@ If no systems are affected, return: []"""
                     "title": f"Regulatory Update: {update_info.get('title')}",
                     "description": f"New regulatory requirement detected. {update_info.get('summary')}",
                     "payload": {
+                        "llm_provider": update_info["llm_provider"],
+                        "llm_model": update_info["llm_model"],
+                        "needs_review": update_info["needs_review"],
+                        "impact_assessment": self.last_impact_result,
                         "framework": update_info.get("framework"),
                         "articles": update_info.get("affected_articles"),
                     },

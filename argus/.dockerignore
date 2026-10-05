@@ -3,3 +3,5 @@
 **/__pycache__
 **/*.pyc
 **/.pytest_cache
+.llm_cache
+logs/llm_usage.jsonl

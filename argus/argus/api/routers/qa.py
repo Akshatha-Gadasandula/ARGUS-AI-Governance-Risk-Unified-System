@@ -4,7 +4,9 @@ Provides intelligent Q&A over AI system registry and regulatory knowledge.
 """
 import logging
 
-from anthropic import Anthropic
+from argus.core.llm import get_llm
+from argus.core.llm_schemas import AnswerOutput, QueryTypeOutput
+from argus.rag.retriever import RegulatoryRetriever
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -16,21 +18,6 @@ from argus.config import settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-# Lazy Anthropic client to avoid import-time initialization issues
-client = None
-
-
-def get_anthropic_client():
-    global client
-    if client is None:
-        try:
-            client = Anthropic(api_key=settings.anthropic_api_key)
-        except Exception as e:
-            logger.warning(f"Anthropic client init failed: {e}")
-            client = None
-    return client
-
 
 @router.post("/ask", response_model=QAResponse)
 async def answer_question(
@@ -60,7 +47,7 @@ async def answer_question(
         logger.info(f"Q&A query: {question} (by {current_user['username']})")
 
         # Use fallback mock implementation if API key unavailable
-        if not settings.anthropic_api_key:
+        if get_llm(settings).provider is None:
             logger.info("Using mock Q&A implementation (no API key)")
             return await _handle_mock_query(question, session)
 
@@ -73,25 +60,14 @@ async def answer_question(
 
 Question: {question}
 
-Return ONLY one word: registry_query, compliance_query, alert_query, or general"""
-
-        client = get_anthropic_client()
-        if client is None:
-            logger.info("Using mock Q&A implementation (client unavailable)")
-            return await _handle_mock_query(question, session)
+Return ONLY a JSON object with query_type: registry_query, compliance_query, alert_query, or general"""
 
         try:
-            classification_response = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=50,
-                messages=[{"role": "user", "content": classification_prompt}],
+            category = await get_llm(settings).generate_json(
+                classification_prompt, QueryTypeOutput,
+                {"query_type": "general"}, max_tokens=100,
             )
-
-            query_type = classification_response.content[0].text.strip().lower()
-            if query_type not in ["registry_query", "compliance_query", "alert_query", "general"]:
-                query_type = "general"
-
-            logger.info(f"Classified as: {query_type}")
+            query_type = category["query_type"]
 
             # Step 2: Handle by query type
             if query_type == "registry_query":
@@ -104,14 +80,20 @@ Return ONLY one word: registry_query, compliance_query, alert_query, or general"
                 answer, sources = await _handle_general_query(question)
 
         except Exception as e:
-            logger.warning(f"LLM call failed ({e}), using mock implementation")
+            logger.warning("LLM generation unavailable; using rule-based implementation")
             return await _handle_mock_query(question, session)
 
+        if answer["llm_provider"] == "none":
+            return await _handle_mock_query(question, session)
         logger.info(f"Q&A response generated with {len(sources)} sources")
 
         return QAResponse(
-            answer=answer,
+            answer=answer["answer"],
             sources=sources,
+            citations=answer["citations"],
+            llm_provider=answer["llm_provider"],
+            llm_model=answer["llm_model"],
+            needs_review=answer["needs_review"],
             query_type=query_type,
         )
 
@@ -123,7 +105,7 @@ Return ONLY one word: registry_query, compliance_query, alert_query, or general"
         )
 
 
-async def _handle_registry_query(question: str, session: AsyncSession) -> tuple[str, list[str]]:
+async def _handle_registry_query(question: str, session: AsyncSession) -> tuple[dict, list[str]]:
     """Handle registry/system query."""
     # Get all systems
     result = await session.execute(select(AISystem).where(AISystem.is_active))
@@ -143,23 +125,15 @@ QUESTION: {question}
 
 Provide a concise, helpful answer in 2-3 sentences. If specific system names are needed, use the system_id."""
 
-    client = get_anthropic_client()
-    if client is None:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="LLM client unavailable")
-
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}],
+    answer = await get_llm(settings).generate_json(
+        prompt, AnswerOutput, {"answer": "", "citations": []}, max_tokens=500,
     )
-
-    answer = response.content[0].text.strip()
     sources = [f"System Registry ({len(systems)} systems)"]
 
     return answer, sources
 
 
-async def _handle_compliance_query(question: str) -> tuple[str, list[str]]:
+async def _handle_compliance_query(question: str) -> tuple[dict, list[str]]:
     """Handle compliance/regulatory query."""
     prompt = f"""You are a compliance expert. Answer this governance question:
 
@@ -173,26 +147,16 @@ Focus on:
 
 Provide a concise answer in 2-3 sentences with key points."""
 
-    client = get_anthropic_client()
-    if client is None:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="LLM client unavailable")
-
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}],
+    retriever = RegulatoryRetriever(settings.database_url)
+    chunks = retriever.retrieve("EU_AI_ACT", question, k=5)
+    answer = await get_llm(settings).generate_json(
+        prompt, AnswerOutput, {"answer": "", "citations": []}, chunks=chunks, max_tokens=500,
     )
-
-    answer = response.content[0].text.strip()
-    sources = [
-        "EU AI Act (Regulation 2024/1689)",
-        "RBI Model Risk Management Guidelines",
-    ]
-
+    sources = [doc.metadata.get("citation", doc.metadata.get("source", "Unknown")) for doc in chunks]
     return answer, sources
 
 
-async def _handle_alert_query(question: str, session: AsyncSession) -> tuple[str, list[str]]:
+async def _handle_alert_query(question: str, session: AsyncSession) -> tuple[dict, list[str]]:
     """Handle alert/violation query."""
     from argus.core.registry.models import GovernanceAlert
 
@@ -219,23 +183,15 @@ QUESTION: {question}
 
 Summarize the alert situation relevant to the question in 2-3 sentences."""
 
-    client = get_anthropic_client()
-    if client is None:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="LLM client unavailable")
-
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}],
+    answer = await get_llm(settings).generate_json(
+        prompt, AnswerOutput, {"answer": "", "citations": []}, max_tokens=500,
     )
-
-    answer = response.content[0].text.strip()
     sources = ["ARGUS Governance Alerts Database"]
 
     return answer, sources
 
 
-async def _handle_general_query(question: str) -> tuple[str, list[str]]:
+async def _handle_general_query(question: str) -> tuple[dict, list[str]]:
     """Handle general governance knowledge query."""
     prompt = f"""You are an AI governance expert. Answer this question:
 
@@ -243,17 +199,9 @@ async def _handle_general_query(question: str) -> tuple[str, list[str]]:
 
 Provide practical, actionable guidance for AI governance in 2-3 sentences."""
 
-    client = get_anthropic_client()
-    if client is None:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="LLM client unavailable")
-
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}],
+    answer = await get_llm(settings).generate_json(
+        prompt, AnswerOutput, {"answer": "", "citations": []}, max_tokens=500,
     )
-
-    answer = response.content[0].text.strip()
     sources = ["AI Governance Best Practices"]
 
     return answer, sources

@@ -5,7 +5,7 @@ Provides type safety and automatic OpenAPI documentation.
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 # ============================================================================
@@ -14,6 +14,9 @@ from pydantic import BaseModel, Field, field_validator
 
 class AISystemCreate(BaseModel):
     """Request schema for registering a new AI system."""
+    llm_provider: str = "none"
+    llm_model: Optional[str] = None
+    needs_review: bool = True
     name: str = Field(..., min_length=1, max_length=255, description="System name")
     version: str = Field(
         default="1.0.0",
@@ -125,6 +128,9 @@ class CitationSchema(BaseModel):
 
 class FrameworkClassification(BaseModel):
     """Classification result for a single regulatory framework."""
+    llm_provider: str = "none"
+    llm_model: Optional[str] = None
+    needs_review: bool = True
     framework: str = Field(..., description="Framework name: EU_AI_ACT, RBI, etc.")
     risk_tier: str = Field(..., description="Risk tier classification")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score")
@@ -137,6 +143,20 @@ class FrameworkClassification(BaseModel):
 
 class AISystemResponse(BaseModel):
     """Full AI system detail response."""
+    llm_provider: str = "none"
+    llm_model: Optional[str] = None
+    needs_review: bool = True
+
+    @model_validator(mode="after")
+    def classification_provenance(self):
+        entries = list((self.regulatory_citations or {}).values())
+        producers = {(item.get("llm_provider", "none"), item.get("llm_model")) for item in entries}
+        if len(producers) == 1:
+            self.llm_provider, self.llm_model = next(iter(producers))
+        elif producers:
+            self.llm_provider, self.llm_model = "mixed", None
+        self.needs_review = not entries or any(item.get("needs_review", True) for item in entries)
+        return self
     id: str = Field(..., description="System UUID")
     system_id: str = Field(..., description="Human-readable system ID")
     name: str = Field(..., description="System name")
@@ -263,6 +283,10 @@ class AuditRecordResponse(BaseModel):
 
 class QAResponse(BaseModel):
     """Q&A response with sources."""
+    llm_provider: str = "none"
+    llm_model: Optional[str] = None
+    needs_review: bool = True
+    citations: list[dict] = Field(default_factory=list)
     answer: str = Field(..., description="Answer to the question")
     sources: list[str] = Field(..., description="Source references")
     query_type: str = Field(..., description="Classified query type")

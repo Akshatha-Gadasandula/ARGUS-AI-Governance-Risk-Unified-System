@@ -299,6 +299,9 @@ async def get_model_card(
         return {
             "system_id": system_id,
             "model_card": system.model_card or "No model card available",
+            "llm_provider": next((line.split(": ", 1)[1] for line in reversed((system.model_card or "").splitlines()) if line.startswith("LLM provider: ")), "none"),
+            "llm_model": next((line.split(": ", 1)[1] for line in reversed((system.model_card or "").splitlines()) if line.startswith("LLM model: ")), None),
+            "needs_review": next((line.split(": ", 1)[1].lower() == "true" for line in reversed((system.model_card or "").splitlines()) if line.startswith("Needs review: ")), True),
         }
 
     except HTTPException:

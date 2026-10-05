@@ -6,13 +6,21 @@ from functools import lru_cache
 from typing import Optional
 
 from pydantic_settings import BaseSettings
+from pydantic import Field, SecretStr
+from typing import Literal
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # LLM Configuration
-    anthropic_api_key: str = ""
+    anthropic_api_key: SecretStr = Field(default="", repr=False)
+    gemini_api_key: SecretStr = Field(default="", repr=False)
+    llm_provider: Literal["", "anthropic", "gemini", "none"] = ""
+    gemini_model: str = ""
+    claude_model: str = ""
+    llm_max_calls: int = Field(default=12, ge=0)
+    llm_max_rpm: int = Field(default=5, gt=0)
 
     # Database Configuration
     postgres_user: str = "argus"
@@ -48,6 +56,7 @@ class Settings(BaseSettings):
         """Pydantic config for case-insensitive environment variable loading."""
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"
 
 
 @lru_cache(maxsize=1)
