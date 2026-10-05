@@ -1,0 +1,60 @@
+[
+  {
+    "id": 5,
+    "name": "Elderly Product Targeting Engine",
+    "query_basis": "purpose only; before Registrar inference",
+    "distance": 0.7381705627644732,
+    "metadata": {
+      "page": 50,
+      "title": "Prohibited AI practices",
+      "source": "eu_ai_act.pdf",
+      "article": "Article 5",
+      "annex_id": null,
+      "citation": "Article 5",
+      "page_end": 50,
+      "framework": "EU_AI_ACT",
+      "annex_point": null,
+      "annex_title": null,
+      "chunk_index": 0,
+      "page_number": 51,
+      "heading_page": 50,
+      "section_type": "article",
+      "article_title": "Prohibited AI practices",
+      "annex_subpoint": null,
+      "article_number": 5,
+      "page_number_end": 51
+    },
+    "text": "Article 5 - Prohibited AI practices\n1. The following AI practices shall be prohibited: (a) the placing on the market, the putting into service or the use of an AI system that deploys subliminal techniques beyond a person’s consciousness or purposefully manipulative or deceptive techniques, with the objective, or the effect of materially distorting the behaviour of a person or a group of persons by appreciably impairing their ability to make an informed decision, thereby causing them to take a decision that they would not have otherwise taken in a manner that causes or is reasonably likely to cause that person, another person or group of persons significant harm; (b) the placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm; (c) the placing on the market, the putting into service or the use of AI systems for",
+    "checked_paragraph": "1(b)",
+    "contains_target_clause_text": true
+  },
+  {
+    "id": 9,
+    "name": "Classroom Emotion Monitor",
+    "query_basis": "purpose only; before Registrar inference",
+    "distance": 0.7406452143576865,
+    "metadata": {
+      "page": 50,
+      "title": "Prohibited AI practices",
+      "source": "eu_ai_act.pdf",
+      "article": "Article 5",
+      "annex_id": null,
+      "citation": "Article 5",
+      "page_end": 51,
+      "framework": "EU_AI_ACT",
+      "annex_point": null,
+      "annex_title": null,
+      "chunk_index": 2,
+      "page_number": 51,
+      "heading_page": 50,
+      "section_type": "article",
+      "article_title": "Prohibited AI practices",
+      "annex_subpoint": null,
+      "article_number": 5,
+      "page_number_end": 52
+    },
+    "text": "Article 5 - Prohibited AI practices\nused to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity; (e) the placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage; (f) the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on",
+    "checked_paragraph": "1(f)",
+    "contains_target_clause_text": true
+  }
+]

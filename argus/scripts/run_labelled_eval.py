@@ -115,6 +115,8 @@ def score_case(case, response):
             'strict_provision_match': (not citations if case['expected_provision'] == 'none' else any(c.get('article') == case['expected_provision'] for c in citations + exclusions)),
             'canonical_provision_match': (not citations if case['expected_provision'] == 'none' else any(not canonicalize_citation(c)['citation_incomplete'] and canonicalize_citation(c)['canonical_citation'] == canonicalize_citation({'article':case['expected_provision']})['canonical_citation'] for c in citations + exclusions)),
             'canonical_citations': [canonicalize_citation(c)['canonical_citation'] for c in citations],
+            'canonical_exclusions_checked': [canonicalize_citation(c)['canonical_citation'] for c in exclusions],
+            'citation_incomplete': any(canonicalize_citation(c)['citation_incomplete'] for c in citations + exclusions),
             'grounded': all(c['grounded'] for c in checks), 'grounding_checks': checks,
             'needs_review': framework.get('needs_review'),
             'needs_review_reasons': framework.get('needs_review_reasons', []),
@@ -158,20 +160,21 @@ def markdown(report):
              f"Needs review: {len(summary['review_case_ids'])} cases; IDs {summary['review_case_ids']}.",
              'Provision matching includes checked exclusions. Article paragraph/subparagraph labels must match explicitly; prose mentions do not count. Scope/exception qualifiers require reading the reasoning and are not separately validated.',
              'Grounding checks provision identity, not whether the interpretation or quoted excerpt is correct. Empty citation sets pass the identity check vacuously.', '',
-             '| ID | Name | Difficulty | Expected tier | Predicted tier | Expected provision | Supporting citations | Exclusions checked | Strict | Canonicalized | Grounded | Needs review / reasons | Confidence |',
-             '|---|---|---|---|---|---|---|---|---|---|---|---|---|']
+             '| ID | Name | Difficulty | Expected tier | Predicted tier | Expected provision | Supporting citations | Exclusions checked | Strict | Canonicalized | Grounded | Citation incomplete | Needs review / reasons | Confidence |',
+             '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|']
     for r in report['results']:
-        row = [r['id'], r['name'], r['difficulty'], r['expected_tier'], r['predicted_tier'], r['expected_provision'], ', '.join(r['canonical_citations']) or 'none', ', '.join(r['exclusions_checked']) or 'none', r['strict_provision_match'], r['canonical_provision_match'], r['grounded'], f"{r['needs_review']} / {', '.join(r['needs_review_reasons']) or 'none'}", r['confidence']]
+        row = [r['id'], r['name'], r['difficulty'], r['expected_tier'], r['predicted_tier'], r['expected_provision'], ', '.join(r['canonical_citations']) or 'none', ', '.join(r['canonical_exclusions_checked']) or 'none', r['strict_provision_match'], r['canonical_provision_match'], r['grounded'], r['citation_incomplete'], f"{r['needs_review']} / {', '.join(r['needs_review_reasons']) or 'none'}", r['confidence']]
         lines.append('| ' + ' | '.join(str(v).replace('|','/').replace('\n',' ') for v in row) + ' |')
     lines += ['', '## Confusion matrix (all cases, expected rows / predicted columns)', '',
               '| Expected | ' + ' | '.join(TIERS + ['UNCLASSIFIED']) + ' |',
               '|---|' + '---|' * 5]
     for expected, row in summary['confusion_matrix_all'].items():
         lines.append('| ' + expected + ' | ' + ' | '.join(str(row.get(t, 0)) for t in TIERS + ['UNCLASSIFIED']) + ' |')
-    lines += ['', '## Ambiguous cases and incorrect predictions', '']
+    lines += ['', '## Wrong, incomplete and ambiguous cases: model reasoning', '']
     for r in report['results']:
-        if not r['tier_correct'] or r['difficulty'] == 'ambiguous':
-            lines += [f"### {r['id']}: {r['name']}", '', f"Expected {r['expected_tier']}; predicted {r['predicted_tier']}; confidence {r['confidence']}.", '', r['reasoning'], '']
+        if not r['tier_correct'] or not r['strict_provision_match'] or not r['canonical_provision_match'] or r['citation_incomplete'] or r['difficulty'] == 'ambiguous':
+            lines += [f"### {r['id']}: {r['name']}", '', f"Expected {r['expected_tier']}; predicted {r['predicted_tier']}; confidence {r['confidence']}.", '', '> ' + r['reasoning'].replace('\n','\n> '), '']
+    lines += ['', '## Not completed', '', json.dumps(report.get('not_completed', []), indent=2), '']
     lines += ['## Usage and cleanup', '', json.dumps(report['usage'], indent=2), '',
               f"DELETE endpoint results: {json.dumps(report['cleanup'])}", '',
               f"Stop reason: {report.get('stop_reason') or 'none'}", '',
@@ -227,15 +230,19 @@ def run(base_url, set_path, result_path, report_path, call_cap=34):
             status, response = request('POST', base_url+'/api/v1/registry/systems', payload)
             created.append(response['system_id'])
             response = sanitized(response)
+            records = usage_records()[log_start:]
+            new = records[len(before):]
+            terminal = any(r['status'] in ('provider_error','call_cap') for r in new) or sum(r['status']=='quota_error' for r in new) >= 3
+            if terminal:
+                report.setdefault('not_completed', []).append({'id':case['id'], 'name':case['name'],
+                    'reason':'Provider/auth/model error, exhausted quota backoff or call cap',
+                    'http_status':status, 'response':response})
+                raise RuntimeError('Provider/auth/model error or exhausted quota backoff/call cap; case not completed')
             result = score_case(case, response)
             result['http_status'] = status
             report['results'].append(result)
             print(json.dumps({k:v for k,v in result.items() if k not in ('response','purpose','grounding_checks')}, ensure_ascii=False), flush=True)
-            records = usage_records()[log_start:]
             save()
-            new = records[len(before):]
-            if any(r['status']=='provider_error' for r in new) or (new and new[-1]['status'] in ('quota_error','call_cap')):
-                raise RuntimeError('Provider/auth/model error or exhausted quota backoff/call cap')
             if summarize_usage(records)['live_calls'] >= call_cap:
                 raise RuntimeError('Live call cap reached')
         report['status'] = 'complete'

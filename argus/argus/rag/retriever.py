@@ -56,6 +56,8 @@ class RegulatoryRetriever:
             {"section_type": "article", "article_number": 50},
             {"section_type": "annex", "annex_id": "III"},
         ):
+            # Each pin is the nearest chunk to this query, including Article 5.
+            # Never choose a fixed chunk or use evaluation labels to select it.
             pinned = store.similarity_search_with_score(query, k=1, filter=filter)
             if not pinned:
                 raise RuntimeError("EU classification requires indexed Articles 5, 6, 50 and Annex III")

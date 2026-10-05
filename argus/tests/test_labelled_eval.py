@@ -47,3 +47,35 @@ def test_heldout_metrics_use_actual_set_size_and_separate_scores():
     assert result['clear_total']==1 and result['tier_correct']==1
     assert result['strict_provision_matches']==0 and result['canonical_provision_matches']==1
     assert result['confusion_matrix_all']['PROHIBITED']['PROHIBITED']==1
+
+
+def test_failed_provider_case_is_not_scored_or_reposted_and_is_deleted(tmp_path,monkeypatch):
+    from scripts import run_labelled_eval as runner
+    monkeypatch.setattr(runner,'ROOT',tmp_path)
+    monkeypatch.setattr(runner,'FROZEN',[])
+    for name in ['argus/core/citations.py','scripts/run_labelled_eval.py']:
+        path=tmp_path/name
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_text('frozen mock source')
+    owner=tmp_path/'owner.json'
+    owner.write_text(json.dumps([{'id':1,'name':'Mock system','purpose':'Mock purpose','difficulty':'clear',
+        'expected_tier':'MINIMAL_RISK','expected_provision':'none'}]))
+    monkeypatch.setattr(runner,'docker_json',lambda *a,**kw:{'gemini':True,'bounded':True})
+    monkeypatch.setattr(runner,'sanitized',lambda value:value)
+    logs=[]
+    monkeypatch.setattr(runner,'usage_records',lambda:list(logs))
+    requests=[]
+    def request(method,url,payload=None):
+        requests.append(method)
+        if method=='POST':
+            logs.append({'status':'provider_error','cache_hit':False})
+            return 201,{'system_id':'mock_id','risk_tier':'MINIMAL_RISK'}
+        if method=='GET':
+            return 200,[]
+        return 204,None
+    monkeypatch.setattr(runner,'request',request)
+    report=runner.run('http://mock',owner,tmp_path/'heldout_results.json',tmp_path/'heldout_report.md',24)
+    assert report['status']=='stopped'
+    assert report['results']==[] and report['metrics']['tier_evaluated']==0
+    assert report['not_completed'][0]['id']==1
+    assert requests==['POST','GET','DELETE']

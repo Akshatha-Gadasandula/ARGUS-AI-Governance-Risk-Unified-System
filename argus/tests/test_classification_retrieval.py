@@ -39,3 +39,30 @@ def test_empty_corpus_does_not_initialize_a_vector_store():
     retriever = RegulatoryRetriever.__new__(RegulatoryRetriever)
     retriever.has_corpus = lambda _: False
     assert retriever.retrieve_for_classification_with_score("RBI", "query") == []
+
+
+def test_article_five_pin_is_query_dependent_nearest_chunk():
+    alpha = Document(page_content='Article 5 alpha', metadata={'section_type':'article','article_number':5,'chunk_index':0})
+    beta = Document(page_content='Article 5 beta', metadata={'section_type':'article','article_number':5,'chunk_index':1})
+    other = Document(page_content='Article 10', metadata={'section_type':'article','article_number':10})
+    def search(query, k, filter):
+        if filter.get('article_number') == 5:
+            assert k == 1
+            distances = [(alpha,.1 if query=='alpha description' else .8),
+                         (beta,.9 if query=='alpha description' else .2)]
+            return sorted(distances,key=lambda item:item[1])[:k]
+        if filter.get('article_number'):
+            n=filter['article_number']
+            return [(Document(page_content=f'Article {n}',metadata={'section_type':'article','article_number':n}),.4)]
+        if filter.get('annex_id'):
+            return [(Document(page_content='Annex III',metadata={'section_type':'annex','annex_id':'III'}),.5)]
+        return [(other,.05)]
+    retriever=RegulatoryRetriever.__new__(RegulatoryRetriever)
+    retriever.has_corpus=lambda _:True
+    retriever.retrieve=lambda *a,**kw:[]
+    retriever.stores={'regulations_eu_ai_act':SimpleNamespace(similarity_search_with_score=search)}
+    for query, expected, distance in [('alpha description',alpha,.1),('beta description',beta,.2)]:
+        result=retriever.retrieve_for_classification_with_score('EU_AI_ACT',query)
+        pinned=[(doc,score) for doc,score in result if doc.metadata.get('article_number')==5]
+        assert pinned == [(expected,distance)]
+        assert len(result)==5
