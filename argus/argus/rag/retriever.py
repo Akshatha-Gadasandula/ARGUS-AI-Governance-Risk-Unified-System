@@ -8,6 +8,7 @@ from langchain.schema import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 from sqlalchemy.engine import make_url
 from sqlalchemy import create_engine, text
+from argus.rag.prohibition_screen import article_five_screen
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +41,8 @@ class RegulatoryRetriever:
             ), {"name": f"regulations_{framework.lower()}"}).scalar())
 
     def retrieve_for_classification_with_score(self, framework, query, k=5):
-        if framework == "EU_AI_ACT" and k != 5:
-            raise ValueError("EU classification retrieval requires exactly five slots")
+        if framework == "EU_AI_ACT" and k < 5:
+            raise ValueError("EU classification retrieval requires the screen plus at least four other slots")
         if not self.has_corpus(framework):
             return []
         # Initialize the existing store without changing its distance strategy.
@@ -49,29 +50,39 @@ class RegulatoryRetriever:
         store = self.stores[f"regulations_{framework.lower()}"]
         if framework != "EU_AI_ACT":
             return store.similarity_search_with_score(query, k=k)
-        selected = []
+        selected = article_five_screen(self.article_five_chunks_with_score(store, query))
+        target_size = max(k, len(selected) + 4)
         for filter in (
-            {"section_type": "article", "article_number": 5},
             {"section_type": "article", "article_number": 6},
             {"section_type": "article", "article_number": 50},
             {"section_type": "annex", "annex_id": "III"},
         ):
-            # Each pin is the nearest chunk to this query, including Article 5.
-            # Never choose a fixed chunk or use evaluation labels to select it.
+            # Other pins retain the original query-dependent similarity scoring.
             pinned = store.similarity_search_with_score(query, k=1, filter=filter)
             if not pinned:
                 raise RuntimeError("EU classification requires indexed Articles 5, 6, 50 and Annex III")
             selected.extend(pinned)
         candidates = store.similarity_search_with_score(
-            query, k=k+2, filter={"section_type": {"$in": ["article", "annex"]}},
+            query, k=target_size+len(selected), filter={"section_type": {"$in": ["article", "annex"]}},
         )
         identities = {(doc.page_content, str(doc.metadata)) for doc, _ in selected}
         for doc, distance in candidates:
             identity = (doc.page_content, str(doc.metadata))
-            if identity not in identities and len(selected) < k:
+            if identity not in identities and len(selected) < target_size:
                 selected.append((doc, distance))
                 identities.add(identity)
         return sorted(selected, key=lambda item: item[1])
+
+    def article_five_chunks_with_score(self, store, query):
+        with self.engine.connect() as connection:
+            count = connection.execute(text(
+                "SELECT count(*) FROM langchain_pg_embedding e "
+                "JOIN langchain_pg_collection c ON c.uuid=e.collection_id "
+                "WHERE c.name='regulations_eu_ai_act' AND e.cmetadata->>'section_type'='article' "
+                "AND e.cmetadata->>'article_number'='5'"
+            )).scalar()
+        return store.similarity_search_with_score(query, k=count,
+            filter={"section_type":"article", "article_number":5}) if count else []
 
     def retrieve_for_classification(self, framework, query, k=5):
         return [doc for doc, _ in self.retrieve_for_classification_with_score(framework, query, k)]

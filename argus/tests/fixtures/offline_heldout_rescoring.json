@@ -1,0 +1,122 @@
+{
+  "heading": "offline rescoring, NOT a new measurement; the model outputs are unchanged",
+  "scope": "Supporting completeness and deterministic output flags only; no new retrieval, guard replay, schema repair, inferred clauses or model generation.",
+  "original_review_count": 10,
+  "offline_review_count": 3,
+  "offline_review_case_ids": [
+    3,
+    7,
+    9
+  ],
+  "original_canonical_matches": 6,
+  "offline_canonical_matches": 6,
+  "cases": [
+    {
+      "id": 1,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "HIGH_RISK"
+    },
+    {
+      "id": 2,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "HIGH_RISK"
+    },
+    {
+      "id": 3,
+      "original_needs_review": true,
+      "offline_needs_review": true,
+      "offline_needs_review_reasons": [
+        "incomplete_citation"
+      ],
+      "original_canonical_match": false,
+      "offline_canonical_match": false,
+      "supporting_incomplete": true,
+      "unchanged_tier": "LIMITED_RISK"
+    },
+    {
+      "id": 4,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "MINIMAL_RISK"
+    },
+    {
+      "id": 5,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": false,
+      "offline_canonical_match": false,
+      "supporting_incomplete": false,
+      "unchanged_tier": "MINIMAL_RISK"
+    },
+    {
+      "id": 6,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "HIGH_RISK"
+    },
+    {
+      "id": 7,
+      "original_needs_review": true,
+      "offline_needs_review": true,
+      "offline_needs_review_reasons": [
+        "incomplete_citation"
+      ],
+      "original_canonical_match": false,
+      "offline_canonical_match": false,
+      "supporting_incomplete": true,
+      "unchanged_tier": "LIMITED_RISK"
+    },
+    {
+      "id": 8,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "MINIMAL_RISK"
+    },
+    {
+      "id": 9,
+      "original_needs_review": true,
+      "offline_needs_review": true,
+      "offline_needs_review_reasons": [
+        "tier_citation_inconsistent:prohibited_without_article_5_paragraph",
+        "incomplete_citation"
+      ],
+      "original_canonical_match": false,
+      "offline_canonical_match": false,
+      "supporting_incomplete": true,
+      "unchanged_tier": "PROHIBITED"
+    },
+    {
+      "id": 10,
+      "original_needs_review": true,
+      "offline_needs_review": false,
+      "offline_needs_review_reasons": [],
+      "original_canonical_match": true,
+      "offline_canonical_match": true,
+      "supporting_incomplete": false,
+      "unchanged_tier": "HIGH_RISK"
+    }
+  ]
+}

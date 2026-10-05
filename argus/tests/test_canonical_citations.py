@@ -48,15 +48,15 @@ def test_minimal_article_six_is_checked_exclusion():
 
 
 @pytest.mark.asyncio
-async def test_classifier_persists_consistency_and_incomplete_reasons(monkeypatch):
+async def test_classifier_persists_consistency_and_incomplete_reasons(monkeypatch, complete_prohibition_screen):
     from types import SimpleNamespace
     from langchain.schema import Document
     from argus.core.agents import risk_classifier
     agent = risk_classifier.RiskClassifierAgent.__new__(risk_classifier.RiskClassifierAgent)
     agent.settings = SimpleNamespace()
-    doc = Document(page_content='Article 5',metadata={'section_type':'article','article_number':5})
+    docs = complete_prohibition_screen
     agent.retriever = SimpleNamespace(has_corpus=lambda _:True,
-        retrieve_for_classification=lambda *a,**kw:[doc], format_passages=lambda _: 'Article 5')
+        retrieve_for_classification=lambda *a,**kw:docs, format_passages=lambda _: 'Article 5')
     async def generate(*a,**kw):
         return {'risk_tier':'PROHIBITED','confidence':.9,'reasoning':'Mock reasoning',
                 'citations':[{'article':'Article 5','point':'f'}],'obligations':[],
@@ -69,3 +69,10 @@ async def test_classifier_persists_consistency_and_incomplete_reasons(monkeypatc
     assert 'tier_citation_inconsistent:prohibited_without_article_5_paragraph' in result.needs_review_reasons
     assert result.citations[0]['article']=='Article 5'
     assert result.citations[0]['canonical_citation']=='Article 5(f)'
+
+
+def test_prohibited_requires_paragraph_and_letter_and_article_fifty_requires_paragraph():
+    assert tier_citation_review_reasons('PROHIBITED',[{'article':'Article 5(1)'}])
+    assert canonicalize_citation({'article':'Article 50'})['citation_incomplete']
+    assert not canonicalize_citation({'article':'Article 50','paragraph':'1','point':None,'incomplete_reason':'No lettered point'})['citation_incomplete']
+    assert not canonicalize_citation({'article':'Article 5'}, supporting=False)['citation_incomplete']

@@ -147,13 +147,18 @@ class FrameworkClassification(BaseModel):
 class AISystemResponse(BaseModel):
     """Full AI system detail response."""
     llm_provider: str = "none"
+    status: str = 'assessed'
     llm_model: Optional[str] = None
     needs_review: bool = True
     needs_review_reasons: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def classification_provenance(self):
-        entries = [item for item in (self.regulatory_citations or {}).values() if item.get("status", "assessed") == "assessed"]
+        entries = [item for item in (self.regulatory_citations or {}).values() if item.get("status", "assessed") in ('assessed','context_incomplete')]
+        if any(item.get('status')=='context_incomplete' for item in entries):
+            self.status='context_incomplete'
+        if entries and not any(item.get('status','assessed')=='assessed' for item in entries):
+            self.risk_tier = None
         producers = {(item.get("llm_provider", "none"), item.get("llm_model")) for item in entries}
         if len(producers) == 1:
             self.llm_provider, self.llm_model = next(iter(producers))
@@ -174,7 +179,7 @@ class AISystemResponse(BaseModel):
     data_sources: list[str] = Field(..., description="Data sources")
     affected_demographics: list[str] = Field(..., description="Affected demographics")
     jurisdictions: list[str] = Field(..., description="Applicable jurisdictions")
-    risk_tier: str = Field(..., description="Current risk tier")
+    risk_tier: Optional[str] = Field(..., description="Current risk tier; null when the classification context is incomplete")
     risk_classification_reasoning: Optional[str] = Field(
         ...,
         description="Reasoning for risk classification",

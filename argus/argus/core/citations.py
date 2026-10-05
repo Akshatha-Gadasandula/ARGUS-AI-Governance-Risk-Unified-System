@@ -2,7 +2,7 @@
 import re
 
 
-def canonicalize_citation(citation):
+def canonicalize_citation(citation, *, supporting=True):
     result = dict(citation)
     label = citation.get('article') or ''
     article = re.search(r'\bArticle\s+(\d+)((?:\([0-9a-z]+\))*)', label, re.I)
@@ -16,11 +16,19 @@ def canonicalize_citation(citation):
         paragraph = citation.get('paragraph')
         if paragraph is not None and (not parts or parts[0] != str(paragraph)):
             parts.insert(0, str(paragraph))
+        if paragraph is not None and citation.get('point'):
+            explicit = re.findall(r'\d+|[a-z]', citation['point'], re.I)
+            if explicit and explicit[0] == str(paragraph):
+                explicit = explicit[1:]
+            if len(parts) == 1:
+                parts.extend(explicit)
         parts = [p.lower() for p in parts]
         canonical = f'Article {article[1]}' + ''.join(f'({p})' for p in parts)
         # Do not invent paragraph 1, even when the letter is recognizable.
         incomplete = article[1] == '5' and not (
             len(parts) >= 2 and parts[0].isdigit() and len(parts[1]) == 1 and parts[1].isalpha())
+        if article[1] == '50':
+            incomplete = not (parts and parts[0].isdigit())
     else:
         annex = re.search(r'\bAnnex\s+([IVXLCDM]+)(?:,?\s+(?:point\s+)?(\d+)(?:\(([a-z])\))?)?', label, re.I)
         annex_id = citation.get('annex') or (annex[1] if annex else None)
@@ -32,14 +40,14 @@ def canonicalize_citation(citation):
         else:
             canonical, incomplete = label, True
     result['canonical_citation'] = canonical
-    result['citation_incomplete'] = incomplete
+    result['citation_incomplete'] = incomplete if supporting else False
     return result
 
 
 def tier_citation_review_reasons(tier, supporting):
     citations = [canonicalize_citation(c) for c in supporting]
     labels = [c['canonical_citation'] for c in citations]
-    if tier == 'PROHIBITED' and not any(re.match(r'^Article 5\(\d+\)', s) for s in labels):
+    if tier == 'PROHIBITED' and not any(re.match(r'^Article 5\(\d+\)\([a-z]\)', c['canonical_citation']) and not c['citation_incomplete'] for c in citations):
         return ['tier_citation_inconsistent:prohibited_without_article_5_paragraph']
     if tier == 'LIMITED_RISK' and not any(re.match(r'^Article 50(?:\(|$)', s) for s in labels):
         return ['tier_citation_inconsistent:limited_without_article_50']

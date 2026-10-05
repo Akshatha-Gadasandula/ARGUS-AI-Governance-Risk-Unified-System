@@ -265,12 +265,12 @@ def test_registrar_provenance_and_model_card_are_gemini_labelled(tmp_path, monke
     assert "LLM provider: gemini" in card and "Claude" not in card
 
 
-def test_risk_classification_persists_grounding_and_provenance(tmp_path, monkeypatch):
+def test_risk_classification_persists_grounding_and_provenance(tmp_path, monkeypatch, complete_prohibition_screen):
     from argus.core.agents import risk_classifier
     doc = Document(page_content="Article 10 - Data", metadata={"section_type": "article", "article_number": 10})
-    retriever = SimpleNamespace(has_corpus=lambda _: True, retrieve_for_classification=lambda *args, **kwargs: [doc], format_passages=lambda _: doc.page_content)
+    retriever = SimpleNamespace(has_corpus=lambda _: True, retrieve_for_classification=lambda *args, **kwargs: complete_prohibition_screen + [doc], format_passages=lambda _: doc.page_content)
     monkeypatch.setattr(risk_classifier, "RegulatoryRetriever", lambda _: retriever)
-    text = json.dumps({"risk_tier": "HIGH_RISK", "confidence": 0.8, "reasoning": "Data governance", "citations": [{"article": "Article 10"}, {"article": "Article 999"}], "obligations": ["Review data"]})
+    text = json.dumps({"risk_tier": "HIGH_RISK", "confidence": 0.8, "reasoning": "Data governance", "citations": [{"article": "Article 10", "paragraph":None,"point":None,"incomplete_reason":None}, {"article": "Article 999","paragraph":None,"point":None,"incomplete_reason":None}], "obligations": ["Review data"]})
     llm, _, _ = service(tmp_path, [text])
     monkeypatch.setattr(risk_classifier, "get_llm", lambda _: llm)
     result = asyncio.run(risk_classifier.RiskClassifierAgent(llm.settings).classify("test", "Test", "Credit scoring", None, None, [], [], ["EU"]))
@@ -293,17 +293,19 @@ def test_missing_framework_corpus_skips_llm_and_does_not_require_review(monkeypa
     assert result.overall_risk_tier == "UNCLASSIFIED"
 
 
-@pytest.mark.parametrize("confidence,has_chunks,expected", [(0.69, True, ["confidence_below_0.7"]), (0.7, True, []), (0.95, False, ["no_retrieved_chunks"])])
-def test_framework_review_reasons(tmp_path, monkeypatch, confidence, has_chunks, expected):
+@pytest.mark.parametrize("confidence,has_chunks,expected", [(0.69, True, ["confidence_below_0.7"]), (0.7, True, []), (0.95, False, ["prohibited_screen_incomplete"])])
+def test_framework_review_reasons(tmp_path, monkeypatch, confidence, has_chunks, expected, complete_prohibition_screen):
     from argus.core.agents import risk_classifier
     doc = Document(page_content="Article 6", metadata={"section_type": "article", "article_number": 6})
-    retriever = SimpleNamespace(has_corpus=lambda framework: framework == "EU_AI_ACT", retrieve_for_classification=lambda *a, **kw: [doc] if has_chunks else [], format_passages=lambda _: doc.page_content)
+    retriever = SimpleNamespace(has_corpus=lambda framework: framework == "EU_AI_ACT", retrieve_for_classification=lambda *a, **kw: complete_prohibition_screen + [doc] if has_chunks else [], format_passages=lambda _: doc.page_content)
     monkeypatch.setattr(risk_classifier, "RegulatoryRetriever", lambda _: retriever)
     llm, provider, _ = service(tmp_path, [json.dumps({"risk_tier": "MINIMAL_RISK", "confidence": confidence, "reasoning": "Assessment", "citations": [], "obligations": []})])
     monkeypatch.setattr(risk_classifier, "get_llm", lambda _: llm)
     result = asyncio.run(risk_classifier.RiskClassifierAgent(llm.settings).classify("test", "Test", "Email filtering", None, None, [], [], ["EU", "IN"]))
     assert result.regulatory_citations["EU_AI_ACT"]["needs_review_reasons"] == expected
     assert result.needs_review == bool(expected)
+    if not has_chunks:
+        assert provider.calls == [] and result.overall_risk_tier is None
 
 
 def test_no_key_registrar_remains_rule_based(tmp_path, monkeypatch):

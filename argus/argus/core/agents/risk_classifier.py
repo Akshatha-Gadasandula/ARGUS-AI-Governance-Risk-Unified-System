@@ -13,6 +13,7 @@ from argus.core.llm import get_llm
 from argus.core.llm_schemas import ClassificationOutput
 from argus.core.citations import canonicalize_citation, tier_citation_review_reasons
 from argus.rag.retriever import RegulatoryRetriever
+from argus.rag.prohibition_screen import prohibited_screen_complete
 
 logger = logging.getLogger(__name__)
 
@@ -54,13 +55,14 @@ class ClassificationResult:
     """Overall classification result across all frameworks."""
     system_id: str
     classifications: list[RegulatoryClassification]
-    overall_risk_tier: str
+    overall_risk_tier: str | None
     regulatory_citations: dict
     summary: str
     llm_provider: str = "none"
     llm_model: str | None = None
     needs_review: bool = True
     needs_review_reasons: list[str] = field(default_factory=list)
+    status: str = 'assessed'
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -70,6 +72,7 @@ class ClassificationResult:
             "overall_risk_tier": self.overall_risk_tier,
             "regulatory_citations": self.regulatory_citations,
             "summary": self.summary,
+            "status": self.status,
             "llm_provider": self.llm_provider,
             "llm_model": self.llm_model,
             "needs_review": self.needs_review,
@@ -121,12 +124,13 @@ RELEVANT EU AI ACT PASSAGES:
 {retrieved_passages}
 
 Think through each classification step carefully. Then respond ONLY with valid JSON:
+Citation output format only: supporting Article 5 and Article 50 citations must include explicit "paragraph" and "point" fields. Use null with an "incomplete_reason" if unknown or not applicable; do not invent a paragraph. For Article 50 paragraphs without a lettered point, use point=null and explain that no lettered point applies. Supporting Article 5 needs both a paragraph and a lettered point. Provisions checked and excluded belong in "exclusions_checked", not supporting "citations".
 {{
   "risk_tier": "HIGH_RISK",
   "confidence": 0.94,
   "reasoning": "Step 1 analysis: Not prohibited because... Step 2 analysis: HIGH_RISK classification applies because this system evaluates creditworthiness for loan decisions, which falls under Annex III Point 5(b)...",
   "citations": [
-    {{"article": "Annex III, Point 5(b)", "title": "AI systems for assessment of creditworthiness", "excerpt": "AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score"}}
+    {{"article": "Annex III, Point 5(b)", "paragraph": null, "point": "5(b)", "incomplete_reason": null, "title": "AI systems for assessment of creditworthiness", "excerpt": "AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score"}}
   ],
   "obligations": [
     "Conformity assessment before deployment (Article 43)",
@@ -187,12 +191,13 @@ EXAMPLES:
 - Product recommendation engine → MINIMAL_RISK
 
 Analyze this system step-by-step. Respond ONLY with valid JSON:
+Citation output format only: supporting Article 5 and Article 50 citations must include explicit "paragraph" and "point" fields, or null with an "incomplete_reason". Do not invent a paragraph. Article 50 may have no lettered point: explain that with point=null. Article 5 requires paragraph and lettered point. Put checked exclusions in "exclusions_checked".
 {{
   "risk_tier": "HIGH_RISK",
   "confidence": 0.90,
   "reasoning": "Step 1: Not prohibited. Step 2: This {system_purpose} falls under high-risk category as it directly affects essential financial decisions.",
   "citations": [
-    {{"article": "Annex III", "title": "High-risk AI systems", "excerpt": "AI systems in the areas listed..."}}
+    {{"article": "Annex III", "paragraph": null, "point": null, "incomplete_reason": null, "title": "High-risk AI systems", "excerpt": "AI systems in the areas listed..."}}
   ],
   "obligations": [
     "Conformity assessment (Article 43)",
@@ -454,7 +459,7 @@ class RiskClassifierAgent:
             max_priority_idx = risk_tiers_priority.index(max(risk_tiers_priority))
             overall_tier = assessed[max_priority_idx].risk_tier
         else:
-            overall_tier = Classification.UNCLASSIFIED.value
+            overall_tier = None if any(c.status == 'context_incomplete' for c in classifications) else Classification.UNCLASSIFIED.value
 
         # Build summary
         summary = f"Assessed {len(assessed)} framework(s): "
@@ -470,8 +475,9 @@ class RiskClassifierAgent:
             summary=summary,
             llm_provider=provider,
             llm_model=model,
-            needs_review=any(c.needs_review_reasons for c in assessed),
-            needs_review_reasons=sorted({reason for c in assessed for reason in c.needs_review_reasons}),
+            needs_review=any(c.needs_review_reasons for c in classifications if c.status != 'not_assessed_no_corpus'),
+            needs_review_reasons=sorted({reason for c in classifications if c.status != 'not_assessed_no_corpus' for reason in c.needs_review_reasons}),
+            status='context_incomplete' if any(c.status=='context_incomplete' for c in classifications) else 'assessed',
         )
 
         logger.info(f"Classification complete: {overall_tier} (confidence: "
@@ -518,8 +524,15 @@ class RiskClassifierAgent:
             )
 
         # Try RAG retrieval
-        query = f"{system_purpose} {model_type or ''} {output_type or ''}"
+        query = system_purpose
         retrieved_passages = self.retriever.retrieve_for_classification(framework_name, query, k=5)
+
+        if framework_name == 'EU_AI_ACT' and not prohibited_screen_complete(retrieved_passages):
+            return RegulatoryClassification(framework=framework_name, risk_tier=None, confidence=None,
+                reasoning='Article 5(1)(a)-(h) prohibition screen is incomplete; classification withheld.',
+                citations=[], obligations=[], status='context_incomplete', needs_review=True,
+                needs_review_reasons=['prohibited_screen_incomplete'],
+                retrieved_provisions=[doc.metadata for doc in retrieved_passages])
 
         if retrieved_passages:
             prompt_text = main_prompt
@@ -567,10 +580,10 @@ class RiskClassifierAgent:
             reasons.append("no_retrieved_chunks")
         supporting, exclusions = split_citation_roles(risk_tier, result.get("citations", []), result.get("exclusions_checked", []))
         supporting = [canonicalize_citation(c) for c in supporting]
-        exclusions = [canonicalize_citation(c) for c in exclusions]
+        exclusions = [canonicalize_citation(c, supporting=False) for c in exclusions]
         if framework_name == "EU_AI_ACT":
             reasons.extend(tier_citation_review_reasons(risk_tier, supporting))
-            if any(c['citation_incomplete'] for c in supporting + exclusions):
+            if any(c['citation_incomplete'] for c in supporting):
                 reasons.append("incomplete_citation")
         reasons = list(dict.fromkeys(reasons))
         classification = RegulatoryClassification(

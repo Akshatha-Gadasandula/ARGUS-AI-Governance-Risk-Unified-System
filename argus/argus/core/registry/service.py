@@ -74,7 +74,7 @@ class RegistryService:
         system_id = f"{base_id}-{short_uuid}"
 
         # Extract classification info
-        overall_tier = risk_result.get("overall_risk_tier", RiskTier.UNCLASSIFIED)
+        overall_tier = risk_result.get("overall_risk_tier") or RiskTier.UNCLASSIFIED
         summary = risk_result.get("summary", "")
         citations = risk_result.get("regulatory_citations", {})
 
@@ -238,7 +238,7 @@ class RegistryService:
         if not system:
             return None
 
-        system.risk_tier = result.get("overall_risk_tier", RiskTier.UNCLASSIFIED)
+        system.risk_tier = result.get("overall_risk_tier") or RiskTier.UNCLASSIFIED
         system.risk_classification_reasoning = result.get("summary", "")
         system.regulatory_citations = result.get("regulatory_citations", {})
         system.last_classified_at = datetime.utcnow()

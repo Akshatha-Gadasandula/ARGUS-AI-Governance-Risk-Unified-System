@@ -6,6 +6,15 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 
+@pytest.fixture
+def complete_prohibition_screen():
+    from langchain.schema import Document
+    text='Article 5 - Prohibited AI practices\n1. The following AI practices shall be prohibited: '
+    text+=' '.join(f'({letter}) the placing of mock practice;' for letter in 'abcdefgh')
+    text+=' 2. The use of mock safeguards.'
+    return [Document(page_content=text,metadata={'section_type':'article','article_number':5,'chunk_index':0})]
+
+
 @pytest.fixture(scope="session")
 def event_loop():
     """Create event loop for async tests."""

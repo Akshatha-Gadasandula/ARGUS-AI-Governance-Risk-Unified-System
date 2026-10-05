@@ -1,0 +1,137 @@
+{
+  "tokenizer": "sentence-transformers/all-MiniLM-L6-v2 WordPiece; no truncation; Gemini count UNVERIFIED",
+  "records": [
+    {
+      "id": 1,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2218,
+      "effective_input_wordpiece_tokens": 7165
+    },
+    {
+      "id": 2,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2049,
+      "effective_input_wordpiece_tokens": 6816
+    },
+    {
+      "id": 3,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2194,
+      "effective_input_wordpiece_tokens": 7105
+    },
+    {
+      "id": 4,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2135,
+      "effective_input_wordpiece_tokens": 7013
+    },
+    {
+      "id": 5,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2091,
+      "effective_input_wordpiece_tokens": 6907
+    },
+    {
+      "id": 6,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2037,
+      "effective_input_wordpiece_tokens": 6819
+    },
+    {
+      "id": 7,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 1988,
+      "effective_input_wordpiece_tokens": 6703
+    },
+    {
+      "id": 8,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2159,
+      "effective_input_wordpiece_tokens": 7064
+    },
+    {
+      "id": 9,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2045,
+      "effective_input_wordpiece_tokens": 6832
+    },
+    {
+      "id": 10,
+      "chunks": 9,
+      "article_5_chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "context_wordpiece_tokens": 2165,
+      "effective_input_wordpiece_tokens": 7046
+    }
+  ],
+  "max_context_tokens": 2218,
+  "max_effective_input_tokens": 7165
+}

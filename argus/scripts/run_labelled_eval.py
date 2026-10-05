@@ -116,7 +116,7 @@ def score_case(case, response):
             'canonical_provision_match': (not citations if case['expected_provision'] == 'none' else any(not canonicalize_citation(c)['citation_incomplete'] and canonicalize_citation(c)['canonical_citation'] == canonicalize_citation({'article':case['expected_provision']})['canonical_citation'] for c in citations + exclusions)),
             'canonical_citations': [canonicalize_citation(c)['canonical_citation'] for c in citations],
             'canonical_exclusions_checked': [canonicalize_citation(c)['canonical_citation'] for c in exclusions],
-            'citation_incomplete': any(canonicalize_citation(c)['citation_incomplete'] for c in citations + exclusions),
+            'citation_incomplete': any(canonicalize_citation(c)['citation_incomplete'] for c in citations),
             'grounded': all(c['grounded'] for c in checks), 'grounding_checks': checks,
             'needs_review': framework.get('needs_review'),
             'needs_review_reasons': framework.get('needs_review_reasons', []),

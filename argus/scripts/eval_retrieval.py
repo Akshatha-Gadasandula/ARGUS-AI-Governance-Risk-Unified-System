@@ -49,6 +49,8 @@ def evaluate(db_url, classification=False):
     report = []
     for name, query, section_type, number, point in CASES:
         results = retriever.retrieve_for_classification_with_score("EU_AI_ACT", query, k=5) if classification else store.similarity_search_with_score(query, k=5)
+        context_chunks=len(results)
+        results=results[:5]  # Preserve the original top-five evaluation after context expansion.
         expected = f"Article {number}" if section_type == "article" else f"Annex {number} point {point}"
         hits = []
         for rank, (doc, distance) in enumerate(results, 1):
@@ -65,7 +67,7 @@ def evaluate(db_url, classification=False):
             }
             hits.append(hit)
         hit_rank = next((hit["rank"] for hit in hits if hit["expected_match"]), None)
-        case = {"name": name, "query": query, "expected": expected, "result": "PASS" if hit_rank else "FAIL", "hit_rank": hit_rank, "top_5": hits}
+        case = {"name": name, "query": query, "expected": expected, "result": "PASS" if hit_rank else "FAIL", "hit_rank": hit_rank, "context_chunks":context_chunks,"top_5": hits}
         report.append(case)
         print(f"\n{name}: {query}\nExpected: {expected}", flush=True)
         for hit in hits:
