@@ -125,6 +125,7 @@ def test_valid_json_retry_can_be_cached(tmp_path):
     result = llm.generate("retry", AnswerOutput, FALLBACK)
     assert result == llm.generate("retry", AnswerOutput, FALLBACK)
     assert len(provider.calls) == 2
+    assert result["needs_review_reasons"] == ["schema_repair"]
 
 
 def test_throttle_spaces_calls_without_sleeping_on_cache_hits(tmp_path):
@@ -144,7 +145,9 @@ def test_ungrounded_citation_is_dropped_and_cache_preserves_review_flag(tmp_path
     assert result["needs_review"]
     assert llm.generate("grounding", AnswerOutput, FALLBACK, chunks=chunks)["needs_review"]
     assert len(provider.calls) == 1
-    assert "Article 999" not in next(llm.cache_dir.glob("*.json")).read_text()
+    cached = json.loads(next(llm.cache_dir.glob("*.json")).read_text())
+    assert [c["article"] for c in cached["citations"]] == ["Article 10"]
+    assert [c["article"] for c in cached["dropped_citations"]] == ["Article 999"]
 
 
 def test_annex_subpoint_and_reference_in_another_provision_are_not_confused():
@@ -154,9 +157,16 @@ def test_annex_subpoint_and_reference_in_another_provision_are_not_confused():
     assert review
 
 
-def test_inline_unretrieved_reference_is_flagged():
+def test_non_citation_text_does_not_change_citation_grounding():
     result, review = ground_citations({"answer": "Comply with Article 999", "citations": []}, [])
-    assert review and "Article 999" in result["answer"]
+    assert not review and "Article 999" in result["answer"]
+
+
+def test_citation_title_and_excerpt_do_not_change_own_identity():
+    chunks = [Document(page_content="Annex III point 5(b)", metadata={"section_type": "annex", "annex_id": "III", "annex_point": "5", "annex_subpoint": "b"})]
+    citation = {"article": "Annex III point 5(b)", "title": "Referred to in Article 6(2)", "excerpt": "See Article 999"}
+    result, review = ground_citations({"citations": [citation]}, chunks)
+    assert result["citations"] == [citation] and not review
 
 
 def test_all_references_in_a_citation_must_be_grounded():
@@ -258,7 +268,7 @@ def test_registrar_provenance_and_model_card_are_gemini_labelled(tmp_path, monke
 def test_risk_classification_persists_grounding_and_provenance(tmp_path, monkeypatch):
     from argus.core.agents import risk_classifier
     doc = Document(page_content="Article 10 - Data", metadata={"section_type": "article", "article_number": 10})
-    retriever = SimpleNamespace(retrieve=lambda *args, **kwargs: [doc], format_passages=lambda _: doc.page_content)
+    retriever = SimpleNamespace(has_corpus=lambda _: True, retrieve_for_classification=lambda *args, **kwargs: [doc], format_passages=lambda _: doc.page_content)
     monkeypatch.setattr(risk_classifier, "RegulatoryRetriever", lambda _: retriever)
     text = json.dumps({"risk_tier": "HIGH_RISK", "confidence": 0.8, "reasoning": "Data governance", "citations": [{"article": "Article 10"}, {"article": "Article 999"}], "obligations": ["Review data"]})
     llm, _, _ = service(tmp_path, [text])
@@ -268,6 +278,32 @@ def test_risk_classification_persists_grounding_and_provenance(tmp_path, monkeyp
     assert stored["llm_provider"] == "gemini" and stored["llm_model"] == llm.model
     assert stored["needs_review"] and len(stored["citations"]) == 1
     assert result.llm_provider == "gemini"
+
+
+def test_missing_framework_corpus_skips_llm_and_does_not_require_review(monkeypatch):
+    from argus.core.agents import risk_classifier
+    monkeypatch.setattr(risk_classifier, "RegulatoryRetriever", lambda _: SimpleNamespace(has_corpus=lambda _: False))
+    monkeypatch.setattr(risk_classifier, "get_llm", lambda _: pytest.fail("No-corpus framework must not call the LLM"))
+    result = asyncio.run(risk_classifier.RiskClassifierAgent(settings()).classify("test", "Test", "Credit scoring", None, None, [], [], ["IN"]))
+    framework = result.regulatory_citations["RBI"]
+    assert framework["status"] == "not_assessed_no_corpus"
+    assert framework["risk_tier"] is None and framework["confidence"] is None
+    assert not framework["citations"] and not framework["obligations"]
+    assert not framework["needs_review"] and not result.needs_review
+    assert result.overall_risk_tier == "UNCLASSIFIED"
+
+
+@pytest.mark.parametrize("confidence,has_chunks,expected", [(0.69, True, ["confidence_below_0.7"]), (0.7, True, []), (0.95, False, ["no_retrieved_chunks"])])
+def test_framework_review_reasons(tmp_path, monkeypatch, confidence, has_chunks, expected):
+    from argus.core.agents import risk_classifier
+    doc = Document(page_content="Article 6", metadata={"section_type": "article", "article_number": 6})
+    retriever = SimpleNamespace(has_corpus=lambda framework: framework == "EU_AI_ACT", retrieve_for_classification=lambda *a, **kw: [doc] if has_chunks else [], format_passages=lambda _: doc.page_content)
+    monkeypatch.setattr(risk_classifier, "RegulatoryRetriever", lambda _: retriever)
+    llm, provider, _ = service(tmp_path, [json.dumps({"risk_tier": "MINIMAL_RISK", "confidence": confidence, "reasoning": "Assessment", "citations": [], "obligations": []})])
+    monkeypatch.setattr(risk_classifier, "get_llm", lambda _: llm)
+    result = asyncio.run(risk_classifier.RiskClassifierAgent(llm.settings).classify("test", "Test", "Email filtering", None, None, [], [], ["EU", "IN"]))
+    assert result.regulatory_citations["EU_AI_ACT"]["needs_review_reasons"] == expected
+    assert result.needs_review == bool(expected)
 
 
 def test_no_key_registrar_remains_rule_based(tmp_path, monkeypatch):

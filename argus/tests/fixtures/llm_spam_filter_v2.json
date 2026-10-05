@@ -1,0 +1,170 @@
+{
+  "response": {
+    "llm_provider": "gemini",
+    "llm_model": "gemini-3.5-flash-lite",
+    "needs_review": false,
+    "needs_review_reasons": [],
+    "id": "06a780f3-a0db-4330-a1fc-9c7ae007c7ca",
+    "system_id": "email_spam_filter-f96a0b",
+    "name": "Email Spam Filter",
+    "version": "1.0.0",
+    "purpose": "Classify incoming email messages as spam or legitimate email for inbox filtering",
+    "model_type": "nlp",
+    "output_type": "binary_classification",
+    "owner_team": "Messaging Operations",
+    "owner_email": null,
+    "data_sources": [
+      "email_messages"
+    ],
+    "affected_demographics": [],
+    "jurisdictions": [
+      "EU"
+    ],
+    "risk_tier": "MINIMAL_RISK",
+    "risk_classification_reasoning": "Classified across 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+    "regulatory_citations": {
+      "EU_AI_ACT": {
+        "risk_tier": "MINIMAL_RISK",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "status": "assessed",
+        "confidence": 0.9,
+        "reasoning": "Step 1 analysis: The system is an email spam filter, which does not engage in social scoring, mass surveillance, manipulation, or exploitation of vulnerable groups, meaning it is not PROHIBITED under Article 5. Step 2 analysis: It does not fall under any of the high-risk categories listed in Annex III (such as critical infrastructure, education, employment, essential services, law enforcement, or migration). Step 3 analysis: It is an email categorization tool, not a chatbot, emotion recognition system, deep fake, or AI-generated media system requiring specific transparency obligations under Article 50. Step 4 analysis: By default, as it poses minimal risk and does not fit higher tiers, it falls under MINIMAL_RISK.",
+        "retrieved_provisions": [
+          {
+            "page": 50,
+            "title": "Prohibited AI practices",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 5",
+            "annex_id": null,
+            "citation": "Article 5",
+            "page_end": 50,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 51,
+            "heading_page": 50,
+            "section_type": "article",
+            "article_title": "Prohibited AI practices",
+            "annex_subpoint": null,
+            "article_number": 5,
+            "page_number_end": 51
+          },
+          {
+            "page": 81,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 81,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 82,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 82
+          },
+          {
+            "page": 50,
+            "title": "Prohibited AI practices",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 5",
+            "annex_id": null,
+            "citation": "Article 5",
+            "page_end": 51,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 2,
+            "page_number": 51,
+            "heading_page": 50,
+            "section_type": "article",
+            "article_title": "Prohibited AI practices",
+            "annex_subpoint": null,
+            "article_number": 5,
+            "page_number_end": 52
+          },
+          {
+            "page": 53,
+            "title": "Classification rules for high-risk AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 6",
+            "annex_id": null,
+            "citation": "Article 6",
+            "page_end": 53,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 54,
+            "heading_page": 52,
+            "section_type": "article",
+            "article_title": "Classification rules for high-risk AI systems",
+            "annex_subpoint": null,
+            "article_number": 6,
+            "page_number_end": 54
+          },
+          {
+            "page": 126,
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "source": "eu_ai_act.pdf",
+            "article": "Annex III",
+            "annex_id": "III",
+            "citation": "Annex III, point 4(a)",
+            "page_end": 126,
+            "framework": "EU_AI_ACT",
+            "annex_point": "4",
+            "annex_title": "High-risk AI systems referred to in Article 6(2)",
+            "chunk_index": 0,
+            "page_number": 127,
+            "heading_page": 126,
+            "section_type": "annex",
+            "article_title": null,
+            "annex_subpoint": "a",
+            "article_number": null,
+            "page_number_end": 127
+          }
+        ],
+        "dropped_citations": [],
+        "citations": [
+          {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "Prohibited AI practices",
+            "annex": null,
+            "point": null
+          }
+        ],
+        "obligations": []
+      }
+    },
+    "model_card": "# Model Card: Email Spam Filter\n\n## Purpose\nClassify incoming email messages as spam or legitimate email for inbox filtering.\n\n## Model Type\nNot specified\n\n## Output Type\nbinary_classification\n\n## Data\nDescription of training and inference data: email_messages.\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+    "monitoring_enabled": true,
+    "registered_at": "2026-10-05T08:18:37.533841",
+    "last_classified_at": "2026-10-05T08:18:37.529407"
+  },
+  "grounding_checks": {
+    "EU_AI_ACT": [
+      {
+        "citation": {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "Prohibited AI practices",
+          "annex": null,
+          "point": null
+        },
+        "own_identity_grounded": true,
+        "flagged": false
+      }
+    ]
+  }
+}

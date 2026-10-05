@@ -131,9 +131,11 @@ class FrameworkClassification(BaseModel):
     llm_provider: str = "none"
     llm_model: Optional[str] = None
     needs_review: bool = True
+    needs_review_reasons: list[str] = Field(default_factory=list)
+    status: str = "assessed"
     framework: str = Field(..., description="Framework name: EU_AI_ACT, RBI, etc.")
-    risk_tier: str = Field(..., description="Risk tier classification")
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score")
+    risk_tier: Optional[str] = Field(..., description="Risk tier classification")
+    confidence: Optional[float] = Field(..., ge=0.0, le=1.0, description="Confidence score")
     reasoning: str = Field(..., description="Detailed reasoning for classification")
     citations: list[CitationSchema] = Field(..., description="Supporting regulatory citations")
     obligations: list[str] = Field(..., description="Regulatory obligations")
@@ -146,16 +148,18 @@ class AISystemResponse(BaseModel):
     llm_provider: str = "none"
     llm_model: Optional[str] = None
     needs_review: bool = True
+    needs_review_reasons: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def classification_provenance(self):
-        entries = list((self.regulatory_citations or {}).values())
+        entries = [item for item in (self.regulatory_citations or {}).values() if item.get("status", "assessed") == "assessed"]
         producers = {(item.get("llm_provider", "none"), item.get("llm_model")) for item in entries}
         if len(producers) == 1:
             self.llm_provider, self.llm_model = next(iter(producers))
         elif producers:
             self.llm_provider, self.llm_model = "mixed", None
-        self.needs_review = not entries or any(item.get("needs_review", True) for item in entries)
+        self.needs_review_reasons = sorted({reason for item in entries for reason in item.get("needs_review_reasons", [])})
+        self.needs_review = bool(self.needs_review_reasons)
         return self
     id: str = Field(..., description="System UUID")
     system_id: str = Field(..., description="Human-readable system ID")

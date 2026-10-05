@@ -41,14 +41,14 @@ def matches(doc, section_type, number, point):
     )
 
 
-def evaluate(db_url):
+def evaluate(db_url, classification=False):
     retriever = RegulatoryRetriever(db_url)
     if not retriever.retrieve("EU_AI_ACT", CASES[0][1], k=5):
         raise RuntimeError("EU AI Act retrieval returned no documents")
     store = retriever.stores["regulations_eu_ai_act"]
     report = []
     for name, query, section_type, number, point in CASES:
-        results = store.similarity_search_with_score(query, k=5)
+        results = retriever.retrieve_for_classification_with_score("EU_AI_ACT", query, k=5) if classification else store.similarity_search_with_score(query, k=5)
         expected = f"Article {number}" if section_type == "article" else f"Annex {number} point {point}"
         hits = []
         for rank, (doc, distance) in enumerate(results, 1):
@@ -81,10 +81,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db-url", default=os.environ.get("DATABASE_URL"))
     parser.add_argument("--output", type=Path, help="Optional JSON report with all top-five results")
+    parser.add_argument("--classification", action="store_true", help="Evaluate filtered classification retrieval with pinned provisions")
     args = parser.parse_args()
     if not args.db_url:
         parser.error("Set DATABASE_URL or supply --db-url")
-    report = evaluate(args.db_url)
+    report = evaluate(args.db_url, args.classification)
     if args.output:
         args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 

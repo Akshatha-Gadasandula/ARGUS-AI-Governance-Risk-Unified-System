@@ -1,0 +1,174 @@
+{
+  "response": {
+    "llm_provider": "gemini",
+    "llm_model": "gemini-3.5-flash-lite",
+    "needs_review": false,
+    "needs_review_reasons": [],
+    "id": "9e2a34d1-11f3-4a89-b460-861c8b86ada3",
+    "system_id": "fraud_detection_engi-9bbb07",
+    "name": "Fraud Detection Engine",
+    "version": "1.0.0",
+    "purpose": "Classify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features",
+    "model_type": "gradient_boosting",
+    "output_type": "binary_classification",
+    "owner_team": "Financial Crime AI",
+    "owner_email": null,
+    "data_sources": [
+      "transaction_stream",
+      "device_data",
+      "merchant_data"
+    ],
+    "affected_demographics": [
+      "geography"
+    ],
+    "jurisdictions": [
+      "EU"
+    ],
+    "risk_tier": "MINIMAL_RISK",
+    "risk_classification_reasoning": "Classified across 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+    "regulatory_citations": {
+      "EU_AI_ACT": {
+        "risk_tier": "MINIMAL_RISK",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "status": "assessed",
+        "confidence": 0.95,
+        "reasoning": "Step 1 analysis: The AI system does not fall under any prohibited practices described in Article 5. Step 2 analysis: While creditworthiness evaluation is listed under Annex III, point 5(b) as high-risk, the regulation explicitly excludes AI systems used for the purpose of detecting financial fraud from this high-risk classification. Since the system's purpose is financial fraud detection, it is exempted from being high-risk under Annex III, point 5(b). Consequently, following the classification steps, it defaults to MINIMAL_RISK.",
+        "retrieved_provisions": [
+          {
+            "page": 126,
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "source": "eu_ai_act.pdf",
+            "article": "Annex III",
+            "annex_id": "III",
+            "citation": "Annex III, point 5(b)",
+            "page_end": 126,
+            "framework": "EU_AI_ACT",
+            "annex_point": "5",
+            "annex_title": "High-risk AI systems referred to in Article 6(2)",
+            "chunk_index": 0,
+            "page_number": 127,
+            "heading_page": 126,
+            "section_type": "annex",
+            "article_title": null,
+            "annex_subpoint": "b",
+            "article_number": null,
+            "page_number_end": 127
+          },
+          {
+            "page": 50,
+            "title": "Prohibited AI practices",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 5",
+            "annex_id": null,
+            "citation": "Article 5",
+            "page_end": 50,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 51,
+            "heading_page": 50,
+            "section_type": "article",
+            "article_title": "Prohibited AI practices",
+            "annex_subpoint": null,
+            "article_number": 5,
+            "page_number_end": 51
+          },
+          {
+            "page": 47,
+            "title": "Definitions",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 3",
+            "annex_id": null,
+            "citation": "Article 3",
+            "page_end": 47,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 7,
+            "page_number": 48,
+            "heading_page": 45,
+            "section_type": "article",
+            "article_title": "Definitions",
+            "annex_subpoint": null,
+            "article_number": 3,
+            "page_number_end": 48
+          },
+          {
+            "page": 50,
+            "title": "Prohibited AI practices",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 5",
+            "annex_id": null,
+            "citation": "Article 5",
+            "page_end": 51,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 2,
+            "page_number": 51,
+            "heading_page": 50,
+            "section_type": "article",
+            "article_title": "Prohibited AI practices",
+            "annex_subpoint": null,
+            "article_number": 5,
+            "page_number_end": 52
+          },
+          {
+            "page": 53,
+            "title": "Classification rules for high-risk AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 6",
+            "annex_id": null,
+            "citation": "Article 6",
+            "page_end": 53,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 54,
+            "heading_page": 52,
+            "section_type": "article",
+            "article_title": "Classification rules for high-risk AI systems",
+            "annex_subpoint": null,
+            "article_number": 6,
+            "page_number_end": 54
+          }
+        ],
+        "dropped_citations": [],
+        "citations": [
+          {
+            "article": "Annex III, point 5(b)",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud",
+            "annex": "III",
+            "point": "5(b)"
+          }
+        ],
+        "obligations": []
+      }
+    },
+    "model_card": "# Model Card: Fraud Detection Engine\n\n## Purpose\nClassify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nBinary Classification\n\n## Data\nData sources include transaction_stream, device_data, and merchant_data.\n\n## Performance\nExpected performance characteristics include high precision and recall for financial fraud detection.\n\n## Risk Considerations\nPotential risks include false positives affecting legitimate users based on geographic features.\n\n## Human Oversight\nRequired human involvement for high-risk flagged transactions.\n\n## Known Limitations\nKey limitations include potential bias related to geographic demographics.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+    "monitoring_enabled": true,
+    "registered_at": "2026-10-05T08:17:57.202413",
+    "last_classified_at": "2026-10-05T08:17:57.198283"
+  },
+  "grounding_checks": {
+    "EU_AI_ACT": [
+      {
+        "citation": {
+          "article": "Annex III, point 5(b)",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud",
+          "annex": "III",
+          "point": "5(b)"
+        },
+        "own_identity_grounded": true,
+        "flagged": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "response": {
+    "llm_provider": "gemini",
+    "llm_model": "gemini-3.5-flash-lite",
+    "needs_review": false,
+    "needs_review_reasons": [],
+    "id": "2bf4d613-add5-4e16-8456-55facc070341",
+    "system_id": "credit_scoring_model-598bfd",
+    "name": "Credit Scoring Model v2",
+    "version": "1.0.0",
+    "purpose": "Predicts probability of loan default using applicant transaction history",
+    "model_type": "gradient_boosting",
+    "output_type": "binary_classification",
+    "owner_team": "retail-credit-engineering",
+    "owner_email": null,
+    "data_sources": [
+      "transaction_history",
+      "credit_bureau"
+    ],
+    "affected_demographics": [
+      "age",
+      "income_band"
+    ],
+    "jurisdictions": [
+      "EU",
+      "IN"
+    ],
+    "risk_tier": "HIGH_RISK",
+    "risk_classification_reasoning": "Classified across 2 framework(s): EU_AI_ACT=HIGH_RISK, RBI=None",
+    "regulatory_citations": {
+      "EU_AI_ACT": {
+        "risk_tier": "HIGH_RISK",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "status": "assessed",
+        "confidence": 0.98,
+        "reasoning": "Step 1 analysis: The AI system does not exhibit any prohibited practices such as social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The system's purpose is to predict the probability of loan default and evaluate creditworthiness using applicant transaction history and credit bureau data. According to Annex III, point 5(b), AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score are classified as HIGH_RISK. Furthermore, Article 6 confirms that profiling natural persons in the context of Annex III use cases maintains high-risk status. Article 19 also applies specific obligations regarding automatically generated logs for high-risk AI systems deployed by financial institutions.",
+        "retrieved_provisions": [
+          {
+            "page": 126,
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "source": "eu_ai_act.pdf",
+            "article": "Annex III",
+            "annex_id": "III",
+            "citation": "Annex III, point 5(b)",
+            "page_end": 126,
+            "framework": "EU_AI_ACT",
+            "annex_point": "5",
+            "annex_title": "High-risk AI systems referred to in Article 6(2)",
+            "chunk_index": 0,
+            "page_number": 127,
+            "heading_page": 126,
+            "section_type": "annex",
+            "article_title": null,
+            "annex_subpoint": "b",
+            "article_number": null,
+            "page_number_end": 127
+          },
+          {
+            "page": 63,
+            "title": "Automatically generated logs",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 19",
+            "annex_id": null,
+            "citation": "Article 19",
+            "page_end": 63,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 0,
+            "page_number": 64,
+            "heading_page": 63,
+            "section_type": "article",
+            "article_title": "Automatically generated logs",
+            "annex_subpoint": null,
+            "article_number": 19,
+            "page_number_end": 64
+          },
+          {
+            "page": 47,
+            "title": "Definitions",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 3",
+            "annex_id": null,
+            "citation": "Article 3",
+            "page_end": 47,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 7,
+            "page_number": 48,
+            "heading_page": 45,
+            "section_type": "article",
+            "article_title": "Definitions",
+            "annex_subpoint": null,
+            "article_number": 3,
+            "page_number_end": 48
+          },
+          {
+            "page": 126,
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "source": "eu_ai_act.pdf",
+            "article": "Annex III",
+            "annex_id": "III",
+            "citation": "Annex III, point 4(a)",
+            "page_end": 126,
+            "framework": "EU_AI_ACT",
+            "annex_point": "4",
+            "annex_title": "High-risk AI systems referred to in Article 6(2)",
+            "chunk_index": 0,
+            "page_number": 127,
+            "heading_page": 126,
+            "section_type": "annex",
+            "article_title": null,
+            "annex_subpoint": "a",
+            "article_number": null,
+            "page_number_end": 127
+          },
+          {
+            "page": 53,
+            "title": "Classification rules for high-risk AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 6",
+            "annex_id": null,
+            "citation": "Article 6",
+            "page_end": 53,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 54,
+            "heading_page": 52,
+            "section_type": "article",
+            "article_title": "Classification rules for high-risk AI systems",
+            "annex_subpoint": null,
+            "article_number": 6,
+            "page_number_end": 54
+          }
+        ],
+        "dropped_citations": [],
+        "citations": [
+          {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)"
+          },
+          {
+            "article": "Article 19",
+            "title": "Automatically generated logs",
+            "excerpt": "Providers that are financial institutions subject to requirements regarding their internal governance, arrangements or processes under Union financial services law shall maintain the logs automatically generated by their high-risk AI systems as part of the documentation kept under the relevant financial services law.",
+            "annex": null,
+            "point": null
+          }
+        ],
+        "obligations": [
+          "Maintain automatically generated logs as part of the documentation kept under relevant financial services law (Article 19)"
+        ]
+      },
+      "RBI": {
+        "risk_tier": null,
+        "llm_provider": "none",
+        "llm_model": null,
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "status": "not_assessed_no_corpus",
+        "confidence": null,
+        "reasoning": "No indexed corpus; framework not assessed.",
+        "retrieved_provisions": [],
+        "dropped_citations": [],
+        "citations": [],
+        "obligations": []
+      }
+    },
+    "model_card": "# Model Card: Credit Scoring Model v2\n\n## Purpose\nPredicts probability of loan default using applicant transaction history and credit bureau data.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nbinary_classification\n\n## Data\nData sources include transaction_history and credit_bureau.\n\n## Performance\nExpected performance characteristics related to predicting loan default probability.\n\n## Risk Considerations\nPotential risks include bias against certain demographics such as age and income_band, requiring regular auditing.\n\n## Human Oversight\nRequired human involvement for final loan approval decisions.\n\n## Known Limitations\nKey limitations and constraints associated with historical financial data.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+    "monitoring_enabled": true,
+    "registered_at": "2026-10-05T08:17:18.231625",
+    "last_classified_at": "2026-10-05T08:17:18.186885"
+  },
+  "grounding_checks": {
+    "EU_AI_ACT": [
+      {
+        "citation": {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+          "annex": "III",
+          "point": "5(b)"
+        },
+        "own_identity_grounded": true,
+        "flagged": false
+      },
+      {
+        "citation": {
+          "article": "Article 19",
+          "title": "Automatically generated logs",
+          "excerpt": "Providers that are financial institutions subject to requirements regarding their internal governance, arrangements or processes under Union financial services law shall maintain the logs automatically generated by their high-risk AI systems as part of the documentation kept under the relevant financial services law.",
+          "annex": null,
+          "point": null
+        },
+        "own_identity_grounded": true,
+        "flagged": false
+      }
+    ],
+    "RBI": []
+  }
+}

@@ -3,7 +3,7 @@ Risk Classifier Agent - classifies AI systems under EU AI Act and RBI guidelines
 Core governance engine that determines regulatory obligations and risk tiers.
 """
 import logging
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import Optional
 
@@ -28,14 +28,18 @@ class Classification(str, Enum):
 class RegulatoryClassification:
     """Result of classification under a single regulatory framework."""
     framework: str
-    risk_tier: str
-    confidence: float
+    risk_tier: str | None
+    confidence: float | None
     reasoning: str
     citations: list[dict]  # [{article, title, excerpt}]
     obligations: list[str]
     llm_provider: str = "none"
     llm_model: str | None = None
     needs_review: bool = True
+    needs_review_reasons: list[str] = field(default_factory=list)
+    status: str = "assessed"
+    retrieved_provisions: list[dict] = field(default_factory=list)
+    dropped_citations: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -53,6 +57,7 @@ class ClassificationResult:
     llm_provider: str = "none"
     llm_model: str | None = None
     needs_review: bool = True
+    needs_review_reasons: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -65,6 +70,7 @@ class ClassificationResult:
             "llm_provider": self.llm_provider,
             "llm_model": self.llm_model,
             "needs_review": self.needs_review,
+            "needs_review_reasons": self.needs_review_reasons,
         }
 
 
@@ -424,26 +430,33 @@ class RiskClassifierAgent:
                     "llm_provider": classification.llm_provider,
                     "llm_model": classification.llm_model,
                     "needs_review": classification.needs_review,
+                    "needs_review_reasons": classification.needs_review_reasons,
+                    "status": classification.status,
+                    "confidence": classification.confidence,
+                    "reasoning": classification.reasoning,
+                    "retrieved_provisions": classification.retrieved_provisions,
+                    "dropped_citations": classification.dropped_citations,
                     "citations": classification.citations,
                     "obligations": classification.obligations,
                 }
 
         # Aggregate to overall risk tier (highest priority wins)
-        if classifications:
+        assessed = [c for c in classifications if c.status == "assessed"]
+        if assessed:
             risk_tiers_priority = [
                 self.TIER_PRIORITY.get(Classification(c.risk_tier), 0)
-                for c in classifications
+                for c in assessed
             ]
             max_priority_idx = risk_tiers_priority.index(max(risk_tiers_priority))
-            overall_tier = classifications[max_priority_idx].risk_tier
+            overall_tier = assessed[max_priority_idx].risk_tier
         else:
             overall_tier = Classification.UNCLASSIFIED.value
 
         # Build summary
-        summary = f"Classified across {len(classifications)} framework(s): "
-        summary += ", ".join([f"{c.framework}={c.risk_tier}" for c in classifications])
+        summary = f"Assessed {len(assessed)} framework(s): "
+        summary += ", ".join(f"{c.framework}={c.risk_tier if c.status == 'assessed' else c.status}" for c in classifications)
 
-        producers = {(c.llm_provider, c.llm_model) for c in classifications}
+        producers = {(c.llm_provider, c.llm_model) for c in assessed}
         provider, model = next(iter(producers)) if len(producers) == 1 else ("mixed", None) if producers else ("none", None)
         result = ClassificationResult(
             system_id=system_id,
@@ -453,11 +466,12 @@ class RiskClassifierAgent:
             summary=summary,
             llm_provider=provider,
             llm_model=model,
-            needs_review=any(c.needs_review for c in classifications) or not classifications,
+            needs_review=any(c.needs_review_reasons for c in assessed),
+            needs_review_reasons=sorted({reason for c in assessed for reason in c.needs_review_reasons}),
         )
 
         logger.info(f"Classification complete: {overall_tier} (confidence: "
-                   f"{sum(c.confidence for c in classifications) / len(classifications) if classifications else 0:.2f})")
+                   f"{sum(c.confidence for c in assessed) / len(assessed) if assessed else 0:.2f})")
 
         return result
 
@@ -492,9 +506,16 @@ class RiskClassifierAgent:
         """
         logger.info(f"Classifying under {framework_name}")
 
+        if not self.retriever.has_corpus(framework_name):
+            return RegulatoryClassification(
+                framework=framework_name, risk_tier=None, confidence=None,
+                reasoning="No indexed corpus; framework not assessed.", citations=[], obligations=[],
+                status="not_assessed_no_corpus", needs_review=False,
+            )
+
         # Try RAG retrieval
         query = f"{system_purpose} {model_type or ''} {output_type or ''}"
-        retrieved_passages = self.retriever.retrieve(framework_name, query, k=5)
+        retrieved_passages = self.retriever.retrieve_for_classification(framework_name, query, k=5)
 
         if retrieved_passages:
             prompt_text = main_prompt
@@ -535,6 +556,11 @@ class RiskClassifierAgent:
             else:
                 risk_tier = "MINIMAL_RISK"
 
+        reasons = list(result.get("needs_review_reasons", []))
+        if result.get("confidence", 0.5) < 0.7:
+            reasons.append("confidence_below_0.7")
+        if not retrieved_passages:
+            reasons.append("no_retrieved_chunks")
         classification = RegulatoryClassification(
             framework=framework_name,
             risk_tier=risk_tier,
@@ -544,7 +570,10 @@ class RiskClassifierAgent:
             obligations=result.get("obligations", []),
             llm_provider=result["llm_provider"],
             llm_model=result["llm_model"],
-            needs_review=result["needs_review"],
+            needs_review=bool(reasons),
+            needs_review_reasons=reasons,
+            retrieved_provisions=[doc.metadata for doc in retrieved_passages],
+            dropped_citations=result.get("dropped_citations", []),
         )
 
         logger.info(f"{framework_name} classification: {risk_tier} (confidence: {classification.confidence:.2f})")

@@ -172,7 +172,8 @@ def ground_citations(data, chunks):
                 if key in ("citations", "affected_articles") and isinstance(item, list):
                     kept = [citation for citation in item if grounded(citation)]
                     needs_review |= len(kept) != len(item)
-                    result[key] = [walk(citation) for citation in kept]
+                    # Titles/excerpts can mention other laws; check only the citation's identity.
+                    result[key] = kept
                 elif key == "sources" and isinstance(item, list):
                     kept = [source for source in item if not re.search(r"\b(?:Article|Annex)\s+\w+", source, re.I) or grounded(source)]
                     needs_review |= len(kept) != len(item)
@@ -182,9 +183,6 @@ def ground_citations(data, chunks):
             return result
         if isinstance(value, list):
             return [walk(item) for item in value]
-        if isinstance(value, str):
-            for reference in re.findall(r"\b(?:Article\s+\d+|Annex\s+[IVXLCDM]+(?:,?\s+point\s+\d+(?:\([a-z]\))?)?)", value, re.I):
-                needs_review |= not grounded(reference)
         return value
 
     return walk(data), needs_review
@@ -234,7 +232,7 @@ class LLMService:
             data = fallback() if callable(fallback) else fallback
             data = json.loads(self._redact(json.dumps(data)))
             data, _ = ground_citations(data, chunks)
-            return {**data, "llm_provider": "none", "llm_model": None, "needs_review": True, "fallback_reason": reason}
+            return {**data, "llm_provider": "none", "llm_model": None, "needs_review": True, "needs_review_reasons": ["fallback"], "fallback_reason": reason}
 
         source_chunks = [{"text": doc.page_content, "metadata": doc.metadata} for doc in chunks]
         effective_prompt = self._redact(
@@ -243,7 +241,7 @@ class LLMService:
             + "\nCite only provisions in these retrieved chunks. Omit unsupported citations:\n"
             + json.dumps(source_chunks, sort_keys=True, ensure_ascii=False)
         )
-        digest = hashlib.sha256(json.dumps([self.name, self.model, effective_prompt], ensure_ascii=False).encode()).hexdigest()
+        digest = hashlib.sha256(json.dumps(["citation-identity-v2", self.name, self.model, effective_prompt], ensure_ascii=False).encode()).hexdigest()
         cache = self.cache_dir / f"{digest}.json"
         # Serialization prevents simultaneous duplicate calls and shares caps/RPM across agents.
         with self.budget.lock:
@@ -258,7 +256,10 @@ class LLMService:
             if cached is not None:
                 data, review = ground_citations(cached, chunks)
                 self._log("cache_hit", True, ProviderResponse("", 0, 0))
-                return {**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": review or bool(cached_envelope.get("needs_review"))}
+                reasons = list(cached_envelope.get("needs_review_reasons", []))
+                if review and "dropped_citation" not in reasons:
+                    reasons.append("dropped_citation")
+                return {**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": bool(reasons), "needs_review_reasons": reasons, "dropped_citations": cached_envelope.get("dropped_citations", [])}
             invalid_retries = quota_retries = 0
             for _ in range(4):
                 if not self.budget.reserve(self.settings.llm_max_calls, self.settings.llm_max_rpm):
@@ -285,12 +286,15 @@ class LLMService:
                         continue
                     return rule_based("invalid_json")
                 self._log("ok", usage=response)
+                original_citations = list(data.get("citations", []))
                 data, review = ground_citations(data, chunks)
+                dropped = [citation for citation in original_citations if citation not in data.get("citations", [])]
+                reasons = (["dropped_citation"] if review else []) + (["schema_repair"] if invalid_retries else [])
                 self.cache_dir.mkdir(parents=True, exist_ok=True)
                 temporary = cache.with_suffix(".tmp")
-                temporary.write_text(json.dumps({**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": review}, ensure_ascii=False), encoding="utf-8")
+                temporary.write_text(json.dumps({**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": bool(reasons), "needs_review_reasons": reasons, "dropped_citations": dropped}, ensure_ascii=False), encoding="utf-8")
                 temporary.replace(cache)
-                return {**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": review}
+                return {**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": bool(reasons), "needs_review_reasons": reasons, "dropped_citations": dropped}
             return rule_based("retry_limit")
 
 
