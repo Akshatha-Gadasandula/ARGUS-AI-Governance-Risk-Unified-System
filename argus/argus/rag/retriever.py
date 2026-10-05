@@ -40,8 +40,8 @@ class RegulatoryRetriever:
             ), {"name": f"regulations_{framework.lower()}"}).scalar())
 
     def retrieve_for_classification_with_score(self, framework, query, k=5):
-        if k < 2:
-            raise ValueError("Classification retrieval requires at least two slots")
+        if framework == "EU_AI_ACT" and k != 5:
+            raise ValueError("EU classification retrieval requires exactly five slots")
         if not self.has_corpus(framework):
             return []
         # Initialize the existing store without changing its distance strategy.
@@ -51,12 +51,14 @@ class RegulatoryRetriever:
             return store.similarity_search_with_score(query, k=k)
         selected = []
         for filter in (
+            {"section_type": "article", "article_number": 5},
             {"section_type": "article", "article_number": 6},
+            {"section_type": "article", "article_number": 50},
             {"section_type": "annex", "annex_id": "III"},
         ):
             pinned = store.similarity_search_with_score(query, k=1, filter=filter)
             if not pinned:
-                raise RuntimeError("EU classification requires indexed Article 6 and Annex III")
+                raise RuntimeError("EU classification requires indexed Articles 5, 6, 50 and Annex III")
             selected.extend(pinned)
         candidates = store.similarity_search_with_score(
             query, k=k+2, filter={"section_type": {"$in": ["article", "annex"]}},

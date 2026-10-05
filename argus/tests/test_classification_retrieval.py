@@ -3,9 +3,11 @@ from langchain.schema import Document
 from argus.rag.retriever import RegulatoryRetriever
 
 
-def test_pinned_provisions_use_two_slots_and_keep_distance_order():
+def test_four_pinned_provisions_and_one_unique_candidate_keep_distance_order():
     recital = Document(page_content="Recital", metadata={"section_type": "recital"})
     article = Document(page_content="Article 6", metadata={"section_type": "article", "article_number": 6})
+    prohibition = Document(page_content="Article 5", metadata={"section_type": "article", "article_number": 5})
+    transparency = Document(page_content="Article 50", metadata={"section_type": "article", "article_number": 50})
     annex = Document(page_content="Annex III 5(b)", metadata={"section_type": "annex", "annex_id": "III", "annex_point": "5"})
     others = [Document(page_content=f"Article {n}", metadata={"section_type": "article", "article_number": n}) for n in (10, 12, 14, 15)]
     queries = []
@@ -13,6 +15,10 @@ def test_pinned_provisions_use_two_slots_and_keep_distance_order():
         queries.append((k, filter))
         if filter.get("article_number") == 6:
             return [(article, .8)]
+        if filter.get("article_number") == 5:
+            return [(prohibition, .7)]
+        if filter.get("article_number") == 50:
+            return [(transparency, .9)]
         if filter.get("annex_id") == "III":
             return [(annex, .6)]
         assert filter == {"section_type": {"$in": ["article", "annex"]}}
@@ -23,7 +29,8 @@ def test_pinned_provisions_use_two_slots_and_keep_distance_order():
     retriever.stores = {"regulations_eu_ai_act": SimpleNamespace(similarity_search_with_score=search)}
     result = retriever.retrieve_for_classification_with_score("EU_AI_ACT", "query")
     assert len(result) == 5
-    assert [score for _, score in result] == [.1, .2, .3, .6, .8]
+    assert [score for _, score in result] == [.1, .6, .7, .8, .9]
+    assert prohibition in [d for d, _ in result] and transparency in [d for d, _ in result]
     assert article in [d for d, _ in result] and annex in [d for d, _ in result]
     assert recital not in [d for d, _ in result]
 

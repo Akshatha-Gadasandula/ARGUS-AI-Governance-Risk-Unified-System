@@ -11,6 +11,7 @@ from typing import Optional
 from argus.config import settings
 from argus.core.llm import get_llm
 from argus.core.llm_schemas import ClassificationOutput
+from argus.core.citations import canonicalize_citation, tier_citation_review_reasons
 from argus.rag.retriever import RegulatoryRetriever
 
 logger = logging.getLogger(__name__)
@@ -565,6 +566,13 @@ class RiskClassifierAgent:
         if not retrieved_passages:
             reasons.append("no_retrieved_chunks")
         supporting, exclusions = split_citation_roles(risk_tier, result.get("citations", []), result.get("exclusions_checked", []))
+        supporting = [canonicalize_citation(c) for c in supporting]
+        exclusions = [canonicalize_citation(c) for c in exclusions]
+        if framework_name == "EU_AI_ACT":
+            reasons.extend(tier_citation_review_reasons(risk_tier, supporting))
+            if any(c['citation_incomplete'] for c in supporting + exclusions):
+                reasons.append("incomplete_citation")
+        reasons = list(dict.fromkeys(reasons))
         classification = RegulatoryClassification(
             framework=framework_name,
             risk_tier=risk_tier,
@@ -589,8 +597,9 @@ def split_citation_roles(tier, citations, exclusions):
     supporting, checked = [], list(exclusions)
     for citation in citations:
         article_five = bool(re.search(r"\bArticle\s+5\b", citation.get("article", ""), re.I)) or citation.get("article") == "5"
+        article_six = bool(re.search(r"\bArticle\s+6\b", citation.get("article", ""), re.I)) or citation.get("article") == "6"
         excluded = citation.get("citation_role") == "exclusion_checked"
-        if excluded or (tier in ("MINIMAL_RISK", "LIMITED_RISK") and article_five):
+        if excluded or (tier in ("MINIMAL_RISK", "LIMITED_RISK") and article_five) or (tier == "MINIMAL_RISK" and article_six):
             if citation not in checked:
                 checked.append(citation)
         else:
