@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from argus.core.registry.models import (
@@ -29,8 +29,24 @@ def slugify(text: str) -> str:
     return "".join(c.lower() if c.isalnum() else "_" for c in text)[:20]
 
 
+class DuplicateRegistrationError(ValueError):
+    pass
+
+
 class RegistryService:
     """Service for managing AI system registry and governance."""
+
+    @staticmethod
+    async def ensure_registration_available(session, name, version):
+        # Serialize concurrent PostgreSQL registrations until commit/rollback.
+        if session.get_bind().dialect.name == "postgresql":
+            await session.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:identity, 0))"),
+                                  {"identity": f"{len(name)}:{name}:{version}"})
+        existing = await session.execute(select(AISystem.id).where(
+            AISystem.name == name, AISystem.version == version, AISystem.is_active.is_(True),
+        ).limit(1))
+        if existing.scalar_one_or_none() is not None:
+            raise DuplicateRegistrationError("An active system with this name and version already exists; use an explicit new version.")
 
     @staticmethod
     async def register_system(
@@ -51,6 +67,7 @@ class RegistryService:
         Returns:
             Created AISystem instance
         """
+        await RegistryService.ensure_registration_available(session, payload.name, payload.version)
         # Generate human-readable system ID: slugified name + 6-char UUID
         base_id = slugify(payload.name)
         short_uuid = str(uuid.uuid4())[:6]

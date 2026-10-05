@@ -10,6 +10,7 @@ class Citation(BaseModel):
     excerpt: str = ""
     annex: str | None = None
     point: str | None = None
+    citation_role: Literal["supporting", "exclusion_checked"] = "supporting"
 
 
 class RegistrationOutput(BaseModel):
@@ -25,6 +26,7 @@ class ClassificationOutput(BaseModel):
     confidence: float = Field(ge=0, le=1)
     reasoning: str
     citations: list[Citation]
+    exclusions_checked: list[Citation] = Field(default_factory=list, description="Provisions checked and excluded, rather than supporting the assigned tier")
     obligations: list[str]
 
 

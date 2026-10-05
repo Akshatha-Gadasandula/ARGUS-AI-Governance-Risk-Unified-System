@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from argus.api.deps import get_session, get_current_user
 from argus.core.agents.registrar import RegistrarAgent
 from argus.core.agents.risk_classifier import RiskClassifierAgent
-from argus.core.registry.service import RegistryService
+from argus.core.registry.service import RegistryService, DuplicateRegistrationError
 from argus.core.schemas import (
     AISystemCreate,
     AISystemResponse,
@@ -53,6 +53,7 @@ async def register_system(
     """
     try:
         logger.info(f"Registering system: {payload.name} (by {current_user['username']})")
+        await RegistryService.ensure_registration_available(session, payload.name, payload.version)
 
         # Step 1: Run Registrar Agent (enrich metadata + generate model card)
         global registrar_agent
@@ -91,6 +92,10 @@ async def register_system(
         # Convert to response schema
         return AISystemResponse.model_validate(system)
 
+    except DuplicateRegistrationError as e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from None
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"System registration failed: {e}")
         raise HTTPException(

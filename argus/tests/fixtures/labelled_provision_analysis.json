@@ -1,0 +1,489 @@
+{
+  "normalization_rule": "Canonical own-identity projection: parse the expected string and each returned citation's article/annex/point fields into article-or-annex, number/id, paragraph/point and subparagraph. Ignore case, whitespace, commas, the word 'point', and the expected-label qualifiers 'fraud exception'/'scope'. Combine separately supplied identity fields. Only for Article 5, a lone letter has implicit paragraph 1: 5(f) = 5(1)(f). Never infer a clause from a title, excerpt, reasoning, or expected answer; a bare Article 5 remains underspecified. For expected 'none', both scores require an empty supporting-citation list; checked exclusions are allowed. Non-none matching searches supporting citations and checked exclusions alike. This is a single identity-projection rule applied uniformly, not a validation of scope or legal interpretation.",
+  "strict_definition": "Exact, case-sensitive equality between the owner's expected_provision string and a returned citation.article string. No field joining or spelling/punctuation changes. For 'none', no supporting citations.",
+  "strict_matches": 2,
+  "normalized_matches": 11,
+  "total": 15,
+  "strict_clear_matches": 2,
+  "normalized_clear_matches": 9,
+  "clear_total": 13,
+  "differing_case_ids": [
+    1,
+    2,
+    6,
+    7,
+    8,
+    9,
+    12,
+    14,
+    15
+  ],
+  "cases": [
+    {
+      "id": 1,
+      "name": "Retail loan default predictor",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 5(b)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+          "annex": "III",
+          "point": "5(b)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+          "annex": "III",
+          "point": "1(b)",
+          "citation_role": "exclusion_checked"
+        },
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate learning outcomes, including when those outcomes are used to steer the learning process of natural persons in educational and vocational training institutions at all levels;",
+          "annex": "III",
+          "point": "3(b)",
+          "citation_role": "exclusion_checked"
+        },
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+          "annex": "III",
+          "point": "4(a)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system is not prohibited under Article 5 as it does not engage in social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system's purpose is to predict retail loan default probability using credit history, which directly matches Annex III, point 5(b) concerning AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score. Therefore, it is classified as HIGH_RISK."
+    },
+    {
+      "id": 2,
+      "name": "CV screening and applicant ranking",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 4(a)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+          "annex": "III",
+          "point": "4(a)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [],
+      "reasoning": "Step 1 analysis: The system does not fall under any prohibited practices pursuant to Article 5. Step 2 analysis: The AI system is designed for screening CVs and ranking applicants, which directly matches Annex III, point 4(a) regarding AI systems intended to be used for recruitment or selection of natural persons, including analysing and filtering job applications and evaluating candidates. Therefore, it is classified as HIGH_RISK."
+    },
+    {
+      "id": 3,
+      "name": "Email spam filter",
+      "difficulty": "clear",
+      "expected_provision": "none",
+      "strict_match": true,
+      "normalized_match": true,
+      "strict_normalized_differ": false,
+      "failure_type": null,
+      "failure_detail": null,
+      "raw_supporting_citations": [],
+      "raw_exclusions_checked": [
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "Prohibited practices checked and excluded.",
+          "annex": null,
+          "point": null,
+          "citation_role": "exclusion_checked"
+        },
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "Prohibited AI practices including social scoring and risk assessments of natural persons for criminal offences.",
+          "annex": null,
+          "point": null,
+          "citation_role": "exclusion_checked"
+        },
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used by law enforcement authorities or on their behalf...",
+          "annex": "III",
+          "point": "6(d)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system is an email spam filter, which does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: It does not fall under any high-risk categories listed in Annex III or Article 6, as it is a standard utility tool for filtering email rather than a critical infrastructure, law enforcement, or essential service AI. Step 3 analysis: It is not an emotion recognition system, chatbot, or AI-generated media system requiring specific limited risk transparency under the provided definitions. Step 4 analysis: By default, standard utility IT applications like email spam filters are classified as MINIMAL_RISK."
+    },
+    {
+      "id": 4,
+      "name": "Banking FAQ chatbot",
+      "difficulty": "clear",
+      "expected_provision": "Article 50(1)",
+      "strict_match": false,
+      "normalized_match": false,
+      "strict_normalized_differ": false,
+      "failure_type": "genuinely different or missing provision",
+      "failure_detail": "No returned own identity matches the expected provision, or supporting citations were returned where none was expected.",
+      "raw_supporting_citations": [
+        {
+          "article": "Article 6",
+          "title": "Classification rules for high-risk AI systems",
+          "excerpt": "Classification rules for high-risk AI systems considered to be high-risk where it does not pose a significant risk of harm...",
+          "annex": null,
+          "point": null,
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score",
+          "annex": "III",
+          "point": "5(b)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "The AI system is a banking FAQ chatbot designed to answer routine customer service questions regarding opening hours, account features, and procedures. Based on Step 3 of the framework, AI-enabled conversational systems and chatbots are classified as LIMITED_RISK and are subject to specific transparency obligations. It does not engage in prohibited practices under Article 5 nor high-risk activities such as credit scoring under Annex III, point 5(b)."
+    },
+    {
+      "id": 5,
+      "name": "Public authority social scoring",
+      "difficulty": "clear",
+      "expected_provision": "Article 5(1)(c)",
+      "strict_match": false,
+      "normalized_match": false,
+      "strict_normalized_differ": false,
+      "failure_type": "formatting / missing structured clause specificity",
+      "failure_detail": "The correct article/annex is named, but the required clause is absent from the identity fields; normalization cannot recover it.",
+      "raw_supporting_citations": [
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity",
+          "annex": null,
+          "point": null,
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used by public authorities or on behalf of public authorities to evaluate the eligibility of natural persons for essential public assistance benefits and services",
+          "annex": "III",
+          "point": "5(a)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The AI system evaluates citizens based on social behaviour and personal characteristics to determine access to public benefits and services, matching the prohibition under Article 5(c) regarding social scoring by public authorities leading to detrimental or unfavourable treatment. Step 2 analysis: High-risk and other tiers do not need to be applied because the system is directly prohibited under Article 5."
+    },
+    {
+      "id": 6,
+      "name": "Card transaction fraud detector",
+      "difficulty": "ambiguous",
+      "expected_provision": "Annex III 5(b) fraud exception",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III, point 5(b)",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+          "annex": "III",
+          "point": "5(b)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "Prohibited practices checked and none found applicable to card transaction fraud detection.",
+          "annex": null,
+          "point": null,
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: While the system operates in the financial sector, Annex III Point 5(b) explicitly excludes AI systems used for the purpose of detecting financial fraud from being classified as high-risk credit scoring or creditworthiness evaluation systems. Step 3 analysis: The system is not a conversational chatbot, emotion recognition system, general-purpose AI-generated media tool, or a recommendation system requiring specific transparency obligations under the limited risk tiers. Step 4 analysis: Since it does not meet the criteria for prohibited, high-risk, or limited-risk tiers, the system defaults to MINIMAL_RISK."
+    },
+    {
+      "id": 7,
+      "name": "Life and health insurance pricing",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 5(c)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance;",
+          "annex": "III",
+          "point": "5(c)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+          "annex": "III",
+          "point": "1(b)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system does not involve prohibited practices such as social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system is intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance, which explicitly falls under Annex III, point 5(c) of the EU AI Act as a high-risk AI system."
+    },
+    {
+      "id": 8,
+      "name": "Exam cheating detection",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 3(d)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for monitoring and detecting prohibited behaviour of students during tests in the context of or within educational and vocational training institutions at all levels.",
+          "annex": "III",
+          "point": "3(d)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [],
+      "reasoning": "Step 1 analysis: The system is not prohibited under Article 5. Step 2 analysis: The AI system is intended to monitor students during examinations and detect behavior that may indicate cheating, which directly falls under Annex III, point 3(d) concerning AI systems used for monitoring and detecting prohibited behavior of students during tests within educational institutions."
+    },
+    {
+      "id": 9,
+      "name": "Workplace employee emotion recognition",
+      "difficulty": "clear",
+      "expected_provision": "Article 5(1)(f)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons",
+          "annex": null,
+          "point": "f",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for emotion recognition",
+          "annex": "III",
+          "point": "1(c)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The AI system is designed to infer emotions of natural persons from facial expressions and voice recordings in the workplace. Under Article 5(1)(f), the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions is explicitly prohibited, except for medical or safety reasons which do not apply here. Therefore, the system is classified as PROHIBITED."
+    },
+    {
+      "id": 10,
+      "name": "Marketing deepfake image generator",
+      "difficulty": "clear",
+      "expected_provision": "Article 50(4)",
+      "strict_match": false,
+      "normalized_match": false,
+      "strict_normalized_differ": false,
+      "failure_type": "genuinely different or missing provision",
+      "failure_detail": "No returned own identity matches the expected provision, or supporting citations were returned where none was expected.",
+      "raw_supporting_citations": [
+        {
+          "article": "Article 3",
+          "title": "Definitions",
+          "excerpt": "‘deep fake’ means AI-generated or manipulated image, audio or video content that resembles existing persons, objects, places, entities or events and would falsely appear to a person to be authentic or truthful",
+          "annex": null,
+          "point": null,
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Article 5",
+          "title": "Prohibited AI practices",
+          "excerpt": "The following AI practices shall be prohibited...",
+          "annex": null,
+          "point": null,
+          "citation_role": "exclusion_checked"
+        },
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons...",
+          "annex": "III",
+          "point": "4(a)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5 since it is not used for social scoring, real-time biometric surveillance, subliminal manipulation causing harm, or vulnerability exploitation. Step 2 analysis: Not high-risk as it does not fall under any categories in Annex III (such as critical infrastructure, education, employment, credit scoring, law enforcement, migration, or justice). Step 3 analysis: The AI system generates synthetic media (deepfakes) depicting people for marketing campaigns, which falls squarely under LIMITED_RISK as an AI-generated media / deepfake system requiring transparency obligations under the EU AI Act."
+    },
+    {
+      "id": 11,
+      "name": "E-commerce product recommender",
+      "difficulty": "clear",
+      "expected_provision": "none",
+      "strict_match": true,
+      "normalized_match": true,
+      "strict_normalized_differ": false,
+      "failure_type": null,
+      "failure_detail": null,
+      "raw_supporting_citations": [],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+          "annex": "III",
+          "point": "4(a)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system is an e-commerce product recommender based on browsing history and does not engage in prohibited practices under Article 5. Step 2 analysis: It does not fall under any of the high-risk categories listed in Annex III, such as critical infrastructure, employment recruitment (Annex III, point 4(a) checked and excluded), or essential services. Step 3 analysis: It is a general recommendation system without specific conversational or generative elements requiring special limited risk transparency under specific provisions in the provided text. Step 4 analysis: Defaulting to MINIMAL_RISK as it poses minimal risk to fundamental rights and safety."
+    },
+    {
+      "id": 12,
+      "name": "Student admissions decision support",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 3(a)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels",
+          "annex": "III",
+          "point": "3(a)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Article 6",
+          "title": "Classification rules for high-risk AI systems",
+          "excerpt": "Classification rules and exceptions for high-risk AI systems",
+          "annex": null,
+          "point": null,
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: The system does not engage in any prohibited practices such as social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: The system is designed to evaluate student applications and recommend whether applicants should be admitted to an educational institution. Under Annex III, point 3(a), AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels are classified as high-risk. Therefore, the system falls under HIGH_RISK."
+    },
+    {
+      "id": 13,
+      "name": "Internal PDF document type classifier",
+      "difficulty": "clear",
+      "expected_provision": "none",
+      "strict_match": false,
+      "normalized_match": false,
+      "strict_normalized_differ": false,
+      "failure_type": "genuinely different or missing provision",
+      "failure_detail": "No returned own identity matches the expected provision, or supporting citations were returned where none was expected.",
+      "raw_supporting_citations": [
+        {
+          "article": "Article 6",
+          "title": "Classification rules for high-risk AI systems",
+          "excerpt": "Classification rules for high-risk AI systems",
+          "annex": null,
+          "point": null,
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to evaluate and classify emergency calls by natural persons...",
+          "annex": "III",
+          "point": "5(d)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5. Step 2 analysis: Does not match any high-risk use cases in Annex III (such as emergency calls under point 5(d)). Step 3 analysis: Not a chatbot, emotion recognition system, AI-generated media, or interactive recommendation system. Step 4 analysis: As an internal PDF document type classifier routing administrative files like invoices and forms, it defaults to MINIMAL_RISK."
+    },
+    {
+      "id": 14,
+      "name": "Employee promotion monitoring",
+      "difficulty": "clear",
+      "expected_provision": "Annex III 4(b)",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [
+        {
+          "article": "Annex III",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to make decisions affecting terms of work-related relationships, the promotion or termination of work-related contractual relationships, to allocate tasks based on individual behaviour or personal traits or characteristics or to monitor and evaluate the performance and behaviour of persons in such relationships.",
+          "annex": "III",
+          "point": "4(b)",
+          "citation_role": "supporting"
+        }
+      ],
+      "raw_exclusions_checked": [],
+      "reasoning": "Step 1 analysis: Not prohibited because the system does not involve social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: HIGH_RISK classification applies because the AI system is intended to be used to monitor and evaluate the performance and behaviour of persons in work-related relationships and assist in employee promotion decisions, which matches Annex III, point 4(b)."
+    },
+    {
+      "id": 15,
+      "name": "Internal portfolio capital model",
+      "difficulty": "ambiguous",
+      "expected_provision": "Annex III 5(b) scope",
+      "strict_match": false,
+      "normalized_match": true,
+      "strict_normalized_differ": true,
+      "failure_type": "formatting mismatch",
+      "failure_detail": "The canonical own identity matches, but the raw article string does not exactly equal the owner label.",
+      "raw_supporting_citations": [],
+      "raw_exclusions_checked": [
+        {
+          "article": "Annex III, point 5(b)",
+          "title": "High-risk AI systems referred to in Article 6(2)",
+          "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+          "annex": "III",
+          "point": "5(b)",
+          "citation_role": "exclusion_checked"
+        }
+      ],
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5 as it does not involve social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: Not high-risk under Annex III because the system is used solely to estimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios, making no decisions about individual customers or applicants, thereby avoiding creditworthiness evaluation of natural persons under Annex III, point 5(b). Step 3 analysis: Does not fit limited risk criteria such as conversational systems, emotion recognition, or generative media. Step 4 analysis: Defaulting to MINIMAL_RISK."
+    }
+  ]
+}

@@ -169,7 +169,7 @@ def ground_citations(data, chunks):
         if isinstance(value, dict):
             result = {}
             for key, item in value.items():
-                if key in ("citations", "affected_articles") and isinstance(item, list):
+                if key in ("citations", "affected_articles", "exclusions_checked") and isinstance(item, list):
                     kept = [citation for citation in item if grounded(citation)]
                     needs_review |= len(kept) != len(item)
                     # Titles/excerpts can mention other laws; check only the citation's identity.
@@ -286,9 +286,9 @@ class LLMService:
                         continue
                     return rule_based("invalid_json")
                 self._log("ok", usage=response)
-                original_citations = list(data.get("citations", []))
+                original_citations = list(data.get("citations", [])) + list(data.get("exclusions_checked", []))
                 data, review = ground_citations(data, chunks)
-                dropped = [citation for citation in original_citations if citation not in data.get("citations", [])]
+                dropped = [citation for citation in original_citations if citation not in data.get("citations", []) + data.get("exclusions_checked", [])]
                 reasons = (["dropped_citation"] if review else []) + (["schema_repair"] if invalid_retries else [])
                 self.cache_dir.mkdir(parents=True, exist_ok=True)
                 temporary = cache.with_suffix(".tmp")

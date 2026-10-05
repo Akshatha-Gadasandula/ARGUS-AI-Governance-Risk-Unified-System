@@ -1,0 +1,3428 @@
+{
+  "status": "complete",
+  "run_id": "627e230a",
+  "estimated_live_calls": 30,
+  "frozen_hashes": {
+    "tests/fixtures/labelled_set.json": "ad2f88faa995d37bdf73a372f8b7c3b7354318dc1638fc5450491f80361775ac",
+    "argus/config.py": "fc4259082c20e3843b9140a9ff2c48f5e9049159ea44b4756d51f02b1f347255",
+    "argus/core/agents/registrar.py": "30a88717f68eb0ead7f39bd14c927180e28fb7c3760838ab5d4e5af986e15043",
+    "argus/core/agents/risk_classifier.py": "ec1b90b013957bff5a389771d9e87f0dffe7a6b35fb5a91e6a2ad0cfe8561485",
+    "argus/core/llm.py": "422ec3baffcb0d949e235a1ada598e619de2542313a83574caef492f76a2ae4e",
+    "argus/core/llm_schemas.py": "2e8a4bc715e68ae3c12f186daf0030e4314729ab02554a3f5f6299bf874ac0f7",
+    "argus/rag/retriever.py": "f4121e3f2882e872c1d26eb1a30b56e1ac173783de1a09b3d77b79cb248ad985",
+    "argus/core/agents/drift_monitor.py": "458756e7ed8cebc8ed7ae74f15541602f0981ce78fa07e30d23aa7f9cbd270cd"
+  },
+  "results": [
+    {
+      "id": 1,
+      "name": "Retail loan default predictor",
+      "purpose": "Predict the probability that a retail loan applicant will default using their credit history and repayment records. Loan officers use the prediction when deciding whether to approve the application.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 5(b)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 5(b)"
+      ],
+      "exclusions_checked": [
+        "Annex III 1(b)",
+        "Annex III 3(b)",
+        "Annex III 4(a)"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+            "annex": "III",
+            "point": "1(b)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate learning outcomes, including when those outcomes are used to steer the learning process of natural persons in educational and vocational training institutions at all levels;",
+            "annex": "III",
+            "point": "3(b)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+            "annex": "III",
+            "point": "4(a)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.98,
+      "reasoning": "Step 1 analysis: The system is not prohibited under Article 5 as it does not engage in social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system's purpose is to predict retail loan default probability using credit history, which directly matches Annex III, point 5(b) concerning AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score. Therefore, it is classified as HIGH_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "ba2e3ba7-c00d-4856-bc30-697b45308f68",
+        "system_id": "eval_627e230a_01_ret-a2438a",
+        "name": "eval-627e230a-01-Retail loan default predictor",
+        "version": "1.0.0",
+        "purpose": "Predict the probability that a retail loan applicant will default using their credit history and repayment records. Loan officers use the prediction when deciding whether to approve the application.",
+        "model_type": "gradient_boosting",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "credit applicants",
+          "retail loan borrowers"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.98,
+            "reasoning": "Step 1 analysis: The system is not prohibited under Article 5 as it does not engage in social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system's purpose is to predict retail loan default probability using credit history, which directly matches Annex III, point 5(b) concerning AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score. Therefore, it is classified as HIGH_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 1(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "1",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 4(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "4",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 3(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "3",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+                "annex": "III",
+                "point": "1(b)",
+                "citation_role": "exclusion_checked"
+              },
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to evaluate learning outcomes, including when those outcomes are used to steer the learning process of natural persons in educational and vocational training institutions at all levels;",
+                "annex": "III",
+                "point": "3(b)",
+                "citation_role": "exclusion_checked"
+              },
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+                "annex": "III",
+                "point": "4(a)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+                "annex": "III",
+                "point": "5(b)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Conformity assessment before deployment",
+              "Technical documentation maintenance",
+              "Automatic logging of events",
+              "Transparency and provision of information to deployers",
+              "Human oversight measures",
+              "Accuracy, robustness, and cybersecurity",
+              "Quality management system and risk management system"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-01-Retail loan default predictor\n\n## Purpose\nPredict the probability that a retail loan applicant will default using their credit history and repayment records. Loan officers use the prediction when deciding whether to approve the application.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nBinary Classification\n\n## Data\nCredit history and repayment records of retail loan applicants.\n\n## Performance\nExpected to provide reliable default probability estimates to assist loan officers.\n\n## Risk Considerations\nPotential bias in credit scoring, financial exclusion, regulatory compliance under EU AI governance frameworks.\n\n## Human Oversight\nLoan officers must review predictions when deciding whether to approve applications.\n\n## Known Limitations\nDependence on historical credit data which may not reflect future economic shocks.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:03:51.682825",
+        "last_classified_at": "2026-10-05T09:04:25.169912"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 2,
+      "name": "CV screening and applicant ranking",
+      "purpose": "Screen submitted CVs and rank job applicants according to their qualifications and experience. Recruiters use the ranked list to decide whom to interview.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 4(a)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 4(a)"
+      ],
+      "exclusions_checked": [],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+            "annex": "III",
+            "point": "4(a)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.98,
+      "reasoning": "Step 1 analysis: The system does not fall under any prohibited practices pursuant to Article 5. Step 2 analysis: The AI system is designed for screening CVs and ranking applicants, which directly matches Annex III, point 4(a) regarding AI systems intended to be used for recruitment or selection of natural persons, including analysing and filtering job applications and evaluating candidates. Therefore, it is classified as HIGH_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "134dfe1e-e56b-497a-a3fe-6d1726b44f55",
+        "system_id": "eval_627e230a_02_cv_-02f0aa",
+        "name": "eval-627e230a-02-CV screening and applicant ranking",
+        "version": "1.0.0",
+        "purpose": "Screen submitted CVs and rank job applicants according to their qualifications and experience. Recruiters use the ranked list to decide whom to interview.",
+        "model_type": "nlp",
+        "output_type": "ranking",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "age",
+          "gender",
+          "race",
+          "ethnicity",
+          "nationality"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.98,
+            "reasoning": "Step 1 analysis: The system does not fall under any prohibited practices pursuant to Article 5. Step 2 analysis: The AI system is designed for screening CVs and ranking applicants, which directly matches Annex III, point 4(a) regarding AI systems intended to be used for recruitment or selection of natural persons, including analysing and filtering job applications and evaluating candidates. Therefore, it is classified as HIGH_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 4(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "4",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 58,
+                "title": "Record-keeping",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 12",
+                "annex_id": null,
+                "citation": "Article 12",
+                "page_end": 58,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 59,
+                "heading_page": 58,
+                "section_type": "article",
+                "article_title": "Record-keeping",
+                "annex_subpoint": null,
+                "article_number": 12,
+                "page_number_end": 59
+              },
+              {
+                "page": 55,
+                "title": "Risk management system",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 9",
+                "annex_id": null,
+                "citation": "Article 9",
+                "page_end": 56,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 56,
+                "heading_page": 55,
+                "section_type": "article",
+                "article_title": "Risk management system",
+                "annex_subpoint": null,
+                "article_number": 9,
+                "page_number_end": 57
+              },
+              {
+                "page": 133,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 133,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 0,
+                "page_number": 134,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 134
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+                "annex": "III",
+                "point": "4(a)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Establish a risk management system pursuant to Article 9",
+              "Maintain automatic record-keeping and logging pursuant to Article 12",
+              "Perform conformity assessments and quality management system implementation pursuant to Annex VII"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-02-CV screening and applicant ranking\n\n## Purpose\nScreen submitted CVs and rank job applicants according to their qualifications and experience. Recruiters use the ranked list to decide whom to interview.\n\n## Model Type\nNLP\n\n## Output Type\nRanking\n\n## Data\nDescription of training and inference data... (Not specified)\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:04:29.539767",
+        "last_classified_at": "2026-10-05T09:05:04.005472"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 3,
+      "name": "Email spam filter",
+      "purpose": "Classify incoming email messages as spam or legitimate mail and route unwanted messages to a spam folder.",
+      "expected_tier": "MINIMAL_RISK",
+      "expected_provision": "none",
+      "difficulty": "clear",
+      "predicted_tier": "MINIMAL_RISK",
+      "tier_correct": true,
+      "cited_provisions": [],
+      "exclusions_checked": [
+        "Article 5",
+        "Article 5",
+        "Annex III 6(d)"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "Prohibited practices checked and excluded.",
+            "annex": null,
+            "point": null,
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "Prohibited AI practices including social scoring and risk assessments of natural persons for criminal offences.",
+            "annex": null,
+            "point": null,
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used by law enforcement authorities or on their behalf...",
+            "annex": "III",
+            "point": "6(d)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.95,
+      "reasoning": "Step 1 analysis: The system is an email spam filter, which does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: It does not fall under any high-risk categories listed in Annex III or Article 6, as it is a standard utility tool for filtering email rather than a critical infrastructure, law enforcement, or essential service AI. Step 3 analysis: It is not an emotion recognition system, chatbot, or AI-generated media system requiring specific limited risk transparency under the provided definitions. Step 4 analysis: By default, standard utility IT applications like email spam filters are classified as MINIMAL_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "1a226fff-dc41-45dd-b951-041ebfe851b4",
+        "system_id": "eval_627e230a_03_ema-13ad78",
+        "name": "eval-627e230a-03-Email spam filter",
+        "version": "1.0.0",
+        "purpose": "Classify incoming email messages as spam or legitimate mail and route unwanted messages to a spam folder.",
+        "model_type": "nlp",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "MINIMAL_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "MINIMAL_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.95,
+            "reasoning": "Step 1 analysis: The system is an email spam filter, which does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: It does not fall under any high-risk categories listed in Annex III or Article 6, as it is a standard utility tool for filtering email rather than a critical infrastructure, law enforcement, or essential service AI. Step 3 analysis: It is not an emotion recognition system, chatbot, or AI-generated media system requiring specific limited risk transparency under the provided definitions. Step 4 analysis: By default, standard utility IT applications like email spam filters are classified as MINIMAL_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 50,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 51
+              },
+              {
+                "page": 134,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 6,
+                "page_number": 135,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 47,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 47,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 7,
+                "page_number": 48,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 48
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              },
+              {
+                "page": 127,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 6(d)",
+                "page_end": 127,
+                "framework": "EU_AI_ACT",
+                "annex_point": "6",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 128,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "d",
+                "article_number": null,
+                "page_number_end": 128
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "Prohibited practices checked and excluded.",
+                "annex": null,
+                "point": null,
+                "citation_role": "exclusion_checked"
+              },
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "Prohibited AI practices including social scoring and risk assessments of natural persons for criminal offences.",
+                "annex": null,
+                "point": null,
+                "citation_role": "exclusion_checked"
+              },
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used by law enforcement authorities or on their behalf...",
+                "annex": "III",
+                "point": "6(d)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [],
+            "obligations": []
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-03-Email spam filter\n\n## Purpose\nClassify incoming email messages as spam or legitimate mail and route unwanted messages to a spam folder.\n\n## Model Type\nNot specified\n\n## Output Type\nNot specified\n\n## Data\nDescription of training and inference data...\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:05:08.196763",
+        "last_classified_at": "2026-10-05T09:05:44.368202"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 4,
+      "name": "Banking FAQ chatbot",
+      "purpose": "Answer customers' banking FAQ questions through a conversational customer-service chatbot. It explains opening hours, account features and routine service procedures.",
+      "expected_tier": "LIMITED_RISK",
+      "expected_provision": "Article 50(1)",
+      "difficulty": "clear",
+      "predicted_tier": "LIMITED_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Article 6"
+      ],
+      "exclusions_checked": [
+        "Annex III 5(b)"
+      ],
+      "provision_match": false,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 6",
+            "title": "Classification rules for high-risk AI systems",
+            "excerpt": "Classification rules for high-risk AI systems considered to be high-risk where it does not pose a significant risk of harm...",
+            "annex": null,
+            "point": null,
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score",
+            "annex": "III",
+            "point": "5(b)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.95,
+      "reasoning": "The AI system is a banking FAQ chatbot designed to answer routine customer service questions regarding opening hours, account features, and procedures. Based on Step 3 of the framework, AI-enabled conversational systems and chatbots are classified as LIMITED_RISK and are subject to specific transparency obligations. It does not engage in prohibited practices under Article 5 nor high-risk activities such as credit scoring under Annex III, point 5(b).",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "5a103c15-8a81-4713-a127-463641ba1e27",
+        "system_id": "eval_627e230a_04_ban-63a3c0",
+        "name": "eval-627e230a-04-Banking FAQ chatbot",
+        "version": "1.0.0",
+        "purpose": "Answer customers' banking FAQ questions through a conversational customer-service chatbot. It explains opening hours, account features and routine service procedures.",
+        "model_type": "nlp",
+        "output_type": "generation",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "general banking customers"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "LIMITED_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=LIMITED_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "LIMITED_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.95,
+            "reasoning": "The AI system is a banking FAQ chatbot designed to answer routine customer service questions regarding opening hours, account features, and procedures. Based on Step 3 of the framework, AI-enabled conversational systems and chatbots are classified as LIMITED_RISK and are subject to specific transparency obligations. It does not engage in prohibited practices under Article 5 nor high-risk activities such as credit scoring under Annex III, point 5(b).",
+            "retrieved_provisions": [
+              {
+                "page": 63,
+                "title": "Automatically generated logs",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 19",
+                "annex_id": null,
+                "citation": "Article 19",
+                "page_end": 63,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 0,
+                "page_number": 64,
+                "heading_page": 63,
+                "section_type": "article",
+                "article_title": "Automatically generated logs",
+                "annex_subpoint": null,
+                "article_number": 19,
+                "page_number_end": 64
+              },
+              {
+                "page": 129,
+                "title": "Technical documentation referred to in Article 11(1)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex IV",
+                "annex_id": "IV",
+                "citation": "Annex IV",
+                "page_end": 129,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Technical documentation referred to in Article 11(1)",
+                "chunk_index": 0,
+                "page_number": 130,
+                "heading_page": 129,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 130
+              },
+              {
+                "page": 133,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 133,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 0,
+                "page_number": 134,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 134
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score",
+                "annex": "III",
+                "point": "5(b)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Article 6",
+                "title": "Classification rules for high-risk AI systems",
+                "excerpt": "Classification rules for high-risk AI systems considered to be high-risk where it does not pose a significant risk of harm...",
+                "annex": null,
+                "point": null,
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Ensure users are informed they are interacting with an AI system unless obvious from the circumstances (Transparency obligation for conversational systems)"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-04-Banking FAQ chatbot\n\n## Purpose\nAnswer customers' banking FAQ questions through a conversational customer-service chatbot. It explains opening hours, account features and routine service procedures.\n\n## Model Type\nNLP\n\n## Output Type\nGeneration\n\n## Data\nNot specified\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations regarding customer data and incorrect FAQ responses under EU jurisdiction.\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:05:48.385339",
+        "last_classified_at": "2026-10-05T09:06:24.211849"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 5,
+      "name": "Public authority social scoring",
+      "purpose": "A public authority assigns citizens scores based on their social behaviour and personal characteristics. Officials use those scores to determine access to public benefits and services.",
+      "expected_tier": "PROHIBITED",
+      "expected_provision": "Article 5(1)(c)",
+      "difficulty": "clear",
+      "predicted_tier": "PROHIBITED",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Article 5"
+      ],
+      "exclusions_checked": [
+        "Annex III 5(a)"
+      ],
+      "provision_match": false,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity",
+            "annex": null,
+            "point": null,
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used by public authorities or on behalf of public authorities to evaluate the eligibility of natural persons for essential public assistance benefits and services",
+            "annex": "III",
+            "point": "5(a)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.99,
+      "reasoning": "Step 1 analysis: The AI system evaluates citizens based on social behaviour and personal characteristics to determine access to public benefits and services, matching the prohibition under Article 5(c) regarding social scoring by public authorities leading to detrimental or unfavourable treatment. Step 2 analysis: High-risk and other tiers do not need to be applied because the system is directly prohibited under Article 5.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "b1761994-1e13-49c1-afc7-3a11d395a817",
+        "system_id": "eval_627e230a_05_pub-72b04f",
+        "name": "eval-627e230a-05-Public authority social scoring",
+        "version": "1.0.0",
+        "purpose": "A public authority assigns citizens scores based on their social behaviour and personal characteristics. Officials use those scores to determine access to public benefits and services.",
+        "model_type": "other",
+        "output_type": "ranking",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "citizens",
+          "general public"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "PROHIBITED",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=PROHIBITED",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "PROHIBITED",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.99,
+            "reasoning": "Step 1 analysis: The AI system evaluates citizens based on social behaviour and personal characteristics to determine access to public benefits and services, matching the prohibition under Article 5(c) regarding social scoring by public authorities leading to detrimental or unfavourable treatment. Step 2 analysis: High-risk and other tiers do not need to be applied because the system is directly prohibited under Article 5.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 127,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 6(d)",
+                "page_end": 127,
+                "framework": "EU_AI_ACT",
+                "annex_point": "6",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 128,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "d",
+                "article_number": null,
+                "page_number_end": 128
+              },
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 50,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 51
+              },
+              {
+                "page": 47,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 47,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 7,
+                "page_number": 48,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 48
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used by public authorities or on behalf of public authorities to evaluate the eligibility of natural persons for essential public assistance benefits and services",
+                "annex": "III",
+                "point": "5(a)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity",
+                "annex": null,
+                "point": null,
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Cease development, placing on the market, putting into service, or use of the prohibited AI system pursuant to Article 5"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-05-Public authority social scoring\n\n## Purpose\nA public authority assigns citizens scores based on their social behaviour and personal characteristics. Officials use those scores to determine access to public benefits and services.\n\n## Model Type\nNot specified\n\n## Output Type\nRanking\n\n## Data\nDescription of training and inference data: Not specified\n\n## Performance\nExpected performance characteristics: Not specified\n\n## Risk Considerations\nPotential risks include systemic bias, discrimination against specific demographics, lack of transparency in score calculation, and severe impacts on fundamental rights and access to essential public services. Mitigations require strict regulatory compliance under EU AI Act frameworks prohibiting social scoring systems of this nature.\n\n## Human Oversight\nRequired human involvement: Officials use scores to determine access, but automated scoring introduces severe risks of automation bias.\n\n## Known Limitations\nKey limitations and constraints: High risk of discriminatory outcomes and privacy violations.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:06:28.328088",
+        "last_classified_at": "2026-10-05T09:07:04.699381"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 6,
+      "name": "Card transaction fraud detector",
+      "purpose": "Detect potentially fraudulent card transactions by analysing transaction patterns and device signals. Suspicious payments are sent to a fraud investigation team.",
+      "expected_tier": "MINIMAL_RISK",
+      "expected_provision": "Annex III 5(b) fraud exception",
+      "difficulty": "ambiguous",
+      "predicted_tier": "MINIMAL_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 5(b)"
+      ],
+      "exclusions_checked": [
+        "Article 5"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III, point 5(b)",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "Prohibited practices checked and none found applicable to card transaction fraud detection.",
+            "annex": null,
+            "point": null,
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.95,
+      "reasoning": "Step 1 analysis: The system does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: While the system operates in the financial sector, Annex III Point 5(b) explicitly excludes AI systems used for the purpose of detecting financial fraud from being classified as high-risk credit scoring or creditworthiness evaluation systems. Step 3 analysis: The system is not a conversational chatbot, emotion recognition system, general-purpose AI-generated media tool, or a recommendation system requiring specific transparency obligations under the limited risk tiers. Step 4 analysis: Since it does not meet the criteria for prohibited, high-risk, or limited-risk tiers, the system defaults to MINIMAL_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "98641bfa-f4e1-4135-8764-824aeb20d8f3",
+        "system_id": "eval_627e230a_06_car-210d2a",
+        "name": "eval-627e230a-06-Card transaction fraud detector",
+        "version": "1.0.0",
+        "purpose": "Detect potentially fraudulent card transactions by analysing transaction patterns and device signals. Suspicious payments are sent to a fraud investigation team.",
+        "model_type": "gradient_boosting",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "MINIMAL_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "MINIMAL_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.95,
+            "reasoning": "Step 1 analysis: The system does not engage in prohibited practices such as social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: While the system operates in the financial sector, Annex III Point 5(b) explicitly excludes AI systems used for the purpose of detecting financial fraud from being classified as high-risk credit scoring or creditworthiness evaluation systems. Step 3 analysis: The system is not a conversational chatbot, emotion recognition system, general-purpose AI-generated media tool, or a recommendation system requiring specific transparency obligations under the limited risk tiers. Step 4 analysis: Since it does not meet the criteria for prohibited, high-risk, or limited-risk tiers, the system defaults to MINIMAL_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 47,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 47,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 7,
+                "page_number": 48,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 48
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 1(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "1",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 51,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 52
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "Prohibited practices checked and none found applicable to card transaction fraud detection.",
+                "annex": null,
+                "point": null,
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Annex III, point 5(b)",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+                "annex": "III",
+                "point": "5(b)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "No mandatory high-risk compliance requirements apply, though voluntary adherence to ethical AI principles and general data protection regulations (GDPR) remains recommended."
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-06-Card transaction fraud detector\n\n## Purpose\nDetect potentially fraudulent card transactions by analysing transaction patterns and device signals. Suspicious payments are sent to a fraud investigation team.\n\n## Model Type\nGradient Boosting (Inferred)\n\n## Output Type\nBinary Classification (Inferred)\n\n## Data\nTransactional data, card patterns, and device signals.\n\n## Performance\nExpected high precision and recall for detecting fraud while minimizing false positives.\n\n## Risk Considerations\nRisk of false positives impacting legitimate users. Compliance with EU regulations regarding financial services and data privacy.\n\n## Human Oversight\nSuspicious payments are reviewed and handled by a dedicated fraud investigation team.\n\n## Known Limitations\nDependence on historical fraud patterns and device signal integrity.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:07:08.891547",
+        "last_classified_at": "2026-10-05T09:07:44.517040"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 7,
+      "name": "Life and health insurance pricing",
+      "purpose": "Assess the insurance risk of individual applicants and calculate their life and health insurance premiums using personal and health information.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 5(c)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 5(c)"
+      ],
+      "exclusions_checked": [
+        "Annex III 1(b)"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance;",
+            "annex": "III",
+            "point": "5(c)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+            "annex": "III",
+            "point": "1(b)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.99,
+      "reasoning": "Step 1 analysis: The system does not involve prohibited practices such as social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system is intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance, which explicitly falls under Annex III, point 5(c) of the EU AI Act as a high-risk AI system.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "f8a29acf-10ab-42e0-9ddd-2cdc6932e449",
+        "system_id": "eval_627e230a_07_lif-dad41c",
+        "name": "eval-627e230a-07-Life and health insurance pricing",
+        "version": "1.0.0",
+        "purpose": "Assess the insurance risk of individual applicants and calculate their life and health insurance premiums using personal and health information.",
+        "model_type": "gradient_boosting",
+        "output_type": "regression",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "age",
+          "health status"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.99,
+            "reasoning": "Step 1 analysis: The system does not involve prohibited practices such as social scoring, real-time biometric surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: The AI system is intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance, which explicitly falls under Annex III, point 5(c) of the EU AI Act as a high-risk AI system.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(c)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "c",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 56,
+                "title": "Risk management system",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 9",
+                "annex_id": null,
+                "citation": "Article 9",
+                "page_end": 56,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 3,
+                "page_number": 57,
+                "heading_page": 55,
+                "section_type": "article",
+                "article_title": "Risk management system",
+                "annex_subpoint": null,
+                "article_number": 9,
+                "page_number_end": 57
+              },
+              {
+                "page": 48,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 48,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 10,
+                "page_number": 49,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 49
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 1(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "1",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;",
+                "annex": "III",
+                "point": "1(b)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance;",
+                "annex": "III",
+                "point": "5(c)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Establish, implement, document and maintain a risk management system in accordance with Article 9",
+              "Document the risk assessment considering potential adverse impacts on vulnerable groups under Article 9(9)"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-07-Life and health insurance pricing\n\n## Purpose\nAssess the insurance risk of individual applicants and calculate their life and health insurance premiums using personal and health information.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nRegression\n\n## Data\nPersonal and health information of individual applicants.\n\n## Performance\nDesigned to accurately price risk for life and health insurance applicants under EU jurisdiction.\n\n## Risk Considerations\nHigh data sensitivity regarding personal health and demographic information requires strict compliance with privacy regulations such as GDPR.\n\n## Human Oversight\nUnderwriters must review pricing and risk assessments to ensure fairness and accuracy.\n\n## Known Limitations\nPotential biases against protected demographic groups based on health and personal data.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:07:48.590315",
+        "last_classified_at": "2026-10-05T09:08:24.265587"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 8,
+      "name": "Exam cheating detection",
+      "purpose": "Monitor students during examinations and detect behaviour that may indicate cheating. Invigilators review the alerts when deciding whether examination rules were breached.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 3(d)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 3(d)"
+      ],
+      "exclusions_checked": [],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for monitoring and detecting prohibited behaviour of students during tests in the context of or within educational and vocational training institutions at all levels.",
+            "annex": "III",
+            "point": "3(d)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.98,
+      "reasoning": "Step 1 analysis: The system is not prohibited under Article 5. Step 2 analysis: The AI system is intended to monitor students during examinations and detect behavior that may indicate cheating, which directly falls under Annex III, point 3(d) concerning AI systems used for monitoring and detecting prohibited behavior of students during tests within educational institutions.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "e9c98b85-8e11-4688-af20-90454f2080c5",
+        "system_id": "eval_627e230a_08_exa-2af131",
+        "name": "eval-627e230a-08-Exam cheating detection",
+        "version": "1.0.0",
+        "purpose": "Monitor students during examinations and detect behaviour that may indicate cheating. Invigilators review the alerts when deciding whether examination rules were breached.",
+        "model_type": "computer_vision",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "students"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.98,
+            "reasoning": "Step 1 analysis: The system is not prohibited under Article 5. Step 2 analysis: The AI system is intended to monitor students during examinations and detect behavior that may indicate cheating, which directly falls under Annex III, point 3(d) concerning AI systems used for monitoring and detecting prohibited behavior of students during tests within educational institutions.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 3(d)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "3",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "d",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 92,
+                "title": "Testing of high-risk AI systems in real world conditions outside AI regulatory sandboxes",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 60",
+                "annex_id": null,
+                "citation": "Article 60",
+                "page_end": 92,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 5,
+                "page_number": 93,
+                "heading_page": 91,
+                "section_type": "article",
+                "article_title": "Testing of high-risk AI systems in real world conditions outside AI regulatory sandboxes",
+                "annex_subpoint": null,
+                "article_number": 60,
+                "page_number_end": 93
+              },
+              {
+                "page": 134,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 6,
+                "page_number": 135,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 52,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 52,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 8,
+                "page_number": 53,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 53
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for monitoring and detecting prohibited behaviour of students during tests in the context of or within educational and vocational training institutions at all levels.",
+                "annex": "III",
+                "point": "3(d)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Implement a quality management system",
+              "Prepare and maintain technical documentation",
+              "Ensure appropriate human oversight mechanisms",
+              "Ensure accuracy, robustness, and cybersecurity"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-08-Exam cheating detection\n\n## Purpose\nMonitor students during examinations and detect behaviour that may indicate cheating. Invigilators review the alerts when deciding whether examination rules were breached.\n\n## Model Type\nComputer Vision\n\n## Output Type\nBinary Classification\n\n## Data\nNot specified\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations regarding student monitoring under EU jurisdiction...\n\n## Human Oversight\nRequired human involvement: Invigilators review the alerts when deciding whether examination rules were breached.\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:08:28.366277",
+        "last_classified_at": "2026-10-05T09:09:03.960378"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 9,
+      "name": "Workplace employee emotion recognition",
+      "purpose": "Infer employees' emotions from facial expressions and voice recordings in the workplace. Managers receive reports about the emotional state of their staff.",
+      "expected_tier": "PROHIBITED",
+      "expected_provision": "Article 5(1)(f)",
+      "difficulty": "clear",
+      "predicted_tier": "PROHIBITED",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Article 5(f)"
+      ],
+      "exclusions_checked": [
+        "Annex III 1(c)"
+      ],
+      "provision_match": false,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons",
+            "annex": null,
+            "point": "f",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for emotion recognition",
+            "annex": "III",
+            "point": "1(c)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.99,
+      "reasoning": "Step 1 analysis: The AI system is designed to infer emotions of natural persons from facial expressions and voice recordings in the workplace. Under Article 5(1)(f), the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions is explicitly prohibited, except for medical or safety reasons which do not apply here. Therefore, the system is classified as PROHIBITED.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "6bcbeb52-9632-43f1-9119-13bab8359010",
+        "system_id": "eval_627e230a_09_wor-c53903",
+        "name": "eval-627e230a-09-Workplace employee emotion recognition",
+        "version": "1.0.0",
+        "purpose": "Infer employees' emotions from facial expressions and voice recordings in the workplace. Managers receive reports about the emotional state of their staff.",
+        "model_type": "computer_vision",
+        "output_type": "multiclass",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "workplace employees"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "PROHIBITED",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=PROHIBITED",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "PROHIBITED",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.99,
+            "reasoning": "Step 1 analysis: The AI system is designed to infer emotions of natural persons from facial expressions and voice recordings in the workplace. Under Article 5(1)(f), the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions is explicitly prohibited, except for medical or safety reasons which do not apply here. Therefore, the system is classified as PROHIBITED.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 1(c)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "1",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "c",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 47,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 47,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 7,
+                "page_number": 48,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 48
+              },
+              {
+                "page": 81,
+                "title": "Transparency obligations for providers and deployers of certain AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 50",
+                "annex_id": null,
+                "citation": "Article 50",
+                "page_end": 81,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 82,
+                "heading_page": 81,
+                "section_type": "article",
+                "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+                "annex_subpoint": null,
+                "article_number": 50,
+                "page_number_end": 82
+              },
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 51,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 52
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for emotion recognition",
+                "annex": "III",
+                "point": "1(c)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons",
+                "annex": null,
+                "point": "f",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Cease the placing on the market, putting into service, or use of the prohibited AI system in the workplace (Article 5)"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-09-Workplace employee emotion recognition\n\n## Purpose\nInfer employees' emotions from facial expressions and voice recordings in the workplace. Managers receive reports about the emotional state of their staff.\n\n## Model Type\nNot specified\n\n## Output Type\nNot specified\n\n## Data\nDescription of training and inference data...\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:09:08.022201",
+        "last_classified_at": "2026-10-05T09:09:44.478628"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 10,
+      "name": "Marketing deepfake image generator",
+      "purpose": "Generate realistic synthetic images depicting people for marketing campaigns, including images that resemble real individuals doing things they did not actually do.",
+      "expected_tier": "LIMITED_RISK",
+      "expected_provision": "Article 50(4)",
+      "difficulty": "clear",
+      "predicted_tier": "LIMITED_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Article 3"
+      ],
+      "exclusions_checked": [
+        "Article 5",
+        "Annex III 4(a)"
+      ],
+      "provision_match": false,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 3",
+            "title": "Definitions",
+            "excerpt": "‘deep fake’ means AI-generated or manipulated image, audio or video content that resembles existing persons, objects, places, entities or events and would falsely appear to a person to be authentic or truthful",
+            "annex": null,
+            "point": null,
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Article 5",
+            "title": "Prohibited AI practices",
+            "excerpt": "The following AI practices shall be prohibited...",
+            "annex": null,
+            "point": null,
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons...",
+            "annex": "III",
+            "point": "4(a)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.9,
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5 since it is not used for social scoring, real-time biometric surveillance, subliminal manipulation causing harm, or vulnerability exploitation. Step 2 analysis: Not high-risk as it does not fall under any categories in Annex III (such as critical infrastructure, education, employment, credit scoring, law enforcement, migration, or justice). Step 3 analysis: The AI system generates synthetic media (deepfakes) depicting people for marketing campaigns, which falls squarely under LIMITED_RISK as an AI-generated media / deepfake system requiring transparency obligations under the EU AI Act.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "c849c429-5630-474a-887b-f20a70c336cd",
+        "system_id": "eval_627e230a_10_mar-a1d831",
+        "name": "eval-627e230a-10-Marketing deepfake image generator",
+        "version": "1.0.0",
+        "purpose": "Generate realistic synthetic images depicting people for marketing campaigns, including images that resemble real individuals doing things they did not actually do.",
+        "model_type": "neural_network",
+        "output_type": "generation",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "general public",
+          "identifiable individuals"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "LIMITED_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=LIMITED_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "LIMITED_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.9,
+            "reasoning": "Step 1 analysis: Not prohibited under Article 5 since it is not used for social scoring, real-time biometric surveillance, subliminal manipulation causing harm, or vulnerability exploitation. Step 2 analysis: Not high-risk as it does not fall under any categories in Annex III (such as critical infrastructure, education, employment, credit scoring, law enforcement, migration, or justice). Step 3 analysis: The AI system generates synthetic media (deepfakes) depicting people for marketing campaigns, which falls squarely under LIMITED_RISK as an AI-generated media / deepfake system requiring transparency obligations under the EU AI Act.",
+            "retrieved_provisions": [
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 51,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 52
+              },
+              {
+                "page": 49,
+                "title": "Definitions",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 3",
+                "annex_id": null,
+                "citation": "Article 3",
+                "page_end": 49,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 12,
+                "page_number": 50,
+                "heading_page": 45,
+                "section_type": "article",
+                "article_title": "Definitions",
+                "annex_subpoint": null,
+                "article_number": 3,
+                "page_number_end": 50
+              },
+              {
+                "page": 50,
+                "title": "Prohibited AI practices",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 5",
+                "annex_id": null,
+                "citation": "Article 5",
+                "page_end": 50,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 0,
+                "page_number": 51,
+                "heading_page": 50,
+                "section_type": "article",
+                "article_title": "Prohibited AI practices",
+                "annex_subpoint": null,
+                "article_number": 5,
+                "page_number_end": 51
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 4(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "4",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Article 5",
+                "title": "Prohibited AI practices",
+                "excerpt": "The following AI practices shall be prohibited...",
+                "annex": null,
+                "point": null,
+                "citation_role": "exclusion_checked"
+              },
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons...",
+                "annex": "III",
+                "point": "4(a)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Article 3",
+                "title": "Definitions",
+                "excerpt": "‘deep fake’ means AI-generated or manipulated image, audio or video content that resembles existing persons, objects, places, entities or events and would falsely appear to a person to be authentic or truthful",
+                "annex": null,
+                "point": null,
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Ensure transparency by disclosing that the content is artificially generated or manipulated (deepfake disclosure)"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-10-Marketing deepfake image generator\n\n## Purpose\nGenerate realistic synthetic images depicting people for marketing campaigns, including images that resemble real individuals doing things they did not actually do.\n\n## Model Type\nNeural Network (Inferred based on deepfake image generation capabilities)\n\n## Output Type\nGeneration (Image generation)\n\n## Data\nData sources are not specified, but involve image data potentially capturing biometric or personal likeness.\n\n## Performance\nProduces realistic synthetic depictions of people for marketing use.\n\n## Risk Considerations\nHigh risk regarding privacy, non-consensual deepfakes, misinformation, and EU regulatory compliance (AI Act provisions on deepfakes and biometric data).\n\n## Human Oversight\nStrict human oversight is required to monitor generated marketing content and ensure consent and ethical compliance.\n\n## Known Limitations\nPotential for generating deceptive content, hallucinations, and misuse of real individuals' likenesses.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:09:48.980161",
+        "last_classified_at": "2026-10-05T09:10:24.614729"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 11,
+      "name": "E-commerce product recommender",
+      "purpose": "Recommend products to online shoppers based on their browsing activity and purchase history. Suggestions help customers discover items in the catalogue.",
+      "expected_tier": "MINIMAL_RISK",
+      "expected_provision": "none",
+      "difficulty": "clear",
+      "predicted_tier": "MINIMAL_RISK",
+      "tier_correct": true,
+      "cited_provisions": [],
+      "exclusions_checked": [
+        "Annex III 4(a)"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+            "annex": "III",
+            "point": "4(a)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.9,
+      "reasoning": "Step 1 analysis: The system is an e-commerce product recommender based on browsing history and does not engage in prohibited practices under Article 5. Step 2 analysis: It does not fall under any of the high-risk categories listed in Annex III, such as critical infrastructure, employment recruitment (Annex III, point 4(a) checked and excluded), or essential services. Step 3 analysis: It is a general recommendation system without specific conversational or generative elements requiring special limited risk transparency under specific provisions in the provided text. Step 4 analysis: Defaulting to MINIMAL_RISK as it poses minimal risk to fundamental rights and safety.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "0b50842e-b487-409b-b242-bda59a77a078",
+        "system_id": "eval_627e230a_11_e_c-ba9ded",
+        "name": "eval-627e230a-11-E-commerce product recommender",
+        "version": "1.0.0",
+        "purpose": "Recommend products to online shoppers based on their browsing activity and purchase history. Suggestions help customers discover items in the catalogue.",
+        "model_type": "other",
+        "output_type": "ranking",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "MINIMAL_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "MINIMAL_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.9,
+            "reasoning": "Step 1 analysis: The system is an e-commerce product recommender based on browsing history and does not engage in prohibited practices under Article 5. Step 2 analysis: It does not fall under any of the high-risk categories listed in Annex III, such as critical infrastructure, employment recruitment (Annex III, point 4(a) checked and excluded), or essential services. Step 3 analysis: It is a general recommendation system without specific conversational or generative elements requiring special limited risk transparency under specific provisions in the provided text. Step 4 analysis: Defaulting to MINIMAL_RISK as it poses minimal risk to fundamental rights and safety.",
+            "retrieved_provisions": [
+              {
+                "page": 109,
+                "title": "Right to lodge a complaint with a market surveillance authority",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 85",
+                "annex_id": null,
+                "citation": "Article 85",
+                "page_end": 109,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 0,
+                "page_number": 110,
+                "heading_page": 109,
+                "section_type": "article",
+                "article_title": "Right to lodge a complaint with a market surveillance authority",
+                "annex_subpoint": null,
+                "article_number": 85,
+                "page_number_end": 110
+              },
+              {
+                "page": 98,
+                "title": "Designation of national competent authorities and single points of contact",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 70",
+                "annex_id": null,
+                "citation": "Article 70",
+                "page_end": 98,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 0,
+                "page_number": 99,
+                "heading_page": 98,
+                "section_type": "article",
+                "article_title": "Designation of national competent authorities and single points of contact",
+                "annex_subpoint": null,
+                "article_number": 70,
+                "page_number_end": 99
+              },
+              {
+                "page": 65,
+                "title": "Obligations of importers",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 23",
+                "annex_id": null,
+                "citation": "Article 23",
+                "page_end": 65,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 66,
+                "heading_page": 64,
+                "section_type": "article",
+                "article_title": "Obligations of importers",
+                "annex_subpoint": null,
+                "article_number": 23,
+                "page_number_end": 66
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 4(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "4",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;",
+                "annex": "III",
+                "point": "4(a)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [],
+            "obligations": []
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-11-E-commerce product recommender\n\n## Purpose\nRecommend products to online shoppers based on their browsing activity and purchase history. Suggestions help customers discover items in the catalogue.\n\n## Model Type\nNot specified\n\n## Output Type\nRanking\n\n## Data\nDescription of training and inference data: Browsing activity and purchase history.\n\n## Performance\nExpected performance characteristics: Accurate and relevant product recommendations.\n\n## Risk Considerations\nPotential risks and mitigations: Filter bubbles and recommendation bias.\n\n## Human Oversight\nRequired human involvement: Periodic review of recommendation logic and catalog safety.\n\n## Known Limitations\nKey limitations and constraints: Cold start problem for new users or new items.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:29:52.887231",
+        "last_classified_at": "2026-10-05T09:30:24.242555"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 12,
+      "name": "Student admissions decision support",
+      "purpose": "Evaluate student applications and recommend whether applicants should be admitted to an educational institution. Admissions staff use the recommendations in their decisions.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 3(a)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 3(a)"
+      ],
+      "exclusions_checked": [
+        "Article 6"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels",
+            "annex": "III",
+            "point": "3(a)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Article 6",
+            "title": "Classification rules for high-risk AI systems",
+            "excerpt": "Classification rules and exceptions for high-risk AI systems",
+            "annex": null,
+            "point": null,
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.98,
+      "reasoning": "Step 1 analysis: The system does not engage in any prohibited practices such as social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: The system is designed to evaluate student applications and recommend whether applicants should be admitted to an educational institution. Under Annex III, point 3(a), AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels are classified as high-risk. Therefore, the system falls under HIGH_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "02c77600-788d-4302-9d49-9ec15a5a6b60",
+        "system_id": "eval_627e230a_12_stu-fbdf75",
+        "name": "eval-627e230a-12-Student admissions decision support",
+        "version": "1.0.0",
+        "purpose": "Evaluate student applications and recommend whether applicants should be admitted to an educational institution. Admissions staff use the recommendations in their decisions.",
+        "model_type": "other",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "students",
+          "applicants"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.98,
+            "reasoning": "Step 1 analysis: The system does not engage in any prohibited practices such as social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups under Article 5. Step 2 analysis: The system is designed to evaluate student applications and recommend whether applicants should be admitted to an educational institution. Under Annex III, point 3(a), AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels are classified as high-risk. Therefore, the system falls under HIGH_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 3(a)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "3",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "a",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 133,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 2,
+                "page_number": 134,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 3(c)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "3",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "c",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 3(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "3",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Article 6",
+                "title": "Classification rules for high-risk AI systems",
+                "excerpt": "Classification rules and exceptions for high-risk AI systems",
+                "annex": null,
+                "point": null,
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels",
+                "annex": "III",
+                "point": "3(a)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Conformity assessment based on quality management system and technical documentation",
+              "Technical documentation examination and compliance",
+              "Document assessment if considering the high-risk system not to be high-risk under Article 6"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-12-Student admissions decision support\n\n## Purpose\nEvaluate student applications and recommend whether applicants should be admitted to an educational institution.\n\n## Model Type\nNot specified\n\n## Output Type\nBinary Classification\n\n## Data\nNot specified\n\n## Performance\nNot specified\n\n## Risk Considerations\nHigh regulatory scrutiny under EU jurisdictions for automated decision support systems involving education and human capital.\n\n## Human Oversight\nAdmissions staff use the recommendations in their decisions.\n\n## Known Limitations\nPotential biases inherent in historical admissions data.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:30:28.700156",
+        "last_classified_at": "2026-10-05T09:31:04.533780"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 13,
+      "name": "Internal PDF document type classifier",
+      "purpose": "Classify incoming PDF documents into internal administrative categories such as invoices, forms and correspondence. It routes each file to the appropriate processing queue.",
+      "expected_tier": "MINIMAL_RISK",
+      "expected_provision": "none",
+      "difficulty": "clear",
+      "predicted_tier": "MINIMAL_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Article 6"
+      ],
+      "exclusions_checked": [
+        "Annex III 5(d)"
+      ],
+      "provision_match": false,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Article 6",
+            "title": "Classification rules for high-risk AI systems",
+            "excerpt": "Classification rules for high-risk AI systems",
+            "annex": null,
+            "point": null,
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        },
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to evaluate and classify emergency calls by natural persons...",
+            "annex": "III",
+            "point": "5(d)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.9,
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5. Step 2 analysis: Does not match any high-risk use cases in Annex III (such as emergency calls under point 5(d)). Step 3 analysis: Not a chatbot, emotion recognition system, AI-generated media, or interactive recommendation system. Step 4 analysis: As an internal PDF document type classifier routing administrative files like invoices and forms, it defaults to MINIMAL_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "d39fcc3a-dfcd-4d0b-b6de-2a0656546cb8",
+        "system_id": "eval_627e230a_13_int-632428",
+        "name": "eval-627e230a-13-Internal PDF document type classifier",
+        "version": "1.0.0",
+        "purpose": "Classify incoming PDF documents into internal administrative categories such as invoices, forms and correspondence. It routes each file to the appropriate processing queue.",
+        "model_type": "nlp",
+        "output_type": "multiclass",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "MINIMAL_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "MINIMAL_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.9,
+            "reasoning": "Step 1 analysis: Not prohibited under Article 5. Step 2 analysis: Does not match any high-risk use cases in Annex III (such as emergency calls under point 5(d)). Step 3 analysis: Not a chatbot, emotion recognition system, AI-generated media, or interactive recommendation system. Step 4 analysis: As an internal PDF document type classifier routing administrative files like invoices and forms, it defaults to MINIMAL_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 57,
+                "title": "Technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 11",
+                "annex_id": null,
+                "citation": "Article 11",
+                "page_end": 57,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 58,
+                "heading_page": 57,
+                "section_type": "article",
+                "article_title": "Technical documentation",
+                "annex_subpoint": null,
+                "article_number": 11,
+                "page_number_end": 58
+              },
+              {
+                "page": 133,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 2,
+                "page_number": 134,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 134,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 4,
+                "page_number": 135,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 127,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(d)",
+                "page_end": 127,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 128,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "d",
+                "article_number": null,
+                "page_number_end": 128
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to evaluate and classify emergency calls by natural persons...",
+                "annex": "III",
+                "point": "5(d)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [
+              {
+                "article": "Article 6",
+                "title": "Classification rules for high-risk AI systems",
+                "excerpt": "Classification rules for high-risk AI systems",
+                "annex": null,
+                "point": null,
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "No mandatory requirements under the EU AI Act, though voluntary codes of conduct are encouraged."
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-13-Internal PDF document type classifier\n\n## Purpose\nClassify incoming PDF documents into internal administrative categories such as invoices, forms and correspondence. It routes each file to the appropriate processing queue.\n\n## Model Type\nNLP\n\n## Output Type\nMulticlass\n\n## Data\nDescription of training and inference data not specified.\n\n## Performance\nExpected performance characteristics include accurate routing of internal administrative documents.\n\n## Risk Considerations\nPotential risks include misclassification leading to delayed processing or improper routing of sensitive administrative documents.\n\n## Human Oversight\nRequired human involvement should include periodic auditing of classification queues and handling of unclassified or ambiguous documents.\n\n## Known Limitations\nKey limitations include dependency on the quality of incoming PDF text and potential out-of-distribution document types.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:31:08.990196",
+        "last_classified_at": "2026-10-05T09:31:44.522643"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 14,
+      "name": "Employee promotion monitoring",
+      "purpose": "Monitor employee performance using productivity and work-quality information. Managers use the assessments when deciding which employees to promote.",
+      "expected_tier": "HIGH_RISK",
+      "expected_provision": "Annex III 4(b)",
+      "difficulty": "clear",
+      "predicted_tier": "HIGH_RISK",
+      "tier_correct": true,
+      "cited_provisions": [
+        "Annex III 4(b)"
+      ],
+      "exclusions_checked": [],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to make decisions affecting terms of work-related relationships, the promotion or termination of work-related contractual relationships, to allocate tasks based on individual behaviour or personal traits or characteristics or to monitor and evaluate the performance and behaviour of persons in such relationships.",
+            "annex": "III",
+            "point": "4(b)",
+            "citation_role": "supporting"
+          },
+          "role": "supporting",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.95,
+      "reasoning": "Step 1 analysis: Not prohibited because the system does not involve social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: HIGH_RISK classification applies because the AI system is intended to be used to monitor and evaluate the performance and behaviour of persons in work-related relationships and assist in employee promotion decisions, which matches Annex III, point 4(b).",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "29535485-b346-446e-ba99-f00eb051657f",
+        "system_id": "eval_627e230a_14_emp-288cd2",
+        "name": "eval-627e230a-14-Employee promotion monitoring",
+        "version": "1.0.0",
+        "purpose": "Monitor employee performance using productivity and work-quality information. Managers use the assessments when deciding which employees to promote.",
+        "model_type": "other",
+        "output_type": "binary_classification",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [
+          "employees"
+        ],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "HIGH_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "HIGH_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.95,
+            "reasoning": "Step 1 analysis: Not prohibited because the system does not involve social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: HIGH_RISK classification applies because the AI system is intended to be used to monitor and evaluate the performance and behaviour of persons in work-related relationships and assist in employee promotion decisions, which matches Annex III, point 4(b).",
+            "retrieved_provisions": [
+              {
+                "page": 134,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 134,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 6,
+                "page_number": 135,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 135
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 4(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "4",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 86,
+                "title": "Codes of practice",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 56",
+                "annex_id": null,
+                "citation": "Article 56",
+                "page_end": 86,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 87,
+                "heading_page": 85,
+                "section_type": "article",
+                "article_title": "Codes of practice",
+                "annex_subpoint": null,
+                "article_number": 56,
+                "page_number_end": 87
+              },
+              {
+                "page": 133,
+                "title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex VII",
+                "annex_id": "VII",
+                "citation": "Annex VII",
+                "page_end": 133,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Conformity based on an assessment of the quality management system and an assessment of the technical documentation",
+                "chunk_index": 1,
+                "page_number": 134,
+                "heading_page": 133,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 134
+              },
+              {
+                "page": 53,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 54,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [],
+            "citations": [
+              {
+                "article": "Annex III",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to make decisions affecting terms of work-related relationships, the promotion or termination of work-related contractual relationships, to allocate tasks based on individual behaviour or personal traits or characteristics or to monitor and evaluate the performance and behaviour of persons in such relationships.",
+                "annex": "III",
+                "point": "4(b)",
+                "citation_role": "supporting"
+              }
+            ],
+            "obligations": [
+              "Implement a quality management system",
+              "Draw up and maintain technical documentation",
+              "Ensure automatic logging of events",
+              "Provide instructions for use and transparency to deployers",
+              "Design for human oversight",
+              "Ensure accuracy, robustness, and cybersecurity"
+            ]
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-14-Employee promotion monitoring\n\n## Purpose\nMonitor employee performance using productivity and work-quality information. Managers use the assessments when deciding which employees to promote.\n\n## Model Type\nNot specified\n\n## Output Type\nBinary Classification\n\n## Data\nProductivity and work-quality information.\n\n## Performance\nAssessed via label evaluations for promotion decisions.\n\n## Risk Considerations\nHigh risk regarding worker rights, bias, and fairness under EU regulations.\n\n## Human Oversight\nManagers use the assessments when deciding which employees to promote.\n\n## Known Limitations\nData sources not specified.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:31:48.856057",
+        "last_classified_at": "2026-10-05T09:32:24.616624"
+      },
+      "http_status": 201
+    },
+    {
+      "id": 15,
+      "name": "Internal portfolio capital model",
+      "purpose": "Estimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios. The model makes no decisions about individual customers or applicants.",
+      "expected_tier": "MINIMAL_RISK",
+      "expected_provision": "Annex III 5(b) scope",
+      "difficulty": "ambiguous",
+      "predicted_tier": "MINIMAL_RISK",
+      "tier_correct": true,
+      "cited_provisions": [],
+      "exclusions_checked": [
+        "Annex III 5(b)"
+      ],
+      "provision_match": true,
+      "grounded": true,
+      "grounding_checks": [
+        {
+          "citation": {
+            "article": "Annex III, point 5(b)",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)",
+            "citation_role": "exclusion_checked"
+          },
+          "role": "exclusion_checked",
+          "grounded": true
+        }
+      ],
+      "needs_review": false,
+      "needs_review_reasons": [],
+      "confidence": 0.95,
+      "reasoning": "Step 1 analysis: Not prohibited under Article 5 as it does not involve social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: Not high-risk under Annex III because the system is used solely to estimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios, making no decisions about individual customers or applicants, thereby avoiding creditworthiness evaluation of natural persons under Annex III, point 5(b). Step 3 analysis: Does not fit limited risk criteria such as conversational systems, emotion recognition, or generative media. Step 4 analysis: Defaulting to MINIMAL_RISK.",
+      "llm_provider": "gemini",
+      "llm_model": "gemini-3.5-flash-lite",
+      "dropped_citations": [],
+      "response": {
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false,
+        "needs_review_reasons": [],
+        "id": "7fd513cf-14f8-4274-9544-8fb666fa976e",
+        "system_id": "eval_627e230a_15_int-ec9d85",
+        "name": "eval-627e230a-15-Internal portfolio capital model",
+        "version": "1.0.0",
+        "purpose": "Estimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios. The model makes no decisions about individual customers or applicants.",
+        "model_type": "regression",
+        "output_type": "regression",
+        "owner_team": "Labelled evaluation",
+        "owner_email": null,
+        "data_sources": [],
+        "affected_demographics": [],
+        "jurisdictions": [
+          "EU"
+        ],
+        "risk_tier": "MINIMAL_RISK",
+        "risk_classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+        "regulatory_citations": {
+          "EU_AI_ACT": {
+            "risk_tier": "MINIMAL_RISK",
+            "llm_provider": "gemini",
+            "llm_model": "gemini-3.5-flash-lite",
+            "needs_review": false,
+            "needs_review_reasons": [],
+            "status": "assessed",
+            "confidence": 0.95,
+            "reasoning": "Step 1 analysis: Not prohibited under Article 5 as it does not involve social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups. Step 2 analysis: Not high-risk under Annex III because the system is used solely to estimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios, making no decisions about individual customers or applicants, thereby avoiding creditworthiness evaluation of natural persons under Annex III, point 5(b). Step 3 analysis: Does not fit limited risk criteria such as conversational systems, emotion recognition, or generative media. Step 4 analysis: Defaulting to MINIMAL_RISK.",
+            "retrieved_provisions": [
+              {
+                "page": 143,
+                "title": "Criteria for the designation of general-purpose AI models with systemic risk referred to in Article 51",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex XIII",
+                "annex_id": "XIII",
+                "citation": "Annex XIII",
+                "page_end": 143,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": "Criteria for the designation of general-purpose AI models with systemic risk referred to in Article 51",
+                "chunk_index": 1,
+                "page_number": 144,
+                "heading_page": 143,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": null,
+                "article_number": null,
+                "page_number_end": 144
+              },
+              {
+                "page": 85,
+                "title": "Obligations of providers of general-purpose AI models with systemic risk",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 55",
+                "annex_id": null,
+                "citation": "Article 55",
+                "page_end": 85,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 1,
+                "page_number": 86,
+                "heading_page": 85,
+                "section_type": "article",
+                "article_title": "Obligations of providers of general-purpose AI models with systemic risk",
+                "annex_subpoint": null,
+                "article_number": 55,
+                "page_number_end": 86
+              },
+              {
+                "page": 62,
+                "title": "Quality management system",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 17",
+                "annex_id": null,
+                "citation": "Article 17",
+                "page_end": 62,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 2,
+                "page_number": 63,
+                "heading_page": 61,
+                "section_type": "article",
+                "article_title": "Quality management system",
+                "annex_subpoint": null,
+                "article_number": 17,
+                "page_number_end": 63
+              },
+              {
+                "page": 126,
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "source": "eu_ai_act.pdf",
+                "article": "Annex III",
+                "annex_id": "III",
+                "citation": "Annex III, point 5(b)",
+                "page_end": 126,
+                "framework": "EU_AI_ACT",
+                "annex_point": "5",
+                "annex_title": "High-risk AI systems referred to in Article 6(2)",
+                "chunk_index": 0,
+                "page_number": 127,
+                "heading_page": 126,
+                "section_type": "annex",
+                "article_title": null,
+                "annex_subpoint": "b",
+                "article_number": null,
+                "page_number_end": 127
+              },
+              {
+                "page": 52,
+                "title": "Classification rules for high-risk AI systems",
+                "source": "eu_ai_act.pdf",
+                "article": "Article 6",
+                "annex_id": null,
+                "citation": "Article 6",
+                "page_end": 53,
+                "framework": "EU_AI_ACT",
+                "annex_point": null,
+                "annex_title": null,
+                "chunk_index": 0,
+                "page_number": 53,
+                "heading_page": 52,
+                "section_type": "article",
+                "article_title": "Classification rules for high-risk AI systems",
+                "annex_subpoint": null,
+                "article_number": 6,
+                "page_number_end": 54
+              }
+            ],
+            "dropped_citations": [],
+            "exclusions_checked": [
+              {
+                "article": "Annex III, point 5(b)",
+                "title": "High-risk AI systems referred to in Article 6(2)",
+                "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+                "annex": "III",
+                "point": "5(b)",
+                "citation_role": "exclusion_checked"
+              }
+            ],
+            "citations": [],
+            "obligations": []
+          }
+        },
+        "model_card": "# Model Card: eval-627e230a-15-Internal portfolio capital model\n\n## Purpose\nEstimate aggregate capital requirements for an internal financial portfolio using portfolio-level exposures and scenarios. The model makes no decisions about individual customers or applicants.\n\n## Model Type\nNot specified\n\n## Output Type\nNot specified\n\n## Data\nDescription of training and inference data not specified.\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks include inaccurate capital estimations under extreme financial scenarios.\n\n## Human Oversight\nRequired human involvement for reviewing capital requirement estimates.\n\n## Known Limitations\nKey limitations and constraints include reliance on provided scenarios.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+        "monitoring_enabled": true,
+        "registered_at": "2026-10-05T09:32:28.869147",
+        "last_classified_at": "2026-10-05T09:33:04.269495"
+      },
+      "http_status": 201
+    }
+  ],
+  "cleanup": [
+    {
+      "system_id": "eval_627e230a_01_ret-a2438a",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_02_cv_-02f0aa",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_03_ema-13ad78",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_04_ban-63a3c0",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_05_pub-72b04f",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_06_car-210d2a",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_07_lif-dad41c",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_08_exa-2af131",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_09_wor-c53903",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_10_mar-a1d831",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_11_e_c-ba9ded",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_12_stu-fbdf75",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_13_int-632428",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_14_emp-288cd2",
+      "status": 204
+    },
+    {
+      "system_id": "eval_627e230a_15_int-ec9d85",
+      "status": 204
+    }
+  ],
+  "stop_reason": null,
+  "usage": {
+    "live_calls": 30,
+    "input_tokens": 70216,
+    "output_tokens": 9400,
+    "cache_hits": 0,
+    "quota_or_429_errors": 0,
+    "statuses": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+    ],
+    "live_calls_upper_bound_including_interruption": 31
+  },
+  "metrics": {
+    "clear_correct": 13,
+    "clear_total": 13,
+    "clear_evaluated": 13,
+    "ambiguous": [
+      {
+        "id": 6,
+        "expected_tier": "MINIMAL_RISK",
+        "predicted_tier": "MINIMAL_RISK",
+        "tier_correct": true,
+        "provision_match": true
+      },
+      {
+        "id": 15,
+        "expected_tier": "MINIMAL_RISK",
+        "predicted_tier": "MINIMAL_RISK",
+        "tier_correct": true,
+        "provision_match": true
+      }
+    ],
+    "confusion_matrix_clear": {
+      "PROHIBITED": {
+        "PROHIBITED": 2,
+        "HIGH_RISK": 0,
+        "LIMITED_RISK": 0,
+        "MINIMAL_RISK": 0,
+        "UNCLASSIFIED": 0
+      },
+      "HIGH_RISK": {
+        "PROHIBITED": 0,
+        "HIGH_RISK": 6,
+        "LIMITED_RISK": 0,
+        "MINIMAL_RISK": 0,
+        "UNCLASSIFIED": 0
+      },
+      "LIMITED_RISK": {
+        "PROHIBITED": 0,
+        "HIGH_RISK": 0,
+        "LIMITED_RISK": 2,
+        "MINIMAL_RISK": 0,
+        "UNCLASSIFIED": 0
+      },
+      "MINIMAL_RISK": {
+        "PROHIBITED": 0,
+        "HIGH_RISK": 0,
+        "LIMITED_RISK": 0,
+        "MINIMAL_RISK": 3,
+        "UNCLASSIFIED": 0
+      }
+    },
+    "review_case_ids": [],
+    "provision_matches": 10,
+    "provision_evaluated": 15
+  },
+  "continuation": {
+    "completed_before_interruption": 10,
+    "reserved_unlogged_call_upper_bound": 1,
+    "new_process_cap": 13
+  }
+}

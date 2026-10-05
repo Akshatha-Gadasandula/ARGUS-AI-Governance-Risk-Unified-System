@@ -120,7 +120,7 @@ class DriftFairnessMonitor:
             dp_diff,
             self.demographic_parity_warning,
             self.demographic_parity_critical,
-            "EU AI Act Article 10(2); RBI Model Risk Section 4.3",
+            "EU AI Act Article 10(2); unverified: RBI corpus not indexed (Model Risk Section 4.3)",
         )
         if dp_violation:
             violations.append(dp_violation)
@@ -150,7 +150,7 @@ class DriftFairnessMonitor:
                 psi_value,
                 self.psi_warning,
                 self.psi_critical,
-                "RBI Model Risk Guidelines Section 5.1",
+                "unverified: RBI corpus not indexed (Model Risk Guidelines Section 5.1)",
                 feature=feature,
             )
             if psi_violation:

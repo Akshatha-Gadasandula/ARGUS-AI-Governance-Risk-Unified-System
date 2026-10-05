@@ -138,6 +138,7 @@ class FrameworkClassification(BaseModel):
     confidence: Optional[float] = Field(..., ge=0.0, le=1.0, description="Confidence score")
     reasoning: str = Field(..., description="Detailed reasoning for classification")
     citations: list[CitationSchema] = Field(..., description="Supporting regulatory citations")
+    exclusions_checked: list[CitationSchema] = Field(default_factory=list)
     obligations: list[str] = Field(..., description="Regulatory obligations")
 
     model_config = {"from_attributes": True}

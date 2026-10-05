@@ -38,3 +38,14 @@ def test_psi_reference_bins_handle_uniform_scale_shift():
 
     assert np.isfinite(psi)
     assert psi > 0.25
+
+
+def test_alert_references_distinguish_indexed_eu_text_and_unverified_rbi(monkeypatch):
+    monitor = DriftFairnessMonitor()
+    monkeypatch.setattr(monitor, "_demographic_parity", lambda *a: .3)
+    monkeypatch.setattr(monitor, "_equalized_odds", lambda *a: .3)
+    monkeypatch.setattr(monitor, "_compute_psi", lambda *a: {"x":.3})
+    report = monitor.evaluate("test", [0,1], [0,1], [.1,.9], "group", ["a","b"], [{"x":0}], [{"x":1}])
+    references = [v.regulatory_reference for v in report.violations]
+    assert any("EU AI Act Article 10(2)" in ref for ref in references)
+    assert all("unverified: RBI corpus not indexed" in ref for ref in references if "RBI" in ref)

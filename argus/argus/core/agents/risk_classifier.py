@@ -3,6 +3,7 @@ Risk Classifier Agent - classifies AI systems under EU AI Act and RBI guidelines
 Core governance engine that determines regulatory obligations and risk tiers.
 """
 import logging
+import re
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import Optional
@@ -40,6 +41,7 @@ class RegulatoryClassification:
     status: str = "assessed"
     retrieved_provisions: list[dict] = field(default_factory=list)
     dropped_citations: list[dict] = field(default_factory=list)
+    exclusions_checked: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -436,6 +438,7 @@ class RiskClassifierAgent:
                     "reasoning": classification.reasoning,
                     "retrieved_provisions": classification.retrieved_provisions,
                     "dropped_citations": classification.dropped_citations,
+                    "exclusions_checked": classification.exclusions_checked,
                     "citations": classification.citations,
                     "obligations": classification.obligations,
                 }
@@ -561,12 +564,13 @@ class RiskClassifierAgent:
             reasons.append("confidence_below_0.7")
         if not retrieved_passages:
             reasons.append("no_retrieved_chunks")
+        supporting, exclusions = split_citation_roles(risk_tier, result.get("citations", []), result.get("exclusions_checked", []))
         classification = RegulatoryClassification(
             framework=framework_name,
             risk_tier=risk_tier,
             confidence=float(result.get("confidence", 0.5)),
             reasoning=result.get("reasoning", ""),
-            citations=result.get("citations", []),
+            citations=supporting,
             obligations=result.get("obligations", []),
             llm_provider=result["llm_provider"],
             llm_model=result["llm_model"],
@@ -574,7 +578,21 @@ class RiskClassifierAgent:
             needs_review_reasons=reasons,
             retrieved_provisions=[doc.metadata for doc in retrieved_passages],
             dropped_citations=result.get("dropped_citations", []),
+            exclusions_checked=exclusions,
         )
 
         logger.info(f"{framework_name} classification: {risk_tier} (confidence: {classification.confidence:.2f})")
         return classification
+
+
+def split_citation_roles(tier, citations, exclusions):
+    supporting, checked = [], list(exclusions)
+    for citation in citations:
+        article_five = bool(re.search(r"\bArticle\s+5\b", citation.get("article", ""), re.I)) or citation.get("article") == "5"
+        excluded = citation.get("citation_role") == "exclusion_checked"
+        if excluded or (tier in ("MINIMAL_RISK", "LIMITED_RISK") and article_five):
+            if citation not in checked:
+                checked.append(citation)
+        else:
+            supporting.append(citation)
+    return supporting, checked
