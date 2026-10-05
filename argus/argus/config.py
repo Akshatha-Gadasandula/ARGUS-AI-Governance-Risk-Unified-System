@@ -6,7 +6,7 @@ from functools import lru_cache
 from typing import Optional
 
 from pydantic_settings import BaseSettings
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from typing import Literal
 
 
@@ -21,6 +21,15 @@ class Settings(BaseSettings):
     claude_model: str = ""
     llm_max_calls: int = Field(default=12, ge=0)
     llm_max_rpm: int = Field(default=5, gt=0)
+
+    @field_validator("gemini_model")
+    @classmethod
+    def validate_gemini_model_id(cls, value: str) -> str:
+        if value.startswith("models/") or any(
+            char.isspace() or char.isupper() or char in "\"'" for char in value
+        ):
+            raise ValueError("GEMINI_MODEL: use the API model ID, not the display name")
+        return value
 
     # Database Configuration
     postgres_user: str = "argus"

@@ -1,0 +1,219 @@
+{
+  "response": {
+    "llm_provider": "gemini",
+    "llm_model": "gemini-3.5-flash-lite",
+    "needs_review": true,
+    "id": "088ec93b-95af-426f-aaee-40b78afa3a27",
+    "system_id": "email_spam_filter-e92f9a",
+    "name": "Email Spam Filter",
+    "version": "1.0.0",
+    "purpose": "Classify incoming email messages as spam or legitimate email for inbox filtering",
+    "model_type": "nlp",
+    "output_type": "binary_classification",
+    "owner_team": "Messaging Operations",
+    "owner_email": null,
+    "data_sources": [
+      "email_messages"
+    ],
+    "affected_demographics": [],
+    "jurisdictions": [
+      "EU"
+    ],
+    "risk_tier": "MINIMAL_RISK",
+    "risk_classification_reasoning": "Classified across 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+    "regulatory_citations": {
+      "EU_AI_ACT": {
+        "risk_tier": "MINIMAL_RISK",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": true,
+        "citations": [],
+        "obligations": []
+      }
+    },
+    "model_card": "# Model Card: Email Spam Filter\n\n## Purpose\nClassify incoming email messages as spam or legitimate email for inbox filtering.\n\n## Model Type\nnlp\n\n## Output Type\nbinary_classification\n\n## Data\nDescription of training and inference data derived from email_messages.\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+    "monitoring_enabled": true,
+    "registered_at": "2026-10-05T08:00:05.531929",
+    "last_classified_at": "2026-10-05T08:00:05.526597"
+  },
+  "llm_trace": [
+    {
+      "schema": "RegistrationOutput",
+      "live_calls": 1,
+      "retrieved_chunks": [],
+      "raw_model_response": {
+        "inferred_model_type": "nlp",
+        "inferred_output_type": "binary_classification",
+        "inferred_affected_demographics": [],
+        "data_sensitivity": "HIGH",
+        "model_card": "# Model Card: Email Spam Filter\n\n## Purpose\nClassify incoming email messages as spam or legitimate email for inbox filtering.\n\n## Model Type\nnlp\n\n## Output Type\nbinary_classification\n\n## Data\nDescription of training and inference data derived from email_messages.\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints..."
+      },
+      "validated_grounded_output": {
+        "inferred_model_type": "nlp",
+        "inferred_output_type": "binary_classification",
+        "inferred_affected_demographics": [],
+        "data_sensitivity": "HIGH",
+        "model_card": "# Model Card: Email Spam Filter\n\n## Purpose\nClassify incoming email messages as spam or legitimate email for inbox filtering.\n\n## Model Type\nnlp\n\n## Output Type\nbinary_classification\n\n## Data\nDescription of training and inference data derived from email_messages.\n\n## Performance\nExpected performance characteristics...\n\n## Risk Considerations\nPotential risks and mitigations...\n\n## Human Oversight\nRequired human involvement...\n\n## Known Limitations\nKey limitations and constraints...",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false
+      },
+      "citation_checks": []
+    },
+    {
+      "schema": "ClassificationOutput",
+      "live_calls": 1,
+      "retrieved_chunks": [
+        {
+          "text": "Recitals\ntaking into account the circumstances and the context of use. When implementing that obligation, the characteristics of natural persons belonging to vulnerable groups due to their age or disability should be taken into account to the extent the AI system is intended to interact with those groups as well. Moreover, natural persons should be notified when they are exposed to AI systems that, by processing their biometric data, can identify or infer the emotions or intentions of those persons or assign them to specific categories. Such specific categories can relate to aspects such as sex, age, hair colour, eye colour, tattoos, personal traits, ethnic origin, personal preferences and interests. Such information and notifications should be provided in accessible formats for persons with disabilities. (133) A variety of AI systems can generate large quantities of synthetic content that becomes increasingly hard for humans to distinguish from human-generated and authentic content. The wide availability and increasing capabilities of those systems have a significant impact on the integrity and trust in the information ecosystem, raising new risks of misinformation and manipulation at scale, fraud, impersonation and consumer deception. In light of those impacts, the fast technological pace and the need for new methods and techniques to trace origin of information, it is appropriate to require providers of those systems to",
+          "metadata": {
+            "page": 32,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 33,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 152,
+            "page_number": 33,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 34
+          }
+        },
+        {
+          "text": "Recitals\nsystem that does not materially influence the outcome of decision-making should be understood to be an AI system that does not have an impact on the substance, and thereby the outcome, of decision-making, whether human or automated. An AI system that does not materially influence the outcome of decision-making could include situations in which one or more of the following conditions are fulfilled. The first such condition should be that the AI system is intended to perform a narrow procedural task, such as an AI system that transforms unstructured data into structured data, an AI system that classifies incoming documents into categories or an AI system that is used to detect duplicates among a large number of applications. Those tasks are of such narrow and limited nature that they pose only limited risks which are not increased through the use of an AI system in a context that is listed as a high-risk use in an annex to this Regulation. The second condition should be (30) Regulation (EU) 2018/1139 of the European Parliament and of the Council of 4 July 2018 on common rules in the field of civil aviation and establishing a European Union Aviation Safety Agency, and amending Regulations (EC) No 2111/2005, (EC) No 1008/2008,",
+          "metadata": {
+            "page": 13,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 13,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 64,
+            "page_number": 14,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 14
+          }
+        },
+        {
+          "text": "Recitals\nto enable the public to effectively distinguish AI-generated content. (136) The obligations placed on providers and deployers of certain AI systems in this Regulation to enable the detection and disclosure that the outputs of those systems are artificially generated or manipulated are particularly relevant to facilitate the effective implementation of Regulation (EU) 2022/2065. This applies in particular as regards the obligations of providers of very large online platforms or very large online search engines to identify and mitigate systemic risks that may arise from the dissemination of content that has been artificially generated or manipulated, in particular the risk of the actual or foreseeable negative effects on democratic processes, civic discourse and electoral processes, including through disinformation. The requirement to label content generated by AI systems under this Regulation is without prejudice to the obligation in Article 16(6) of Regulation (EU) 2022/2065 for providers of hosting services to process notices on illegal content received pursuant to Article 16(1) of that Regulation and should not influence the assessment and the decision on the illegality of the specific content. That assessment should be performed solely with reference to the rules governing the legality of the content. (137) Compliance with the transparency obligations for the AI systems covered by this Regulation should",
+          "metadata": {
+            "page": 33,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 34,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 156,
+            "page_number": 34,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 35
+          }
+        },
+        {
+          "text": "Recitals\nhigh risk to legal and natural persons. In addition, AI systems used to evaluate the credit score or creditworthiness of natural persons should be classified as high-risk AI systems, since they determine those persons’ access to financial resources or essential services such as housing, electricity, and telecommunication services. AI systems used for those purposes may lead to discrimination between persons or groups and may perpetuate historical patterns of discrimination, such as that based on racial or ethnic origins, gender, disabilities, age or sexual orientation, or may create new forms of discriminatory impacts. However, AI systems provided for by Union law for the purpose of detecting fraud in the offering of financial services and for prudential purposes to calculate credit institutions’ and insurance undertakings’ capital requirements should not be considered to be high-risk under this Regulation. Moreover, AI systems intended to be used for risk assessment and pricing in relation to natural persons for health and life insurance can also have a significant impact on persons’ livelihood and if not duly designed, developed and used, can infringe their fundamental rights and can lead to serious consequences for people’s life and health, including financial exclusion and discrimination. Finally, AI systems used to evaluate and classify emergency calls by natural persons or to dispatch",
+          "metadata": {
+            "page": 15,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 16,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 75,
+            "page_number": 16,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 17
+          }
+        },
+        {
+          "text": "Recitals\nThree of the TFEU. (42) In line with the presumption of innocence, natural persons in the Union should always be judged on their actual behaviour. Natural persons should never be judged on AI-predicted behaviour based solely on their profiling, personality traits or characteristics, such as nationality, place of birth, place of residence, number of children, level of debt or type of car, without a reasonable suspicion of that person being involved in a criminal activity based on objective verifiable facts and without human assessment thereof. Therefore, risk assessments carried out with regard to natural persons in order to assess the likelihood of their offending or to predict the occurrence of an actual or potential criminal offence based solely on profiling them or on assessing their personality traits and characteristics should be prohibited. In any case, that prohibition does not refer to or touch upon risk analytics that are not based on the profiling of individuals or on the personality traits and characteristics of individuals, such as AI systems using risk analytics to assess the likelihood of financial fraud by undertakings on the basis of suspicious transactions or risk analytic tools to predict the likelihood of the localisation of narcotics or illicit goods by customs authorities, for example on the basis of known trafficking routes. (43) The",
+          "metadata": {
+            "page": 11,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 11,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 52,
+            "page_number": 12,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 12
+          }
+        }
+      ],
+      "raw_model_response": {
+        "risk_tier": "MINIMAL_RISK",
+        "confidence": 0.95,
+        "reasoning": "Step 1 analysis: The system is an email spam filter and does not involve social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups, so it is not PROHIBITED. Step 2 analysis: It does not fall under any high-risk categories in Annex III such as critical infrastructure, employment, credit scoring, or law enforcement. Step 3 analysis: It is not a chatbot, emotion recognition system, AI-generated media, or high-risk recommendation system, so it is not LIMITED_RISK. Furthermore, performing narrow tasks such as classifying incoming documents into categories poses only limited or minimal risks. Step 4 analysis: By default, the system falls under MINIMAL_RISK.",
+        "citations": [
+          {
+            "article": "Recitals",
+            "title": "Recitals",
+            "excerpt": "An AI system that does not materially influence the outcome of decision-making could include situations in which one or more of the following conditions are fulfilled. The first such condition should be that the AI system is intended to perform a narrow procedural task, such as an AI system that transforms unstructured data into structured data, an AI system that classifies incoming documents into categories or an AI system that is used to detect duplicates among a large number of applications.",
+            "annex": null,
+            "point": null
+          }
+        ],
+        "obligations": []
+      },
+      "validated_grounded_output": {
+        "risk_tier": "MINIMAL_RISK",
+        "confidence": 0.95,
+        "reasoning": "Step 1 analysis: The system is an email spam filter and does not involve social scoring, biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups, so it is not PROHIBITED. Step 2 analysis: It does not fall under any high-risk categories in Annex III such as critical infrastructure, employment, credit scoring, or law enforcement. Step 3 analysis: It is not a chatbot, emotion recognition system, AI-generated media, or high-risk recommendation system, so it is not LIMITED_RISK. Furthermore, performing narrow tasks such as classifying incoming documents into categories poses only limited or minimal risks. Step 4 analysis: By default, the system falls under MINIMAL_RISK.",
+        "citations": [],
+        "obligations": [],
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": true
+      },
+      "citation_checks": [
+        {
+          "citation": {
+            "article": "Recitals",
+            "title": "Recitals",
+            "excerpt": "An AI system that does not materially influence the outcome of decision-making could include situations in which one or more of the following conditions are fulfilled. The first such condition should be that the AI system is intended to perform a narrow procedural task, such as an AI system that transforms unstructured data into structured data, an AI system that classifies incoming documents into categories or an AI system that is used to detect duplicates among a large number of applications.",
+            "annex": null,
+            "point": null
+          },
+          "provision_in_retrieved_chunks": false,
+          "flagged": true,
+          "dropped": true
+        }
+      ]
+    }
+  ]
+}

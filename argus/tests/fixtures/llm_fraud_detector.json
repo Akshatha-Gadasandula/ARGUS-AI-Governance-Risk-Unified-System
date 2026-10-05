@@ -1,0 +1,274 @@
+{
+  "response": {
+    "llm_provider": "gemini",
+    "llm_model": "gemini-3.5-flash-lite",
+    "needs_review": true,
+    "id": "f6a7112a-fe9f-4607-9b27-3f6f2808889a",
+    "system_id": "fraud_detection_engi-80a8af",
+    "name": "Fraud Detection Engine",
+    "version": "1.0.0",
+    "purpose": "Classify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features",
+    "model_type": "gradient_boosting",
+    "output_type": "binary_classification",
+    "owner_team": "Financial Crime AI",
+    "owner_email": null,
+    "data_sources": [
+      "transaction_stream",
+      "device_data",
+      "merchant_data"
+    ],
+    "affected_demographics": [
+      "geography"
+    ],
+    "jurisdictions": [
+      "EU"
+    ],
+    "risk_tier": "MINIMAL_RISK",
+    "risk_classification_reasoning": "Classified across 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+    "regulatory_citations": {
+      "EU_AI_ACT": {
+        "risk_tier": "MINIMAL_RISK",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": true,
+        "citations": [
+          {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)"
+          }
+        ],
+        "obligations": [
+          "General transparency obligations if interacting directly with natural persons",
+          "Voluntary codes of conduct as applicable"
+        ]
+      }
+    },
+    "model_card": "# Model Card: Fraud Detection Engine\n\n## Purpose\nClassify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nBinary Classification\n\n## Data\nData sources include transaction_stream, device_data, and merchant_data.\n\n## Performance\nExpected performance characteristics include high precision and recall for financial fraud detection.\n\n## Risk Considerations\nPotential risks include false positives impacting legitimate users based on geography and transaction patterns.\n\n## Human Oversight\nRequired human involvement for high-risk flagged transactions and appeals.\n\n## Known Limitations\nKey limitations include dependency on real-time data streaming quality and potential geographic bias.\n\nLLM provider: gemini\nLLM model: gemini-3.5-flash-lite\nNeeds review: False",
+    "monitoring_enabled": true,
+    "registered_at": "2026-10-05T07:59:25.775507",
+    "last_classified_at": "2026-10-05T07:59:25.771733"
+  },
+  "llm_trace": [
+    {
+      "schema": "RegistrationOutput",
+      "live_calls": 1,
+      "retrieved_chunks": [],
+      "raw_model_response": {
+        "inferred_model_type": "gradient_boosting",
+        "inferred_output_type": "binary_classification",
+        "inferred_affected_demographics": [
+          "geography"
+        ],
+        "data_sensitivity": "HIGH",
+        "model_card": "# Model Card: Fraud Detection Engine\n\n## Purpose\nClassify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nBinary Classification\n\n## Data\nData sources include transaction_stream, device_data, and merchant_data.\n\n## Performance\nExpected performance characteristics include high precision and recall for financial fraud detection.\n\n## Risk Considerations\nPotential risks include false positives impacting legitimate users based on geography and transaction patterns.\n\n## Human Oversight\nRequired human involvement for high-risk flagged transactions and appeals.\n\n## Known Limitations\nKey limitations include dependency on real-time data streaming quality and potential geographic bias."
+      },
+      "validated_grounded_output": {
+        "inferred_model_type": "gradient_boosting",
+        "inferred_output_type": "binary_classification",
+        "inferred_affected_demographics": [
+          "geography"
+        ],
+        "data_sensitivity": "HIGH",
+        "model_card": "# Model Card: Fraud Detection Engine\n\n## Purpose\nClassify financial transactions as fraudulent or legitimate using behavioral patterns and transaction features.\n\n## Model Type\nGradient Boosting\n\n## Output Type\nBinary Classification\n\n## Data\nData sources include transaction_stream, device_data, and merchant_data.\n\n## Performance\nExpected performance characteristics include high precision and recall for financial fraud detection.\n\n## Risk Considerations\nPotential risks include false positives impacting legitimate users based on geography and transaction patterns.\n\n## Human Oversight\nRequired human involvement for high-risk flagged transactions and appeals.\n\n## Known Limitations\nKey limitations include dependency on real-time data streaming quality and potential geographic bias.",
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": false
+      },
+      "citation_checks": []
+    },
+    {
+      "schema": "ClassificationOutput",
+      "live_calls": 1,
+      "retrieved_chunks": [
+        {
+          "text": "Recitals\nThree of the TFEU. (42) In line with the presumption of innocence, natural persons in the Union should always be judged on their actual behaviour. Natural persons should never be judged on AI-predicted behaviour based solely on their profiling, personality traits or characteristics, such as nationality, place of birth, place of residence, number of children, level of debt or type of car, without a reasonable suspicion of that person being involved in a criminal activity based on objective verifiable facts and without human assessment thereof. Therefore, risk assessments carried out with regard to natural persons in order to assess the likelihood of their offending or to predict the occurrence of an actual or potential criminal offence based solely on profiling them or on assessing their personality traits and characteristics should be prohibited. In any case, that prohibition does not refer to or touch upon risk analytics that are not based on the profiling of individuals or on the personality traits and characteristics of individuals, such as AI systems using risk analytics to assess the likelihood of financial fraud by undertakings on the basis of suspicious transactions or risk analytic tools to predict the likelihood of the localisation of narcotics or illicit goods by customs authorities, for example on the basis of known trafficking routes. (43) The",
+          "metadata": {
+            "page": 11,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 11,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 52,
+            "page_number": 12,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 12
+          }
+        },
+        {
+          "text": "Recitals\nhigh risk to legal and natural persons. In addition, AI systems used to evaluate the credit score or creditworthiness of natural persons should be classified as high-risk AI systems, since they determine those persons’ access to financial resources or essential services such as housing, electricity, and telecommunication services. AI systems used for those purposes may lead to discrimination between persons or groups and may perpetuate historical patterns of discrimination, such as that based on racial or ethnic origins, gender, disabilities, age or sexual orientation, or may create new forms of discriminatory impacts. However, AI systems provided for by Union law for the purpose of detecting fraud in the offering of financial services and for prudential purposes to calculate credit institutions’ and insurance undertakings’ capital requirements should not be considered to be high-risk under this Regulation. Moreover, AI systems intended to be used for risk assessment and pricing in relation to natural persons for health and life insurance can also have a significant impact on persons’ livelihood and if not duly designed, developed and used, can infringe their fundamental rights and can lead to serious consequences for people’s life and health, including financial exclusion and discrimination. Finally, AI systems used to evaluate and classify emergency calls by natural persons or to dispatch",
+          "metadata": {
+            "page": 15,
+            "title": "",
+            "source": "eu_ai_act.pdf",
+            "article": "Recitals",
+            "annex_id": null,
+            "citation": "Recitals",
+            "page_end": 16,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 75,
+            "page_number": 16,
+            "section_type": "recital",
+            "article_title": null,
+            "annex_subpoint": null,
+            "article_number": null,
+            "page_number_end": 17
+          }
+        },
+        {
+          "text": "Annex III, point 5(b) - High-risk AI systems referred to in Article 6(2)\n(b) AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+          "metadata": {
+            "page": 126,
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "source": "eu_ai_act.pdf",
+            "article": "Annex III",
+            "annex_id": "III",
+            "citation": "Annex III, point 5(b)",
+            "page_end": 126,
+            "framework": "EU_AI_ACT",
+            "annex_point": "5",
+            "annex_title": "High-risk AI systems referred to in Article 6(2)",
+            "chunk_index": 0,
+            "page_number": 127,
+            "heading_page": 126,
+            "section_type": "annex",
+            "article_title": null,
+            "annex_subpoint": "b",
+            "article_number": null,
+            "page_number_end": 127
+          }
+        },
+        {
+          "text": "Article 5 - Prohibited AI practices\nperson significant harm; (c) the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity; (d) the placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and",
+          "metadata": {
+            "page": 50,
+            "title": "Prohibited AI practices",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 5",
+            "annex_id": null,
+            "citation": "Article 5",
+            "page_end": 50,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 51,
+            "heading_page": 50,
+            "section_type": "article",
+            "article_title": "Prohibited AI practices",
+            "annex_subpoint": null,
+            "article_number": 5,
+            "page_number_end": 51
+          }
+        },
+        {
+          "text": "Article 3 - Definitions\n9(1) of Regulation (EU) 2016/679, Article 10 of Directive (EU) 2016/680 and Article 10(1) of Regulation (EU) 2018/1725; (38) ‘sensitive operational data’ means operational data related to activities of prevention, detection, investigation or prosecution of criminal offences, the disclosure of which could jeopardise the integrity of criminal proceedings; (39) ‘emotion recognition system’ means an AI system for the purpose of identifying or inferring emotions or intentions of natural persons on the basis of their biometric data; (40) ‘biometric categorisation system’ means an AI system for the purpose of assigning natural persons to specific categories on the basis of their biometric data, unless it is ancillary to another commercial service and strictly necessary for objective technical reasons; (41) ‘remote biometric identification system’ means an AI system for the purpose of identifying natural persons, without their active involvement, typically at a distance through the comparison of a person’s biometric data with the biometric data contained in a reference database; (42) ‘real-time remote biometric identification system’ means a remote biometric identification system, whereby the capturing of biometric",
+          "metadata": {
+            "page": 47,
+            "title": "Definitions",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 3",
+            "annex_id": null,
+            "citation": "Article 3",
+            "page_end": 47,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 7,
+            "page_number": 48,
+            "heading_page": 45,
+            "section_type": "article",
+            "article_title": "Definitions",
+            "annex_subpoint": null,
+            "article_number": 3,
+            "page_number_end": 48
+          }
+        }
+      ],
+      "raw_model_response": {
+        "risk_tier": "MINIMAL_RISK",
+        "confidence": 0.95,
+        "reasoning": "Step 1 analysis: The system does not engage in social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups, meaning it is not PROHIBITED under Article 5. Step 2 analysis: Although the system evaluates financial transactions for fraud, Annex III point 5(b) explicitly exempts AI systems used for the purpose of detecting financial fraud from being considered high-risk. Furthermore, Recital 42 clarifies that risk analytics used to assess the likelihood of financial fraud are not prohibited or classified under these restrictions. Step 3 analysis: The system is not a conversational chatbot, emotion recognition system, AI-generated media tool, or recommendation system with human interaction, ruling out LIMITED_RISK. Step 4 analysis: By default, as a fraud detection engine excluded from high-risk categories, the system falls under MINIMAL_RISK.",
+        "citations": [
+          {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)"
+          },
+          {
+            "article": "Recitals",
+            "title": "Recitals",
+            "excerpt": "However, AI systems provided for by Union law for the purpose of detecting financial fraud in the offering of financial services and for prudential purposes to calculate credit institutions’ and insurance undertakings’ capital requirements should not be considered to be high-risk under this Regulation.",
+            "annex": null,
+            "point": null
+          }
+        ],
+        "obligations": [
+          "General transparency obligations if interacting directly with natural persons",
+          "Voluntary codes of conduct as applicable"
+        ]
+      },
+      "validated_grounded_output": {
+        "risk_tier": "MINIMAL_RISK",
+        "confidence": 0.95,
+        "reasoning": "Step 1 analysis: The system does not engage in social scoring, real-time biometric mass surveillance, subliminal manipulation, or exploitation of vulnerable groups, meaning it is not PROHIBITED under Article 5. Step 2 analysis: Although the system evaluates financial transactions for fraud, Annex III point 5(b) explicitly exempts AI systems used for the purpose of detecting financial fraud from being considered high-risk. Furthermore, Recital 42 clarifies that risk analytics used to assess the likelihood of financial fraud are not prohibited or classified under these restrictions. Step 3 analysis: The system is not a conversational chatbot, emotion recognition system, AI-generated media tool, or recommendation system with human interaction, ruling out LIMITED_RISK. Step 4 analysis: By default, as a fraud detection engine excluded from high-risk categories, the system falls under MINIMAL_RISK.",
+        "citations": [
+          {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)"
+          }
+        ],
+        "obligations": [
+          "General transparency obligations if interacting directly with natural persons",
+          "Voluntary codes of conduct as applicable"
+        ],
+        "llm_provider": "gemini",
+        "llm_model": "gemini-3.5-flash-lite",
+        "needs_review": true
+      },
+      "citation_checks": [
+        {
+          "citation": {
+            "article": "Annex III",
+            "title": "High-risk AI systems referred to in Article 6(2)",
+            "excerpt": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud;",
+            "annex": "III",
+            "point": "5(b)"
+          },
+          "provision_in_retrieved_chunks": true,
+          "flagged": true,
+          "dropped": false
+        },
+        {
+          "citation": {
+            "article": "Recitals",
+            "title": "Recitals",
+            "excerpt": "However, AI systems provided for by Union law for the purpose of detecting financial fraud in the offering of financial services and for prudential purposes to calculate credit institutions’ and insurance undertakings’ capital requirements should not be considered to be high-risk under this Regulation.",
+            "annex": null,
+            "point": null
+          },
+          "provision_in_retrieved_chunks": false,
+          "flagged": true,
+          "dropped": true
+        }
+      ]
+    }
+  ]
+}

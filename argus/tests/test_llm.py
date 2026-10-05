@@ -202,6 +202,16 @@ def test_missing_gemini_model_is_a_configuration_error():
         LLMService(settings(gemini_model=""))
 
 
+@pytest.mark.parametrize("model", ["display name", "Display", '"api-id"', "'api-id'", "models/api-id", "api\tid"])
+def test_invalid_gemini_model_id_fails_during_settings_startup(model):
+    with pytest.raises(ValueError, match="use the API model ID, not the display name"):
+        settings(gemini_model=model)
+
+
+def test_api_model_id_format_is_accepted():
+    assert settings(gemini_model="api-model-id-1.0").gemini_model == "api-model-id-1.0"
+
+
 def test_gemini_adapter_uses_official_json_schema_api_without_sdk_retries(monkeypatch):
     from google import genai
     client = MagicMock()
