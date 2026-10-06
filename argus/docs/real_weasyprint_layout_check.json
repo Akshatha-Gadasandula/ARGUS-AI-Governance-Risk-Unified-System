@@ -1,0 +1,28 @@
+{
+  "renderer_file": "/usr/local/lib/python3.11/site-packages/weasyprint/__init__.py",
+  "renderer_version": "62.3",
+  "pdf_producer": "WeasyPrint 62.3",
+  "page_count": 10,
+  "pdffonts": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nUQRYSB+DejaVu-Sans-Bold              CID TrueType      Identity-H       yes yes yes     49  0\nZLQSDZ+DejaVu-Sans                   CID TrueType      Identity-H       yes yes yes     53  0\nCDJEMJ+DejaVu-Sans-Oblique           CID TrueType      Identity-H       yes yes yes     57  0\n",
+  "png_files": [
+    "page-01.png",
+    "page-02.png",
+    "page-03.png",
+    "page-04.png",
+    "page-05.png",
+    "page-06.png",
+    "page-07.png",
+    "page-08.png",
+    "page-09.png",
+    "page-10.png"
+  ],
+  "dpi": 80,
+  "visible_html_text_nodes": 126,
+  "missing_html_text_nodes": [
+    "\u23f3 Open",
+    "\u23f3 Open"
+  ],
+  "out_of_page_spans": [],
+  "comparison_method": "Read-only reconstruction of the actual audit template context, timestamp fixed to the downloaded PDF; intercept HTML construction before rendering or database save. Compare every visible HTML text node to extracted PDF text after NFKC/whitespace normalization; check extracted span bounds.",
+  "visual_review": "All 10 PNGs inspected. No page-edge text clipping seen. Cover metadata continues on page 2 and final obligation continues on page 6. Hourglass symbols before Open are missing; status text remains readable."
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUS AI Governance Audit Dossier</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @bottom-center {
+                content: "credit_scoring_model-4dbb0f | Generated 2026-10-06 10:18:34 UTC | Page " counter(page);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            font-size: 10.5pt;
+            overflow: visible;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
+        .cover-page {
+            page-break-after: always;
+            text-align: center;
+            padding: 8cm 0;
+        }
+        
+        .cover-page h1 {
+            font-size: 36pt;
+            color: #1f3a93;
+            margin: 0 0 1cm 0;
+        }
+        
+        .cover-page .system-name {
+            font-size: 28pt;
+            color: #333;
+            margin: 2cm 0;
+        }
+        
+        .cover-page .confidential {
+            font-size: 18pt;
+            color: #c41e3a;
+            font-weight: bold;
+            margin: 3cm 0;
+        }
+        
+        .cover-page .meta {
+            font-size: 11pt;
+            color: #666;
+            margin-top: 4cm;
+        }
+        
+        h2 {
+            font-size: 18pt;
+            color: #1f3a93;
+            border-bottom: 3px solid #1f3a93;
+            padding-bottom: 8px;
+            margin-top: 1.2cm;
+            margin-bottom: 0.6cm;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            font-size: 14pt;
+            color: #2a5cbc;
+            margin-top: 0.6cm;
+            margin-bottom: 0.3cm;
+            page-break-after: avoid;
+        }
+        
+        .system-overview {
+            background-color: #f5f5f5;
+            padding: 0.6cm;
+            margin-bottom: 0.7cm;
+            border-left: 5px solid #1f3a93;
+            page-break-inside: avoid;
+            overflow: visible;
+            white-space: normal;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.7cm;
+            page-break-inside: auto;
+        }
+        
+        th, td {
+            padding: 7px 8px;
+            text-align: left;
+            border: 1px solid #c9d2e3;
+            vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+        
+        th {
+            background-color: #1f3a93;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            font-size: 11pt;
+        }
+        
+        .risk-PROHIBITED {
+            background-color: #8b0000;
+        }
+        
+        .risk-HIGH_RISK {
+            background-color: #d9534f;
+        }
+        
+        .risk-LIMITED_RISK {
+            background-color: #f0ad4e;
+        }
+        
+        .risk-MINIMAL_RISK {
+            background-color: #5cb85c;
+        }
+        
+        .risk-UNCLASSIFIED {
+            background-color: #5bc0de;
+        }
+        
+        .severity-CRITICAL {
+            background-color: #c41e3a;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        
+        .severity-WARNING {
+            background-color: #f0ad4e;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        
+        .severity-INFO {
+            background-color: #5bc0de;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        
+        .compliance-checklist {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 1cm;
+        }
+        
+        .compliance-checklist li {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .compliance-checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #5cb85c;
+            font-size: 14pt;
+        }
+        
+        .compliance-checklist li.not-compliant:before {
+            content: "✗";
+            color: #c41e3a;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1cm;
+            margin-bottom: 1cm;
+        }
+        
+        .metric-box {
+            background-color: #f5f5f5;
+            padding: 0.8cm;
+            border-radius: 4px;
+        }
+        
+        .metric-box .label {
+            font-size: 10pt;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .metric-box .value {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .critical-row {
+            background-color: #ffe6e6 !important;
+        }
+        
+        .alert-row {
+            background-color: #fff5e6 !important;
+        }
+        
+        .page-break {
+            page-break-after: always;
+            margin-top: 0.4cm;
+        }
+        
+        blockquote {
+            border-left: 4px solid #ddd;
+            margin: 1cm 0;
+            padding-left: 1cm;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .footer-note {
+            font-size: 9pt;
+            color: #999;
+            margin-top: 1.2cm;
+            padding-top: 0.5cm;
+            border-top: 1px solid #ddd;
+            page-break-inside: avoid;
+            overflow: visible;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <h1>ARGUS</h1>
+        <p style="font-size: 14pt; color: #666;">AI Governance Platform</p>
+        <div class="system-name">Credit Scoring Model v2</div>
+        <div class="confidential">CONFIDENTIAL — INTERNAL USE ONLY</div>
+        <div class="cover-page .meta">
+            <p><strong>Generated:</strong> 2026-10-06 10:18:34 UTC</p>
+            <p><strong>By:</strong> real-weasyprint-verification@argus.local</p>
+            <p><strong>Source HTML Hash:</strong> bf127bc47e15c17b...</p>
+            <p><strong>System ID:</strong> credit_scoring_model-4dbb0f</p>
+        </div>
+    </div>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <h2>Executive Summary</h2>
+    <div class="system-overview">
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>What this report covers:</strong> Credit Scoring Model v2 is monitored in EU.</p>
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>Plain-language risk note:</strong> This system can affect access to credit, so it needs stronger oversight,                 closer monitoring, and clear documentation.</p>
+        <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>Current status:</strong> There are 2 open alerts that need review. Recent monitoring found 1 fairness or drift checks above the configured threshold. There are no open remediation tasks.</p>
+        <p style="margin: 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>What to do next:</strong> Review the open alerts, confirm the assigned owners, and verify whether any fairness or drift issues still need action.</p>
+    </div>
+    
+    <!-- SECTION 1: SYSTEM OVERVIEW -->
+    <h2>1. System Overview</h2>
+    <p>This section gives the basic facts about the system in a simple format.</p>
+    
+    <table>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><strong>System ID</strong></td>
+            <td><code>credit_scoring_model-4dbb0f</code></td>
+        </tr>
+        <tr>
+            <td><strong>Name</strong></td>
+            <td>Credit Scoring Model v2</td>
+        </tr>
+        <tr>
+            <td><strong>Version</strong></td>
+            <td>dashboard-2026-10-06</td>
+        </tr>
+        <tr>
+            <td><strong>Owner Team</strong></td>
+            <td>retail-credit-engineering</td>
+        </tr>
+        <tr>
+            <td><strong>Owner Email</strong></td>
+            <td>Not specified</td>
+        </tr>
+        <tr>
+            <td><strong>Registered</strong></td>
+            <td>2026-10-06 09:40</td>
+        </tr>
+        <tr>
+            <td><strong>Monitoring Status</strong></td>
+            <td>✓ Enabled</td>
+        </tr>
+    </table>
+    
+    <div class="system-overview">
+        <h3>Purpose</h3>
+        <p>Predicts probability of loan default using applicant transaction history</p>
+    </div>
+    
+    <h3>Data Sources</h3>
+    
+        <ul><li>transaction_history</li><li>credit_bureau</li></ul>
+    
+    
+    <h3>Affected Demographics</h3>
+    
+        <ul><li>age</li><li>income_band</li></ul>
+    
+    
+    <h3>Jurisdictions</h3>
+    <p>
+        <span style="background-color: #e8f4f8; padding: 2px 6px; border-radius: 3px; margin-right: 4px;">EU</span>
+    </p>
+    
+    <div class="page-break"></div>
+    
+    <!-- SECTION 2: RISK CLASSIFICATION -->
+    <h2>2. Risk Classification</h2>
+    <p>This section explains why the system is classified this way and what that means operationally.</p>
+    
+    <div style="text-align: center; margin: 1cm 0;">
+        <p style="font-size: 11pt; color: #666; margin-bottom: 0.5cm;">Current Risk Tier:</p>
+        <div class="risk-badge risk-HIGH_RISK">HIGH_RISK</div>
+    </div>
+
+    <p style="margin: 0 0 0.35cm 0; overflow: visible; white-space: normal; word-wrap: break-word;"><strong>In plain language:</strong> This system can affect access to credit, so it needs stronger oversight,                 closer monitoring, and clear documentation.</p>
+    
+    
+    <h3>Classification Reasoning</h3>
+    <blockquote>Assessed 1 framework(s): EU_AI_ACT=HIGH_RISK</blockquote>
+    
+    
+    
+    <h3>Regulatory Obligations</h3>
+    
+    
+    <h4>EU_AI_ACT</h4>
+    
+    <h5>Citations</h5>
+    
+    <table>
+        <tr>
+            <th>Article</th>
+            <th>Title</th>
+            <th>Excerpt</th>
+        </tr>
+        
+        <tr>
+            <td><code>Annex III point 5(b)</code></td>
+            <td>High-risk AI systems referred to in Article 6(2)</td>
+            <td>AI systems intended to be used to evaluate the creditworthiness of natural persons or establish thei...</td>
+        </tr>
+        
+    </table>
+    
+    
+    <h5>Required Obligations</h5>
+    
+    <ol>
+        
+        <li>Conformity assessment before deployment (Article 43)</li>
+        
+        <li>Establish and maintain a risk management system (Article 9)</li>
+        
+        <li>Data governance and bias monitoring regarding training, validation, and testing data sets (Article 10)</li>
+        
+        <li>Draw up and keep technical documentation (Article 11)</li>
+        
+        <li>Automatic logging of events during operation (Article 12)</li>
+        
+        <li>Transparency and provision of information to deployers (Article 13)</li>
+        
+        <li>Enable human oversight measures (Article 14)</li>
+        
+        <li>Ensure high levels of accuracy, cybersecurity, and robustness (Article 15)</li>
+        
+    </ol>
+    
+    
+    
+    
+    <div class="page-break"></div>
+    
+    <!-- SECTION 3: FAIRNESS & DRIFT HISTORY -->
+    <h2>3. Fairness & Drift Monitoring History</h2>
+    <p>This section shows whether recent monitoring results stayed inside policy limits.</p>
+    
+    
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Sample Size</th>
+            <th>Demographic Parity</th>
+            <th>Equalized Odds</th>
+            <th>PSI</th>
+            <th>Status</th>
+        </tr>
+        
+        <tr class="critical-row">
+            <td>2026-10-06 09:41</td>
+            <td>1500</td>
+            <td>0.2480</td>
+            <td>0.3292</td>
+            <td>0.0022</td>
+            <td><span class="severity-CRITICAL">CRITICAL</span></td>
+        </tr>
+        
+    </table>
+    
+    
+    <div class="page-break"></div>
+    
+    <!-- SECTION 4: GOVERNANCE ALERTS -->
+    <h2>4. Governance Alerts</h2>
+    <p>This section lists the open governance issues that still need attention.</p>
+    
+    
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Severity</th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Status</th>
+        </tr>
+        
+        <tr class="critical-row">
+            <td>2026-10-06 09:41</td>
+            <td><span class="severity-CRITICAL">CRITICAL</span></td>
+                <td>FAIRNESS_VIOLATION</td>
+            <td>Equalized Odds Violation</td>
+            <td>⏳ Open</td>
+        </tr>
+        
+        <tr class="critical-row">
+            <td>2026-10-06 09:41</td>
+            <td><span class="severity-CRITICAL">CRITICAL</span></td>
+                <td>FAIRNESS_VIOLATION</td>
+            <td>Demographic Parity Violation</td>
+            <td>⏳ Open</td>
+        </tr>
+        
+    </table>
+    
+    
+    <div class="page-break"></div>
+    
+    <!-- SECTION 5: REMEDIATION TASKS -->
+    <h2>5. Open Remediation Tasks</h2>
+    <p>This section shows the work already assigned to fix open issues.</p>
+    
+    
+    <p><em>No open remediation tasks.</em></p>
+    
+    
+    <div class="page-break"></div>
+    
+    <!-- SECTION 6: AUDIT TRAIL -->
+    <h2>6. Audit Trail & Metadata</h2>
+    <p>This section records when the report was created and how it can be traced later.</p>
+    
+    <table>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><strong>Generated At</strong></td>
+            <td>2026-10-06 10:18:34 UTC</td>
+        </tr>
+        <tr>
+            <td><strong>Generated By</strong></td>
+            <td>real-weasyprint-verification@argus.local</td>
+        </tr>
+        <tr>
+            <td><strong>Source HTML Hash (SHA-256, before hash insertion)</strong></td>
+            <td><code style="font-size: 9pt; word-break: break-all;">bf127bc47e15c17b5e1b11020593de496e52557f89f093dc6570c6003fd995f9</code></td>
+        </tr>
+        <tr>
+            <td><strong>ARGUS Version</strong></td>
+            <td>1.0.0</td>
+        </tr>
+        <tr>
+            <td><strong>Frameworks Evaluated</strong></td>
+            <td>EU</td>
+        </tr>
+    </table>
+    
+    <div class="footer-note">
+        <p><strong>ARGUS Audit Dossier</strong> — This document is confidential and intended for internal governance and regulatory compliance purposes only. Unauthorized distribution is prohibited.</p>
+        <p>Generated by ARGUS AI Governance Platform. For questions, contact the AI Governance team.</p>
+    </div>
+</body>
+</html>

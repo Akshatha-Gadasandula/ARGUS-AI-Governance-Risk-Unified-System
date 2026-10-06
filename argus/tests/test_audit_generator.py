@@ -5,12 +5,22 @@ import pytest
 
 from argus.config import settings
 from argus.core.agents.audit_generator import AuditGeneratorAgent
+from argus.core.agents.audit_generator import AUDIT_TEMPLATE
 from argus.core.registry import service as registry_service
 from argus.core.registry.models import RiskTier
 
 
 class DummySession:
     pass
+
+
+def test_weasyprint_is_installed_package_not_project_shim():
+    import weasyprint
+    project = Path(__file__).resolve().parents[1]
+    assert "shim" not in weasyprint.__version__.lower()
+    assert not Path(weasyprint.__file__).resolve().is_relative_to(project)
+    assert "Source HTML Hash (SHA-256, before hash insertion)" in AUDIT_TEMPLATE
+    assert "citation.canonical_citation or citation.article" in AUDIT_TEMPLATE
 
 
 @pytest.mark.asyncio

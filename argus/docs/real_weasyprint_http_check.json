@@ -1,0 +1,24 @@
+{
+  "system_id": "credit_scoring_model-4dbb0f",
+  "record": {
+    "id": "7e036d4f-1c76-4504-98d9-c04376f8ea25",
+    "system_id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+    "generated_by": "real-weasyprint-verification@argus.local",
+    "pdf_path": "/app/audit_outputs/credit_scoring_model-4dbb0f_20261006_101836.pdf",
+    "content_hash": "557892a2643a03458f739d3c1cd977c07a1bad24d46facefc5c42b8dbfe76463",
+    "compliance_summary": {
+      "risk_tier": "HIGH_RISK",
+      "monitoring_enabled": true,
+      "fairness_snapshots_count": 1,
+      "open_alerts": 2,
+      "open_tasks": 0
+    },
+    "generated_at": "2026-10-06T10:18:34.252303"
+  },
+  "elapsed_seconds": 3.0282405000034487,
+  "size_bytes": 29381,
+  "stored_sha256": "557892a2643a03458f739d3c1cd977c07a1bad24d46facefc5c42b8dbfe76463",
+  "download_sha256": "557892a2643a03458f739d3c1cd977c07a1bad24d46facefc5c42b8dbfe76463",
+  "hashes_match": true,
+  "download_headers": "HTTP/1.1 200 OK\ndate: Tue, 06 Oct 2026 10:18:33 GMT\nserver: uvicorn\ncontent-disposition: attachment; filename=\"credit_scoring_model-4dbb0f_20261006_101836.pdf\"\ncontent-type: application/pdf\ncontent-length: 29381\nlast-modified: Tue, 06 Oct 2026 10:18:36 GMT\netag: \"6f75d27ca4aa514691365f07b5e02d51\"\n\n"
+}

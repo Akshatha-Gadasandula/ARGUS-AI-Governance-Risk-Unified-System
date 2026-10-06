@@ -285,7 +285,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         <div class="cover-page .meta">
             <p><strong>Generated:</strong> {{ generated_at }}</p>
             <p><strong>By:</strong> {{ generated_by }}</p>
-            <p><strong>Content Hash:</strong> {{ content_hash[:16] }}...</p>
+            <p><strong>Source HTML Hash:</strong> {{ content_hash[:16] }}...</p>
             <p><strong>System ID:</strong> {{ system.system_id }}</p>
         </div>
     </div>
@@ -396,7 +396,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
         {% for citation in data.citations %}
         <tr>
-            <td><code>{{ safe_text(citation.article) }}</code></td>
+            <td><code>{{ safe_text(citation.canonical_citation or citation.article) }}</code></td>
             <td>{{ safe_text(citation.title) }}</td>
             <td>{{ safe_text(citation.excerpt)[:100] }}...</td>
         </tr>
@@ -522,7 +522,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
             <td>{{ generated_by }}</td>
         </tr>
         <tr>
-            <td><strong>Content Hash (SHA-256)</strong></td>
+            <td><strong>Source HTML Hash (SHA-256, before hash insertion)</strong></td>
             <td><code style="font-size: 9pt; word-break: break-all;">{{ content_hash }}</code></td>
         </tr>
         <tr>

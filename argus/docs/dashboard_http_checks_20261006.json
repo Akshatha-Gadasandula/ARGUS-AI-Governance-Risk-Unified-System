@@ -1,0 +1,355 @@
+{
+  "dashboard_http_ok": true,
+  "js_assets": [
+    "/assets/index-KdZ0_3eL.js"
+  ],
+  "built_api_urls": [
+    "http://localhost:8000"
+  ],
+  "effective_api_base_url": "http://localhost:8000/api/v1",
+  "cors": {
+    "http://localhost:3000": {
+      "preflight": "HTTP/1.1 200 OK\ndate: Tue, 06 Oct 2026 09:40:43 GMT\nserver: uvicorn\nvary: Origin\naccess-control-allow-methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT\naccess-control-max-age: 600\naccess-control-allow-credentials: true\naccess-control-allow-origin: http://localhost:3000\naccess-control-allow-headers: content-type\ncontent-length: 2\ncontent-type: text/plain; charset=utf-8\n\nOK",
+      "get_headers": "HTTP/1.1 200 OK\ndate: Tue, 06 Oct 2026 09:40:43 GMT\nserver: uvicorn\ncontent-length: 1395\ncontent-type: application/json\naccess-control-allow-origin: *\naccess-control-allow-credentials: true\n\n"
+    },
+    "http://localhost:5173": {
+      "preflight": "HTTP/1.1 200 OK\ndate: Tue, 06 Oct 2026 09:40:43 GMT\nserver: uvicorn\nvary: Origin\naccess-control-allow-methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT\naccess-control-max-age: 600\naccess-control-allow-credentials: true\naccess-control-allow-origin: http://localhost:5173\naccess-control-allow-headers: content-type\ncontent-length: 2\ncontent-type: text/plain; charset=utf-8\n\nOK",
+      "get_headers": "HTTP/1.1 200 OK\ndate: Tue, 06 Oct 2026 09:40:43 GMT\nserver: uvicorn\ncontent-length: 1395\ncontent-type: application/json\naccess-control-allow-origin: *\naccess-control-allow-credentials: true\n\n"
+    }
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/v1/registry/systems",
+      "curl_exit": 0,
+      "shape": "array",
+      "rows": 9,
+      "fields": [
+        "jurisdictions",
+        "monitoring_enabled",
+        "name",
+        "owner_team",
+        "registered_at",
+        "risk_tier",
+        "system_id"
+      ],
+      "expected_fields": [
+        "system_id",
+        "name",
+        "risk_tier",
+        "owner_team",
+        "jurisdictions"
+      ],
+      "missing_fields": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/registry/systems/credit_scoring_model-4dbb0f",
+      "curl_exit": 0,
+      "shape": "object",
+      "rows": 1,
+      "fields": [
+        "affected_demographics",
+        "data_sources",
+        "id",
+        "jurisdictions",
+        "last_classified_at",
+        "llm_model",
+        "llm_provider",
+        "model_card",
+        "model_type",
+        "monitoring_enabled",
+        "name",
+        "needs_review",
+        "needs_review_reasons",
+        "output_type",
+        "owner_email",
+        "owner_team",
+        "purpose",
+        "registered_at",
+        "regulatory_citations",
+        "risk_classification_reasoning",
+        "risk_tier",
+        "status",
+        "system_id",
+        "version"
+      ],
+      "expected_fields": [
+        "system_id",
+        "name",
+        "purpose",
+        "risk_tier",
+        "owner_team",
+        "regulatory_citations"
+      ],
+      "missing_fields": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/monitoring/alerts",
+      "curl_exit": 0,
+      "shape": "array",
+      "rows": 5,
+      "fields": [
+        "alert_type",
+        "created_at",
+        "description",
+        "id",
+        "payload",
+        "regulatory_references",
+        "resolved",
+        "resolved_at",
+        "severity",
+        "system_id",
+        "title"
+      ],
+      "expected_fields": [
+        "id",
+        "title",
+        "severity",
+        "resolved"
+      ],
+      "missing_fields": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit/records?system_id=credit_scoring_model-4dbb0f",
+      "curl_exit": 0,
+      "shape": "array",
+      "rows": 2,
+      "fields": [
+        "compliance_summary",
+        "content_hash",
+        "generated_at",
+        "generated_by",
+        "id",
+        "pdf_path",
+        "system_id"
+      ],
+      "expected_fields": [
+        "id"
+      ],
+      "missing_fields": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/audit/generate-dossier",
+      "curl_exit": 0,
+      "shape": "object",
+      "fields": [
+        "compliance_summary",
+        "content_hash",
+        "generated_at",
+        "generated_by",
+        "id",
+        "pdf_path",
+        "system_id"
+      ],
+      "expected_fields": [
+        "pdf_path"
+      ],
+      "missing_fields": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit/records/8d570a87-6ad7-43e9-afc2-5269b6ee30e4/download",
+      "curl_exit": 0,
+      "shape": "application/pdf binary",
+      "expected_fields": [
+        "PDF blob"
+      ],
+      "missing_fields": [],
+      "bytes": 7394
+    }
+  ],
+  "dashboard_routes": [
+    {
+      "path": "/",
+      "http_status": 200
+    },
+    {
+      "path": "/registry",
+      "http_status": 200
+    },
+    {
+      "path": "/monitoring",
+      "http_status": 200
+    },
+    {
+      "path": "/audit",
+      "http_status": 200
+    },
+    {
+      "path": "/systems/credit_scoring_model-4dbb0f",
+      "http_status": 200
+    },
+    {
+      "path": "/not-a-page",
+      "http_status": 200
+    }
+  ],
+  "seed_alerts": {
+    "credit_scoring": [
+      {
+        "id": "c9941735-3511-4208-a049-d4c9590c64c6",
+        "system_id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+        "alert_type": "FAIRNESS_VIOLATION",
+        "severity": "CRITICAL",
+        "title": "Equalized Odds Violation",
+        "description": "equalized_odds value of 0.3292 exceeds critical threshold of 0.1",
+        "payload": {
+          "metric": "equalized_odds",
+          "value": 0.3291828793774319,
+          "threshold": 0.1,
+          "affected_feature": null
+        },
+        "regulatory_references": [
+          "EU AI Act Article 10(2)"
+        ],
+        "resolved": false,
+        "resolved_at": null,
+        "created_at": "2026-10-06T09:41:37.897894"
+      },
+      {
+        "id": "29369a42-f866-46f2-a63c-d3e93fb5885c",
+        "system_id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+        "alert_type": "FAIRNESS_VIOLATION",
+        "severity": "CRITICAL",
+        "title": "Demographic Parity Violation",
+        "description": "demographic_parity value of 0.2480 exceeds critical threshold of 0.1",
+        "payload": {
+          "metric": "demographic_parity",
+          "value": 0.2480268529438447,
+          "threshold": 0.1,
+          "affected_feature": null
+        },
+        "regulatory_references": [
+          "EU AI Act Article 10(2); unverified: RBI corpus not indexed (Model Risk Section 4.3)"
+        ],
+        "resolved": false,
+        "resolved_at": null,
+        "created_at": "2026-10-06T09:41:37.870100"
+      }
+    ],
+    "fraud_detector": [
+      {
+        "id": "6e478d99-321b-425a-9ee2-8ee742d17bba",
+        "system_id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+        "alert_type": "INPUT_DRIFT",
+        "severity": "CRITICAL",
+        "title": "Psi Violation",
+        "description": "psi value of 0.8287 exceeds critical threshold of 0.25",
+        "payload": {
+          "metric": "psi",
+          "value": 0.8286857066485072,
+          "threshold": 0.25,
+          "affected_feature": "V14"
+        },
+        "regulatory_references": [
+          "unverified: RBI corpus not indexed (Model Risk Guidelines Section 5.1)"
+        ],
+        "resolved": false,
+        "resolved_at": null,
+        "created_at": "2026-10-06T09:42:26.500776"
+      },
+      {
+        "id": "9a4bb369-04b5-4451-85aa-692731c2b7ba",
+        "system_id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+        "alert_type": "INPUT_DRIFT",
+        "severity": "CRITICAL",
+        "title": "Psi Violation",
+        "description": "psi value of 1.0199 exceeds critical threshold of 0.25",
+        "payload": {
+          "metric": "psi",
+          "value": 1.0199338568388439,
+          "threshold": 0.25,
+          "affected_feature": "V3"
+        },
+        "regulatory_references": [
+          "unverified: RBI corpus not indexed (Model Risk Guidelines Section 5.1)"
+        ],
+        "resolved": false,
+        "resolved_at": null,
+        "created_at": "2026-10-06T09:42:26.486228"
+      },
+      {
+        "id": "0fe18475-5f89-498a-96f9-22c9c0be5caf",
+        "system_id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+        "alert_type": "INPUT_DRIFT",
+        "severity": "CRITICAL",
+        "title": "Psi Violation",
+        "description": "psi value of 0.8936 exceeds critical threshold of 0.25",
+        "payload": {
+          "metric": "psi",
+          "value": 0.8936207917091723,
+          "threshold": 0.25,
+          "affected_feature": "V1"
+        },
+        "regulatory_references": [
+          "unverified: RBI corpus not indexed (Model Risk Guidelines Section 5.1)"
+        ],
+        "resolved": false,
+        "resolved_at": null,
+        "created_at": "2026-10-06T09:42:26.454925"
+      }
+    ],
+    "spam_filter": []
+  },
+  "credit_compliance": {
+    "system_id": "credit_scoring_model-4dbb0f",
+    "risk_tier": "HIGH_RISK",
+    "compliance_score": 50.0,
+    "checks_passed": 8,
+    "checks_failed": 2,
+    "open_alerts": 2,
+    "open_remediation_tasks": 0
+  },
+  "database_verification": {
+    "postgres_rows": [
+      {
+        "id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+        "system_id": "credit_scoring_model-4dbb0f"
+      },
+      {
+        "id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+        "system_id": "fraud_detection_engi-2a6271"
+      },
+      {
+        "id": "05f22075-74be-4bcf-aa68-9b234f979905",
+        "system_id": "email_spam_filter-c64b88"
+      }
+    ],
+    "snapshot_alert_counts": [
+      {
+        "snapshots": 1,
+        "alerts": 2
+      },
+      {
+        "snapshots": 1,
+        "alerts": 3
+      },
+      {
+        "snapshots": 0,
+        "alerts": 0
+      }
+    ]
+  },
+  "api_postgres_ids_match": true,
+  "field_type_checks": [
+    {
+      "path": "registry/systems",
+      "types_match": true,
+      "jurisdictions_strings": true
+    },
+    {
+      "path": "monitoring/alerts",
+      "types_match": true,
+      "jurisdictions_strings": true
+    },
+    {
+      "path": "audit/records?system_id=credit_scoring_model-4dbb0f",
+      "types_match": true,
+      "jurisdictions_strings": true
+    }
+  ]
+}

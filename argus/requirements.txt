@@ -44,8 +44,8 @@ imbalanced-learn==0.12.3
 
 # PDF Generation
 weasyprint==62.3
+pydyf==0.10.0  # Compatible PDF backend for WeasyPrint 62.3
 jinja2==3.1.4
-reportlab==4.0.0
 
 # Monitoring
 prometheus-fastapi-instrumentator==7.0.0
