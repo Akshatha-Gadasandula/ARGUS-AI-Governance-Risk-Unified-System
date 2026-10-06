@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+from argus.core.regulatory_references import alert_reference_text
 
 
 # ============================================================================
@@ -232,6 +233,12 @@ class AlertResponse(BaseModel):
     created_at: datetime = Field(..., description="Creation timestamp")
 
     model_config = {"from_attributes": True}
+
+    @field_validator("regulatory_references", mode="before")
+    @classmethod
+    def display_verified_references(cls, value):
+        # Create a new list; never modify the ORM's stored JSON value.
+        return [alert_reference_text(ref) for ref in value] if value is not None else None
     
     @field_validator("id", "system_id", mode="before")
     def convert_id_to_str(cls, v):

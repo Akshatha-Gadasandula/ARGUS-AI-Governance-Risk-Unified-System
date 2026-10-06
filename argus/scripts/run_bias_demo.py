@@ -40,7 +40,7 @@ def main():
         "y_true": test_batch["y_true"].astype(int).tolist(),
         "y_pred": predictions.astype(int).tolist(),
         "y_proba": probabilities.astype(float).tolist(),
-        "sensitive_feature_name": "age_group",
+        "sensitive_feature_name": "age",
         "sensitive_feature_values": age_groups.tolist(),
         "reference_data": reference_data,
         "current_data": current_data,

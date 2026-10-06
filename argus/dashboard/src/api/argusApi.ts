@@ -22,9 +22,36 @@ export async function fetchSystem(systemId: string) {
   return response.data;
 }
 
-export async function fetchAlerts() {
-  const response = await client.get('/monitoring/alerts');
+export async function fetchAlerts(systemId?: string, resolved = false) {
+  const response = await client.get('/monitoring/alerts', {
+    params: { ...(systemId ? { system_id: systemId } : {}), resolved },
+  });
   return response.data;
+}
+
+export async function resolveAlert(alertId: string) {
+  const response = await client.post(`/monitoring/alerts/${alertId}/resolve`, {
+    resolved_by: 'dashboard@argus.local',
+  });
+  return response.data;
+}
+
+export async function fetchLatestSnapshot(systemId: string) {
+  const response = await client.get(`/monitoring/systems/${systemId}/snapshots`, { params: { limit: 1 } });
+  return response.data[0] ?? null;
+}
+
+export function apiErrorMessage(error: unknown, fallback: string) {
+  if (axios.isAxiosError(error) && typeof error.response?.data?.detail === 'string') {
+    return `${fallback} ${error.response.data.detail}`;
+  }
+  return fallback;
+}
+
+export function formatTime(value?: string) {
+  if (!value) return 'Not available';
+  const date = new Date(/(?:Z|[+-]\d{2}:\d{2})$/i.test(value) ? value : `${value}Z`);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
 export async function fetchAuditRecords(systemId?: string) {

@@ -113,6 +113,14 @@ async def evaluate_system(
         # Create alerts for violations
         alerts_created = 0
         for violation in report.violations:
+            fairness_context = {}
+            if violation.violation_type == "FAIRNESS":
+                fairness_context = {
+                    "protected_attribute": request.sensitive_feature_name,
+                    # All evaluated groups, not an inferred pair of extreme groups.
+                    "compared_groups": list(dict.fromkeys(request.sensitive_feature_values)),
+                    "affected_feature": request.sensitive_feature_name,
+                }
             await RegistryService.create_alert(
                 session,
                 system_uuid,
@@ -126,6 +134,7 @@ async def evaluate_system(
                         "value": violation.value,
                         "threshold": violation.threshold,
                         "affected_feature": violation.affected_feature,
+                        **fairness_context,
                     },
                     "regulatory_references": [violation.regulatory_reference],
                 },

@@ -53,3 +53,39 @@
 .status-pill.TIER_3_LOW {
   background: #d1fae5;
 }
+
+.detail-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.error-message {
+  color: #991b1b;
+  background: #fee2e2;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.preserve-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.model-card {
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.citation-list li {
+  margin-bottom: 1rem;
+}
+
+.audit-result code,
+.detail-stack .card {
+  overflow-wrap: anywhere;
+}
+
+.link-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

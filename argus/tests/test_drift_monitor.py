@@ -48,4 +48,5 @@ def test_alert_references_distinguish_indexed_eu_text_and_unverified_rbi(monkeyp
     report = monitor.evaluate("test", [0,1], [0,1], [.1,.9], "group", ["a","b"], [{"x":0}], [{"x":1}])
     references = [v.regulatory_reference for v in report.violations]
     assert any("EU AI Act Article 10(2)" in ref for ref in references)
-    assert all("unverified: RBI corpus not indexed" in ref for ref in references if "RBI" in ref)
+    assert all("RBI: not assessed (no corpus indexed)" in ref for ref in references if "RBI" in ref)
+    assert all("Section" not in ref for ref in references)

@@ -10,6 +10,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 from fairlearn.metrics import demographic_parity_difference, equalized_odds_difference
+from argus.core.regulatory_references import RBI_NOT_ASSESSED
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class DriftFairnessMonitor:
             dp_diff,
             self.demographic_parity_warning,
             self.demographic_parity_critical,
-            "EU AI Act Article 10(2); unverified: RBI corpus not indexed (Model Risk Section 4.3)",
+            f"EU AI Act Article 10(2); {RBI_NOT_ASSESSED}",
         )
         if dp_violation:
             violations.append(dp_violation)
@@ -150,7 +151,7 @@ class DriftFairnessMonitor:
                 psi_value,
                 self.psi_warning,
                 self.psi_critical,
-                "unverified: RBI corpus not indexed (Model Risk Guidelines Section 5.1)",
+                RBI_NOT_ASSESSED,
                 feature=feature,
             )
             if psi_violation:
