@@ -176,6 +176,14 @@ def markdown(report):
             lines += [f"### {r['id']}: {r['name']}", '', f"Expected {r['expected_tier']}; predicted {r['predicted_tier']}; confidence {r['confidence']}.", '', '> ' + r['reasoning'].replace('\n','\n> '), '']
     lines += ['', '## Not completed', '', json.dumps(report.get('not_completed', []), indent=2), '']
     lines += ['## Usage and cleanup', '', json.dumps(report['usage'], indent=2), '',
+              'Per-call tokens below come from SDK usage metadata; null means unavailable (no local estimates).', '',
+              '| Call | Provider | Model | Status | Cache hit | Input tokens | Output tokens |',
+              '|---|---|---|---|---|---|---|']
+    for index, record in enumerate(report.get('usage_records', []), 1):
+        lines.append('| ' + ' | '.join(str(value) for value in
+            [index, record.get('provider'), record.get('model'), record.get('status'),
+             record.get('cache_hit'), record.get('input_tokens'), record.get('output_tokens')]) + ' |')
+    lines += ['', f"Context-incomplete case IDs: {report.get('context_incomplete_case_ids', [])}.", '',
               f"DELETE endpoint results: {json.dumps(report['cleanup'])}", '',
               f"Stop reason: {report.get('stop_reason') or 'none'}", '',
               '## Frozen input hashes', '', json.dumps(report['frozen_hashes'], indent=2), '']
@@ -210,7 +218,11 @@ def run(base_url, set_path, result_path, report_path, call_cap=34):
               'frozen_hashes':frozen, 'results':[], 'cleanup':[], 'stop_reason':None}
     created = []
     def save():
-        report['usage'] = summarize_usage(usage_records()[log_start:])
+        report['usage_records'] = usage_records()[log_start:]
+        report['usage'] = summarize_usage(report['usage_records'])
+        report['context_incomplete_case_ids'] = [r['id'] for r in report['results']
+            if r['response'].get('status') == 'context_incomplete' or
+            r['response'].get('regulatory_citations', {}).get('EU_AI_ACT', {}).get('status') == 'context_incomplete']
         report['metrics'] = metrics(report['results'], sum(c['difficulty']=='clear' for c in cases))
         safe = sanitized(report)
         result_path.parent.mkdir(parents=True, exist_ok=True)
@@ -239,6 +251,7 @@ def run(base_url, set_path, result_path, report_path, call_cap=34):
                     'http_status':status, 'response':response})
                 raise RuntimeError('Provider/auth/model error or exhausted quota backoff/call cap; case not completed')
             result = score_case(case, response)
+            result['usage_records'] = new
             result['http_status'] = status
             report['results'].append(result)
             print(json.dumps({k:v for k,v in result.items() if k not in ('response','purpose','grounding_checks')}, ensure_ascii=False), flush=True)
