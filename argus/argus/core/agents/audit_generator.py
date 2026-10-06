@@ -13,8 +13,44 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from argus.config import settings
 from argus.core.registry.models import AISystem
 from argus.core.registry.service import RegistryService
+from argus.core.regulatory_references import alert_reference_text
 
 logger = logging.getLogger(__name__)
+
+
+def citation_excerpt(value, limit=100):
+    """Keep whole words within the excerpt limit; ellipsize only when truncated."""
+    text = " ".join(str(value or "").split())
+    if len(text) <= limit:
+        return text
+    prefix = text[:limit]
+    if not text[limit].isspace():
+        prefix = prefix.rsplit(" ", 1)[0] if " " in prefix else ""
+    return prefix.rstrip() + "..."
+
+
+def alert_metric(alert):
+    metric = (getattr(alert, "payload", None) or {}).get("metric")
+    return "PSI" if metric == "psi" else (metric or "Not supplied").replace("_", " ")
+
+
+def alert_feature(alert):
+    payload = getattr(alert, "payload", None) or {}
+    attribute = payload.get("protected_attribute")
+    groups = payload.get("compared_groups") or []
+    if attribute and groups:
+        return f"{attribute}: {' vs '.join(groups)}"
+    return payload.get("affected_feature") or attribute or "Not supplied"
+
+
+def alert_value(alert, field):
+    value = (getattr(alert, "payload", None) or {}).get(field)
+    return f"{value:.4f}" if isinstance(value, (int, float)) else "Not supplied"
+
+
+def alert_references(alert):
+    return "; ".join(alert_reference_text(ref) for ref in
+                     (getattr(alert, "regulatory_references", None) or [])) or "Not supplied"
 
 
 # HTML Template for Audit Dossier
@@ -41,9 +77,9 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         
         body {
             color: #333;
-            line-height: 1.5;
+            line-height: 1.35;
             margin: 0;
-            font-size: 10.5pt;
+            font-size: 10pt;
             overflow: visible;
             word-wrap: break-word;
             white-space: normal;
@@ -52,7 +88,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         .cover-page {
             page-break-after: always;
             text-align: center;
-            padding: 8cm 0;
+            padding: 2cm 0;
         }
         
         .cover-page h1 {
@@ -64,20 +100,20 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         .cover-page .system-name {
             font-size: 28pt;
             color: #333;
-            margin: 2cm 0;
+            margin: 1cm 0;
         }
         
         .cover-page .confidential {
             font-size: 18pt;
             color: #c41e3a;
             font-weight: bold;
-            margin: 3cm 0;
+            margin: 1cm 0;
         }
         
         .cover-page .meta {
             font-size: 11pt;
             color: #666;
-            margin-top: 4cm;
+            margin-top: 1cm;
         }
         
         h2 {
@@ -85,8 +121,8 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
             color: #1f3a93;
             border-bottom: 3px solid #1f3a93;
             padding-bottom: 8px;
-            margin-top: 1.2cm;
-            margin-bottom: 0.6cm;
+            margin-top: 0.6cm;
+            margin-bottom: 0.3cm;
             page-break-after: avoid;
         }
         
@@ -100,8 +136,8 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         
         .system-overview {
             background-color: #f5f5f5;
-            padding: 0.6cm;
-            margin-bottom: 0.7cm;
+            padding: 0.4cm;
+            margin-bottom: 0.35cm;
             border-left: 5px solid #1f3a93;
             page-break-inside: avoid;
             overflow: visible;
@@ -111,12 +147,12 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 0.7cm;
+            margin-bottom: 0.35cm;
             page-break-inside: auto;
         }
         
         th, td {
-            padding: 7px 8px;
+            padding: 5px 6px;
             text-align: left;
             border: 1px solid #c9d2e3;
             vertical-align: top;
@@ -251,14 +287,22 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         }
         
         .page-break {
-            page-break-after: always;
-            margin-top: 0.4cm;
+            display: none;
         }
         
+        p { orphans: 3; widows: 3; }
+        li, tr { break-inside: avoid; }
+        thead { display: table-header-group; break-after: avoid; }
+        ul, ol { break-inside: avoid; }
+        h4, h5 { break-after: avoid; margin: 0.3cm 0 0.15cm; }
+        .short-section { break-inside: avoid; }
+        .reasoning { white-space: pre-wrap; }
+        .alerts-table { font-size: 9pt; table-layout: fixed; }
+
         blockquote {
             border-left: 4px solid #ddd;
-            margin: 1cm 0;
-            padding-left: 1cm;
+            margin: 0.35cm 0;
+            padding-left: 0.4cm;
             color: #666;
             font-style: italic;
         }
@@ -266,8 +310,8 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         .footer-note {
             font-size: 9pt;
             color: #999;
-            margin-top: 1.2cm;
-            padding-top: 0.5cm;
+            margin-top: 0.3cm;
+            padding-top: 0.2cm;
             border-top: 1px solid #ddd;
             page-break-inside: avoid;
             overflow: visible;
@@ -282,7 +326,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         <p style="font-size: 14pt; color: #666;">AI Governance Platform</p>
         <div class="system-name">{{ system.name }}</div>
         <div class="confidential">CONFIDENTIAL — INTERNAL USE ONLY</div>
-        <div class="cover-page .meta">
+        <div class="meta">
             <p><strong>Generated:</strong> {{ generated_at }}</p>
             <p><strong>By:</strong> {{ generated_by }}</p>
             <p><strong>Source HTML Hash:</strong> {{ content_hash[:16] }}...</p>
@@ -304,10 +348,10 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     <p>This section gives the basic facts about the system in a simple format.</p>
     
     <table>
-        <tr>
+        <thead><tr>
             <th>Property</th>
             <th>Value</th>
-        </tr>
+        </tr></thead>
         <tr>
             <td><strong>System ID</strong></td>
             <td><code>{{ system.system_id }}</code></td>
@@ -368,7 +412,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     <h2>2. Risk Classification</h2>
     <p>This section explains why the system is classified this way and what that means operationally.</p>
     
-    <div style="text-align: center; margin: 1cm 0;">
+    <div style="text-align: center; margin: 0.3cm 0;">
         <p style="font-size: 11pt; color: #666; margin-bottom: 0.5cm;">Current Risk Tier:</p>
         <div class="risk-badge risk-{{ display_value(system.risk_tier) }}">{{ display_value(system.risk_tier) }}</div>
     </div>
@@ -385,20 +429,36 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     {% for framework, data in system.regulatory_citations.items() %}
     <h4>{{ framework }}</h4>
+    {% if data.status not in ['not_assessed_no_corpus', 'context_incomplete'] and data.risk_tier %}
+    <p><strong>Tier:</strong> {{ data.risk_tier }} |
+       <strong>llm_provider:</strong> {{ data.llm_provider or 'Not supplied' }} |
+       <strong>llm_model:</strong> {{ data.llm_model or 'Not supplied' }} |
+       <strong>Confidence:</strong> {{ data.confidence if data.confidence is defined and data.confidence is not none else 'Not supplied' }}</p>
+    <p><strong>needs_review:</strong> {{ data.needs_review if data.needs_review is defined else 'Not supplied' }} |
+       <strong>Review reasons:</strong> {{ (data.needs_review_reasons or []) | join(', ') or 'None recorded' }}</p>
+    {% if data.llm_provider in ['gemini', 'anthropic'] %}
+    <p>The tier was produced by an LLM and is advisory pending human review.</p>
+    {% else %}
+    <p>The tier is advisory pending human review; its recorded provider is {{ data.llm_provider or 'not supplied' }}.</p>
+    {% endif %}
+    <p class="reasoning"><strong>Model reasoning:</strong> {{ data.reasoning or 'Not supplied' }}</p>
+    {% else %}
+    <p><strong>Status:</strong> {{ data.status or 'Not supplied' }}; no assessed tier.</p>
+    {% endif %}
     
     <h5>Citations</h5>
     {% if data.citations %}
     <table>
-        <tr>
+        <thead><tr>
             <th>Article</th>
             <th>Title</th>
             <th>Excerpt</th>
-        </tr>
+        </tr></thead>
         {% for citation in data.citations %}
         <tr>
             <td><code>{{ safe_text(citation.canonical_citation or citation.article) }}</code></td>
             <td>{{ safe_text(citation.title) }}</td>
-            <td>{{ safe_text(citation.excerpt)[:100] }}...</td>
+            <td>{{ citation_excerpt(citation.excerpt) }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -418,19 +478,20 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     <div class="page-break"></div>
     
     <!-- SECTION 3: FAIRNESS & DRIFT HISTORY -->
+    <section class="short-section">
     <h2>3. Fairness & Drift Monitoring History</h2>
     <p>This section shows whether recent monitoring results stayed inside policy limits.</p>
     
     {% if fairness_snapshots %}
     <table>
-        <tr>
+        <thead><tr>
             <th>Date</th>
             <th>Sample Size</th>
             <th>Demographic Parity</th>
             <th>Equalized Odds</th>
             <th>PSI</th>
             <th>Status</th>
-        </tr>
+        </tr></thead>
         {% for snapshot in fairness_snapshots[:10] %}
         <tr {% if snapshot.demographic_parity_diff > 0.10 or snapshot.equalized_odds_diff > 0.10 or snapshot.psi_score > 0.25 %}class="critical-row"{% elif snapshot.demographic_parity_diff > 0.05 or snapshot.equalized_odds_diff > 0.05 %}class="alert-row"{% endif %}>
             <td>{{ format_optional_datetime(snapshot.evaluated_at) }}</td>
@@ -448,26 +509,27 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <div class="page-break"></div>
     
+    </section>
     <!-- SECTION 4: GOVERNANCE ALERTS -->
     <h2>4. Governance Alerts</h2>
     <p>This section lists the open governance issues that still need attention.</p>
     
     {% if alerts %}
-    <table>
-        <tr>
+    <table class="alerts-table">
+        <thead><tr>
             <th>Date</th>
-            <th>Severity</th>
-            <th>Type</th>
-            <th>Title</th>
-            <th>Status</th>
-        </tr>
+            <th>Alert / status</th>
+            <th>Metric / affected feature or protected attribute</th>
+            <th>Value / threshold</th>
+            <th>Regulatory reference</th>
+        </tr></thead>
         {% for alert in alerts[:20] %}
-        <tr {% if alert.severity == 'CRITICAL' %}class="critical-row"{% elif alert.severity == 'WARNING' %}class="alert-row"{% endif %}>
+        <tr class="{{ 'critical-row' if display_value(alert.severity) == 'CRITICAL' else 'alert-row' }}">
             <td>{{ format_optional_datetime(alert.created_at) }}</td>
-            <td><span class="severity-{{ display_value(alert.severity) }}">{{ display_value(alert.severity) }}</span></td>
-                <td>{{ display_value(alert.alert_type) }}</td>
-            <td>{{ alert.title }}</td>
-            <td>{% if alert.resolved %}✓ Resolved{% else %}⏳ Open{% endif %}</td>
+            <td><strong>{{ display_value(alert.severity) }}</strong><br>{{ display_value(alert.alert_type) }}<br>{{ alert.title }}<br>{{ 'Resolved' if alert.resolved else 'Open' }}</td>
+            <td>{{ alert_metric(alert) }}<br>{{ alert_feature(alert) }}</td>
+            <td>{{ alert_value(alert, 'value') }} / {{ alert_value(alert, 'threshold') }}</td>
+            <td>{{ alert_references(alert) }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -478,17 +540,18 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     <div class="page-break"></div>
     
     <!-- SECTION 5: REMEDIATION TASKS -->
+    <section class="short-section">
     <h2>5. Open Remediation Tasks</h2>
     <p>This section shows the work already assigned to fix open issues.</p>
     
     {% if remediation_tasks %}
     <table>
-        <tr>
+        <thead><tr>
             <th>Task</th>
             <th>Assigned To</th>
             <th>Due Date</th>
             <th>Status</th>
-        </tr>
+        </tr></thead>
         {% for task in remediation_tasks %}
         <tr>
             <td>{{ task.title }}</td>
@@ -504,15 +567,18 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
     
     <div class="page-break"></div>
     
+    </section>
     <!-- SECTION 6: AUDIT TRAIL -->
+    <section class="short-section">
     <h2>6. Audit Trail & Metadata</h2>
     <p>This section records when the report was created and how it can be traced later.</p>
+    <p>The source HTML hash below is not the PDF's hash. The PDF's SHA-256 is recorded in the audit record (content_hash) and can be checked against the downloaded PDF.</p>
     
     <table>
-        <tr>
+        <thead><tr>
             <th>Property</th>
             <th>Value</th>
-        </tr>
+        </tr></thead>
         <tr>
             <td><strong>Generated At</strong></td>
             <td>{{ generated_at }}</td>
@@ -535,6 +601,7 @@ AUDIT_TEMPLATE = """<!DOCTYPE html>
         </tr>
     </table>
     
+    </section>
     <div class="footer-note">
         <p><strong>ARGUS Audit Dossier</strong> — This document is confidential and intended for internal governance and regulatory compliance purposes only. Unauthorized distribution is prohibited.</p>
         <p>Generated by ARGUS AI Governance Platform. For questions, contact the AI Governance team.</p>
@@ -666,6 +733,11 @@ class AuditGeneratorAgent:
             "display_value": display_value,
             "format_optional_datetime": format_optional_datetime,
             "safe_text": safe_text,
+            "citation_excerpt": citation_excerpt,
+            "alert_metric": alert_metric,
+            "alert_feature": alert_feature,
+            "alert_value": alert_value,
+            "alert_references": alert_references,
             "risk_tier": risk_tier,
             "alert_count": alert_count,
             "open_alert_count": open_alert_count,
