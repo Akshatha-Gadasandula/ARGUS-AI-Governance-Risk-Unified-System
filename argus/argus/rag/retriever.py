@@ -92,6 +92,7 @@ class RegulatoryRetriever:
         framework: str,
         query: str,
         k: int = 5,
+        filter=None,
     ) -> list[Document]:
         """
         Retrieve relevant passages for a query.
@@ -127,7 +128,7 @@ class RegulatoryRetriever:
         try:
             store = self.stores[collection_name]
             # Similarity search
-            results = store.similarity_search(query, k=k)
+            results = store.similarity_search(query, k=k, **({"filter": filter} if filter is not None else {}))
             logger.debug(f"Retrieved {len(results)} passages for: {query[:50]}...")
             return results
         except Exception as e:

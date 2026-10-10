@@ -64,6 +64,14 @@ ANSWER = json.dumps({"answer": "Grounded answer", "citations": []})
 FALLBACK = {"answer": "Rule-based answer", "citations": []}
 
 
+@pytest.mark.parametrize("outcome", ["invalid JSON", RuntimeError("quota rate limit")])
+def test_single_attempt_never_retries_invalid_json_or_quota(tmp_path, outcome):
+    llm, provider, clock = service(tmp_path, [outcome, ANSWER])
+    result = llm.generate("one attempt", AnswerOutput, FALLBACK, max_attempts=1)
+    assert result["llm_provider"] == "none"
+    assert len(provider.calls) == 1 and clock.delays == []
+
+
 def test_cache_hit_makes_no_second_call_and_survives_service_recreation(tmp_path):
     llm, provider, _ = service(tmp_path, [ANSWER])
     first = llm.generate("same prompt", AnswerOutput, FALLBACK)
@@ -323,14 +331,15 @@ def test_compliance_qa_sends_retrieved_chunks_and_records_provider(tmp_path, mon
     from argus.api.routers import qa
     from argus.core.schemas import QARequest
     doc = Document(page_content="Article 14 - Human oversight", metadata={"section_type": "article", "article_number": 14, "citation": "Article 14"})
-    monkeypatch.setattr(qa, "RegulatoryRetriever", lambda _: SimpleNamespace(retrieve=lambda *args, **kwargs: [doc]))
+    monkeypatch.setattr(qa, "RegulatoryRetriever", lambda _: SimpleNamespace(retrieve=lambda *args, **kwargs: [doc], engine=SimpleNamespace(dispose=lambda: None)))
     text = json.dumps({"answer": "Use human oversight under Article 14.", "citations": [{"article": "Article 14"}, {"article": "Article 999"}]})
-    llm, provider, _ = service(tmp_path, ['{"query_type":"compliance_query"}', text])
+    llm, provider, _ = service(tmp_path, [text])
     monkeypatch.setattr(qa, "get_llm", lambda _: llm)
-    result = asyncio.run(qa.answer_question(QARequest(question="What human oversight obligations apply?"), None, {"username": "test"}))
+    result = asyncio.run(qa.answer_question(QARequest(question="What does Article 14 require?"), None, {"username": "test"}))
     assert result.llm_provider == "gemini" and result.llm_model == llm.model
     assert result.needs_review and len(result.citations) == 1
-    assert "Article 14 - Human oversight" in provider.calls[1][1]
+    assert len(provider.calls) == 1
+    assert "Article 14 - Human oversight" in provider.calls[0][1]
 
 
 def test_regulatory_update_flags_citations_without_retrieved_sources(tmp_path, monkeypatch):

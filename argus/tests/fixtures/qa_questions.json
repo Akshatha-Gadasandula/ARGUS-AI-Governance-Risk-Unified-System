@@ -1,0 +1,683 @@
+[
+  {
+    "id": 1,
+    "group": "regression",
+    "question": "Which systems are high risk?",
+    "expected": {
+      "systems": [
+        {
+          "table": "ai_systems",
+          "id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "name": "Credit Scoring Model v2",
+          "risk_tier": "HIGH_RISK",
+          "owner_team": "retail-credit-engineering",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "group": "regression",
+    "question": "Which systems have unresolved critical alerts?",
+    "expected": {
+      "systems": [
+        {
+          "table": "ai_systems",
+          "id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "name": "Credit Scoring Model v2",
+          "risk_tier": "HIGH_RISK",
+          "owner_team": "retail-credit-engineering",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        },
+        {
+          "table": "ai_systems",
+          "id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+          "system_id": "fraud_detection_engi-2a6271",
+          "name": "Fraud Detection Engine",
+          "risk_tier": "MINIMAL_RISK",
+          "owner_team": "Financial Crime AI",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        }
+      ],
+      "alerts": [
+        {
+          "id": "c9941735-3511-4208-a049-d4c9590c64c6",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "resolved": false,
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "0fe18475-5f89-498a-96f9-22c9c0be5caf",
+          "system_id": "fraud_detection_engi-2a6271",
+          "resolved": false,
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "9a4bb369-04b5-4451-85aa-692731c2b7ba",
+          "system_id": "fraud_detection_engi-2a6271",
+          "resolved": false,
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "6e478d99-321b-425a-9ee2-8ee742d17bba",
+          "system_id": "fraud_detection_engi-2a6271",
+          "resolved": false,
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "a298697d-dccb-4c7d-b1c9-861b73bf9f47",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "resolved": false,
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "dfaacefc-644a-4e1a-872e-8484bd31f4ca",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "resolved": false,
+          "severity": "CRITICAL"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "group": "regression",
+    "question": "What is the risk tier of the email spam filter, and why?",
+    "expected": {
+      "system": {
+        "table": "ai_systems",
+        "id": "05f22075-74be-4bcf-aa68-9b234f979905",
+        "system_id": "email_spam_filter-c64b88",
+        "name": "Email Spam Filter",
+        "risk_tier": "MINIMAL_RISK",
+        "owner_team": "Messaging Operations",
+        "owner_email": null,
+        "jurisdictions": [
+          "EU"
+        ]
+      },
+      "classification_reasoning": "Assessed 1 framework(s): EU_AI_ACT=MINIMAL_RISK",
+      "frameworks": {
+        "EU_AI_ACT": {
+          "risk_tier": "MINIMAL_RISK",
+          "llm_provider": "gemini",
+          "llm_model": "gemini-3.5-flash-lite",
+          "needs_review": false,
+          "needs_review_reasons": [],
+          "status": "assessed",
+          "confidence": 0.99,
+          "reasoning": "Step 1 analysis: The Email Spam Filter does not employ subliminal techniques, exploit vulnerable groups, perform social scoring, engage in biometric mass surveillance, or violate any other prohibited practices under Article 5. Step 2 analysis: It does not fall under any high-risk categories listed in Annex III (such as critical infrastructure, education, employment, credit scoring, law enforcement, migration, or administration of justice). Step 3 analysis: It is a standard NLP binary classification tool for spam filtering, not a chatbot, emotion recognition system, AI-generated media (deep fake), or a recommendation system requiring transparency under Article 50. Step 4 analysis: By default, it falls under MINIMAL_RISK.",
+          "retrieved_provisions": [
+            {
+              "page": 49,
+              "title": "Definitions",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 3",
+              "annex_id": null,
+              "citation": "Article 3",
+              "page_end": 49,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 12,
+              "page_number": 50,
+              "heading_page": 45,
+              "section_type": "article",
+              "article_title": "Definitions",
+              "annex_subpoint": null,
+              "article_number": 3,
+              "page_number_end": 50
+            },
+            {
+              "page": 50,
+              "title": "Prohibited AI practices",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 5",
+              "annex_id": null,
+              "citation": "Article 5",
+              "page_end": 50,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 1,
+              "page_number": 51,
+              "heading_page": 50,
+              "section_type": "article",
+              "article_title": "Prohibited AI practices",
+              "annex_subpoint": null,
+              "article_number": 5,
+              "page_number_end": 51
+            },
+            {
+              "page": 50,
+              "title": "Prohibited AI practices",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 5",
+              "annex_id": null,
+              "citation": "Article 5",
+              "page_end": 51,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 2,
+              "page_number": 51,
+              "heading_page": 50,
+              "section_type": "article",
+              "article_title": "Prohibited AI practices",
+              "annex_subpoint": null,
+              "article_number": 5,
+              "page_number_end": 52
+            },
+            {
+              "page": 126,
+              "title": "High-risk AI systems referred to in Article 6(2)",
+              "source": "eu_ai_act.pdf",
+              "article": "Annex III",
+              "annex_id": "III",
+              "citation": "Annex III, point 4(a)",
+              "page_end": 126,
+              "framework": "EU_AI_ACT",
+              "annex_point": "4",
+              "annex_title": "High-risk AI systems referred to in Article 6(2)",
+              "chunk_index": 0,
+              "page_number": 127,
+              "heading_page": 126,
+              "section_type": "annex",
+              "article_title": null,
+              "annex_subpoint": "a",
+              "article_number": null,
+              "page_number_end": 127
+            },
+            {
+              "page": 81,
+              "title": "Transparency obligations for providers and deployers of certain AI systems",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 50",
+              "annex_id": null,
+              "citation": "Article 50",
+              "page_end": 81,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 1,
+              "page_number": 82,
+              "heading_page": 81,
+              "section_type": "article",
+              "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+              "annex_subpoint": null,
+              "article_number": 50,
+              "page_number_end": 82
+            },
+            {
+              "page": 50,
+              "title": "Prohibited AI practices",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 5",
+              "annex_id": null,
+              "citation": "Article 5",
+              "page_end": 50,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 0,
+              "page_number": 51,
+              "heading_page": 50,
+              "section_type": "article",
+              "article_title": "Prohibited AI practices",
+              "annex_subpoint": null,
+              "article_number": 5,
+              "page_number_end": 51
+            },
+            {
+              "page": 53,
+              "title": "Classification rules for high-risk AI systems",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 6",
+              "annex_id": null,
+              "citation": "Article 6",
+              "page_end": 53,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 1,
+              "page_number": 54,
+              "heading_page": 52,
+              "section_type": "article",
+              "article_title": "Classification rules for high-risk AI systems",
+              "annex_subpoint": null,
+              "article_number": 6,
+              "page_number_end": 54
+            },
+            {
+              "page": 51,
+              "title": "Prohibited AI practices",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 5",
+              "annex_id": null,
+              "citation": "Article 5",
+              "page_end": 51,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 3,
+              "page_number": 52,
+              "heading_page": 50,
+              "section_type": "article",
+              "article_title": "Prohibited AI practices",
+              "annex_subpoint": null,
+              "article_number": 5,
+              "page_number_end": 52
+            },
+            {
+              "page": 51,
+              "title": "Prohibited AI practices",
+              "source": "eu_ai_act.pdf",
+              "article": "Article 5",
+              "annex_id": null,
+              "citation": "Article 5",
+              "page_end": 51,
+              "framework": "EU_AI_ACT",
+              "annex_point": null,
+              "annex_title": null,
+              "chunk_index": 4,
+              "page_number": 52,
+              "heading_page": 50,
+              "section_type": "article",
+              "article_title": "Prohibited AI practices",
+              "annex_subpoint": null,
+              "article_number": 5,
+              "page_number_end": 52
+            }
+          ],
+          "dropped_citations": [],
+          "exclusions_checked": [
+            {
+              "article": "Article 5",
+              "title": "Prohibited AI practices",
+              "excerpt": "The following AI practices shall be prohibited...",
+              "annex": null,
+              "point": null,
+              "citation_role": "exclusion_checked",
+              "canonical_citation": "Article 5",
+              "citation_incomplete": false
+            },
+            {
+              "article": "Annex III",
+              "title": "High-risk AI systems referred to in Article 6(2)",
+              "excerpt": "AI systems intended to be used for the recruitment or selection of natural persons...",
+              "annex": "III",
+              "point": "4(a)",
+              "citation_role": "exclusion_checked",
+              "canonical_citation": "Annex III point 4(a)",
+              "citation_incomplete": false
+            },
+            {
+              "article": "Article 50",
+              "title": "Transparency obligations for providers and deployers of certain AI systems",
+              "excerpt": "Transparency obligations for providers and deployers of certain AI systems...",
+              "annex": null,
+              "point": null,
+              "citation_role": "exclusion_checked",
+              "canonical_citation": "Article 50",
+              "citation_incomplete": false
+            }
+          ],
+          "citations": [],
+          "obligations": [
+            "No mandatory high-risk requirements or specific transparency obligations apply under the EU AI Act; standard voluntary codes of conduct may apply."
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": 4,
+    "group": "regression",
+    "question": "How many open alerts does the credit scoring system have?",
+    "expected": {
+      "system": {
+        "table": "ai_systems",
+        "id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+        "system_id": "credit_scoring_model-4dbb0f",
+        "name": "Credit Scoring Model v2",
+        "risk_tier": "HIGH_RISK",
+        "owner_team": "retail-credit-engineering",
+        "owner_email": null,
+        "jurisdictions": [
+          "EU"
+        ]
+      },
+      "open_alert_count": 3,
+      "alert_ids": [
+        "c9941735-3511-4208-a049-d4c9590c64c6",
+        "a298697d-dccb-4c7d-b1c9-861b73bf9f47",
+        "dfaacefc-644a-4e1a-872e-8484bd31f4ca"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "group": "regression",
+    "question": "What does Article 14 of the EU AI Act require?",
+    "expected": {
+      "indexed_chunks": [
+        {
+          "text": "Article 14 - Human oversight\n1. High-risk AI systems shall be designed and developed in such a way, including with appropriate human-machine interface tools, that they can be effectively overseen by natural persons during the period in which they are in use. 2. Human oversight shall aim to prevent or minimise the risks to health, safety or fundamental rights that may emerge when a high-risk AI system is used in accordance with its intended purpose or under conditions of reasonably foreseeable misuse, in particular where such risks persist despite the application of other requirements set out in this Section. 3. The oversight measures shall be commensurate with the risks, level of autonomy and context of use of the high-risk AI system, and shall be ensured through either one or both of the following types of measures: (a) measures identified and built, when technically feasible, into the high-risk AI system by the provider before it is placed on the market or put into service; (b) measures identified by the provider before placing the high-risk AI system on the market or putting it into service and that are appropriate to be implemented by the deployer. 4. For the purpose of implementing paragraphs 1, 2 and 3, the high-risk AI system",
+          "metadata": {
+            "page": 59,
+            "title": "Human oversight",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 14",
+            "annex_id": null,
+            "citation": "Article 14",
+            "page_end": 59,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 0,
+            "page_number": 60,
+            "heading_page": 59,
+            "section_type": "article",
+            "article_title": "Human oversight",
+            "annex_subpoint": null,
+            "article_number": 14,
+            "page_number_end": 60
+          }
+        },
+        {
+          "text": "Article 14 - Human oversight\ndeployer. 4. For the purpose of implementing paragraphs 1, 2 and 3, the high-risk AI system shall be provided to the deployer in such a way that natural persons to whom human oversight is assigned are enabled, as appropriate and proportionate: (a) to properly understand the relevant capacities and limitations of the high-risk AI system and be able to duly monitor its operation, including in view of detecting and addressing anomalies, dysfunctions and unexpected performance; (b) to remain aware of the possible tendency of automatically relying or over-relying on the output produced by a high-risk AI system (automation bias), in particular for high-risk AI systems used to provide information or recommendations for decisions to be taken by natural persons; (c) to correctly interpret the high-risk AI system’s output, taking into account, for example, the interpretation tools and methods available; (d) to decide, in any particular situation, not to use the high-risk AI system or to otherwise disregard, override or reverse the output of the high-risk AI system; (e) to intervene in the operation of the high-risk AI system or interrupt the system through a ‘stop’ button or a",
+          "metadata": {
+            "page": 59,
+            "title": "Human oversight",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 14",
+            "annex_id": null,
+            "citation": "Article 14",
+            "page_end": 60,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 60,
+            "heading_page": 59,
+            "section_type": "article",
+            "article_title": "Human oversight",
+            "annex_subpoint": null,
+            "article_number": 14,
+            "page_number_end": 61
+          }
+        },
+        {
+          "text": "Article 14 - Human oversight\nto intervene in the operation of the high-risk AI system or interrupt the system through a ‘stop’ button or a similar procedure that allows the system to come to a halt in a safe state. 5. For high-risk AI systems referred to in point 1(a) of Annex III, the measures referred to in paragraph 3 of this Article shall be such as to ensure that, in addition, no action or decision is taken by the deployer on the basis of the identification resulting from the system unless that identification has been separately verified and confirmed by at least two natural persons with the necessary competence, training and authority. The requirement for a separate verification by at least two natural persons shall not apply to high-risk AI systems used for the purposes of law enforcement, migration, border control or asylum, where Union or national law considers the application of this requirement to be disproportionate.",
+          "metadata": {
+            "page": 60,
+            "title": "Human oversight",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 14",
+            "annex_id": null,
+            "citation": "Article 14",
+            "page_end": 60,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 2,
+            "page_number": 61,
+            "heading_page": 59,
+            "section_type": "article",
+            "article_title": "Human oversight",
+            "annex_subpoint": null,
+            "article_number": 14,
+            "page_number_end": 61
+          }
+        }
+      ],
+      "retrieved_chunks": []
+    }
+  },
+  {
+    "id": 6,
+    "group": "regression",
+    "question": "What is the capital of France?",
+    "expected": {
+      "status": "declined",
+      "answer": "I can only answer questions about the ARGUS system registry, its governance alerts, and the indexed EU AI Act.",
+      "sources": []
+    }
+  },
+  {
+    "id": 7,
+    "group": "new",
+    "question": "How many AI systems are registered?",
+    "expected": {
+      "active_system_count": 3,
+      "systems": [
+        {
+          "table": "ai_systems",
+          "id": "9946dda9-bfa7-4265-b1ef-6b9e6dec3596",
+          "system_id": "credit_scoring_model-4dbb0f",
+          "name": "Credit Scoring Model v2",
+          "risk_tier": "HIGH_RISK",
+          "owner_team": "retail-credit-engineering",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        },
+        {
+          "table": "ai_systems",
+          "id": "05f22075-74be-4bcf-aa68-9b234f979905",
+          "system_id": "email_spam_filter-c64b88",
+          "name": "Email Spam Filter",
+          "risk_tier": "MINIMAL_RISK",
+          "owner_team": "Messaging Operations",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        },
+        {
+          "table": "ai_systems",
+          "id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+          "system_id": "fraud_detection_engi-2a6271",
+          "name": "Fraud Detection Engine",
+          "risk_tier": "MINIMAL_RISK",
+          "owner_team": "Financial Crime AI",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "group": "new",
+    "question": "Who owns the fraud detection system?",
+    "expected": {
+      "system": {
+        "table": "ai_systems",
+        "id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+        "system_id": "fraud_detection_engi-2a6271",
+        "name": "Fraud Detection Engine",
+        "risk_tier": "MINIMAL_RISK",
+        "owner_team": "Financial Crime AI",
+        "owner_email": null,
+        "jurisdictions": [
+          "EU"
+        ]
+      }
+    }
+  },
+  {
+    "id": 9,
+    "group": "new",
+    "question": "Which systems are minimal risk?",
+    "expected": {
+      "systems": [
+        {
+          "table": "ai_systems",
+          "id": "05f22075-74be-4bcf-aa68-9b234f979905",
+          "system_id": "email_spam_filter-c64b88",
+          "name": "Email Spam Filter",
+          "risk_tier": "MINIMAL_RISK",
+          "owner_team": "Messaging Operations",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        },
+        {
+          "table": "ai_systems",
+          "id": "01202f89-2807-45e6-b3d3-85824d4ae881",
+          "system_id": "fraud_detection_engi-2a6271",
+          "name": "Fraud Detection Engine",
+          "risk_tier": "MINIMAL_RISK",
+          "owner_team": "Financial Crime AI",
+          "owner_email": null,
+          "jurisdictions": [
+            "EU"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "group": "new",
+    "question": "What does Article 50 require for AI systems that interact with people?",
+    "expected": {
+      "indexed_chunks": [
+        {
+          "text": "Article 50 - Transparency obligations for providers and deployers of certain AI systems\n1. Providers shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence. 2. Providers of AI systems, including general-purpose AI systems, generating synthetic audio, image, video or text content, shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. Providers shall ensure their technical solutions are effective, interoperable, robust and reliable as far as this is technically feasible, taking into account the specificities and limitations of various types of content, the costs of implementation and the generally acknowledged state of the art, as may be reflected in",
+          "metadata": {
+            "page": 81,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 81,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 0,
+            "page_number": 82,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 82
+          }
+        },
+        {
+          "text": "Article 50 - Transparency obligations for providers and deployers of certain AI systems\nof various types of content, the costs of implementation and the generally acknowledged state of the art, as may be reflected in relevant technical standards. This obligation shall not apply to the extent the AI systems perform an assistive function for standard editing or do not substantially alter the input data provided by the deployer or the semantics thereof, or where authorised by law to detect, prevent, investigate or prosecute criminal offences. 3. Deployers of an emotion recognition system or a biometric categorisation system shall inform the natural persons exposed thereto of the operation of the system, and shall process the personal data in accordance with Regulations (EU) 2016/679 and (EU) 2018/1725 and Directive (EU) 2016/680, as applicable. This obligation shall not apply to AI systems used for biometric categorisation and emotion recognition, which are permitted by law to detect, prevent or investigate criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, and in accordance with Union law. 4. Deployers of an AI system that generates or manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially",
+          "metadata": {
+            "page": 81,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 81,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 1,
+            "page_number": 82,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 82
+          }
+        },
+        {
+          "text": "Article 50 - Transparency obligations for providers and deployers of certain AI systems\nor manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offence. Where the content forms part of an evidently artistic, creative, satirical, fictional or analogous work or programme, the transparency obligations set out in this paragraph are limited to disclosure of the existence of such generated or manipulated content in an appropriate manner that does not hamper the display or enjoyment of the work. Deployers of an AI system that generates or manipulates text which is published with the purpose of informing the public on matters of public interest shall disclose that the text has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offences or where the AI-generated content has undergone a process of human review or editorial control and where a natural or legal person holds editorial responsibility for the publication of the content. 5. The information referred to in paragraphs 1 to 4 shall be provided to the natural persons concerned in a clear and distinguishable manner at the latest at the",
+          "metadata": {
+            "page": 81,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 82,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 2,
+            "page_number": 82,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 83
+          }
+        },
+        {
+          "text": "Article 50 - Transparency obligations for providers and deployers of certain AI systems\nparagraphs 1 to 4 shall be provided to the natural persons concerned in a clear and distinguishable manner at the latest at the time of the first interaction or exposure. The information shall conform to the applicable accessibility requirements. 6. Paragraphs 1 to 4 shall not affect the requirements and obligations set out in Chapter III, and shall be without prejudice to other transparency obligations laid down in Union or national law for deployers of AI systems. 7. The AI Office shall encourage and facilitate the drawing up of codes of practice at Union level to facilitate the effective implementation of the obligations regarding the detection and labelling of artificially generated or manipulated content. The Commission may adopt implementing acts to approve those codes of practice in accordance with the procedure laid down in Article 56 (6). If it deems the code is not adequate, the Commission may adopt an implementing act specifying common rules for the implementation of those obligations in accordance with the examination procedure laid down in Article 98(2).",
+          "metadata": {
+            "page": 82,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 82,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 3,
+            "page_number": 83,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 83
+          }
+        }
+      ],
+      "retrieved_chunks": [
+        {
+          "text": "Article 50 - Transparency obligations for providers and deployers of certain AI systems\n1. Providers shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence. 2. Providers of AI systems, including general-purpose AI systems, generating synthetic audio, image, video or text content, shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. Providers shall ensure their technical solutions are effective, interoperable, robust and reliable as far as this is technically feasible, taking into account the specificities and limitations of various types of content, the costs of implementation and the generally acknowledged state of the art, as may be reflected in",
+          "metadata": {
+            "page": 81,
+            "title": "Transparency obligations for providers and deployers of certain AI systems",
+            "source": "eu_ai_act.pdf",
+            "article": "Article 50",
+            "annex_id": null,
+            "citation": "Article 50",
+            "page_end": 81,
+            "framework": "EU_AI_ACT",
+            "annex_point": null,
+            "annex_title": null,
+            "chunk_index": 0,
+            "page_number": 82,
+            "heading_page": 81,
+            "section_type": "article",
+            "article_title": "Transparency obligations for providers and deployers of certain AI systems",
+            "annex_subpoint": null,
+            "article_number": 50,
+            "page_number_end": 82
+          }
+        }
+      ]
+    }
+  }
+]

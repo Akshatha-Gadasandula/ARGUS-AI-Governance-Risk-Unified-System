@@ -303,6 +303,10 @@ class QAResponse(BaseModel):
     llm_provider: str = "none"
     llm_model: Optional[str] = None
     needs_review: bool = True
+    needs_review_reasons: list[str] = Field(default_factory=list)
+    status: str = "answered"
+    row_sources: list[dict] = Field(default_factory=list)
+    stored_classification: Optional[dict] = None
     citations: list[dict] = Field(default_factory=list)
     answer: str = Field(..., description="Answer to the question")
     sources: list[str] = Field(..., description="Source references")

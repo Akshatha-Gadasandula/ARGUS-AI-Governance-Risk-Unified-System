@@ -224,10 +224,10 @@ class LLMService:
         with self.log_path.open("a", encoding="utf-8") as log:
             log.write(json.dumps(record) + "\n")
 
-    async def generate_json(self, prompt, schema, fallback, chunks=(), system="", max_tokens=1500):
-        return await asyncio.to_thread(self.generate, prompt, schema, fallback, chunks, system, max_tokens)
+    async def generate_json(self, prompt, schema, fallback, chunks=(), system="", max_tokens=1500, max_attempts=4):
+        return await asyncio.to_thread(self.generate, prompt, schema, fallback, chunks, system, max_tokens, max_attempts)
 
-    def generate(self, prompt, schema: type[BaseModel], fallback, chunks=(), system="", max_tokens=1500):
+    def generate(self, prompt, schema: type[BaseModel], fallback, chunks=(), system="", max_tokens=1500, max_attempts=4):
         def rule_based(reason):
             data = fallback() if callable(fallback) else fallback
             data = json.loads(self._redact(json.dumps(data)))
@@ -261,7 +261,8 @@ class LLMService:
                     reasons.append("dropped_citation")
                 return {**data, "llm_provider": self.name, "llm_model": self.model, "needs_review": bool(reasons), "needs_review_reasons": reasons, "dropped_citations": cached_envelope.get("dropped_citations", [])}
             invalid_retries = quota_retries = 0
-            for _ in range(4):
+            attempt_limit = max(1, min(4, max_attempts))
+            for attempt in range(attempt_limit):
                 if not self.budget.reserve(self.settings.llm_max_calls, self.settings.llm_max_rpm):
                     self._log("call_cap")
                     return rule_based("call_cap")
@@ -271,7 +272,7 @@ class LLMService:
                     status = getattr(error, "status_code", None) or getattr(error, "code", None)
                     quota = status == 429 or any(word in str(error).lower() for word in ("quota", "resource_exhausted", "rate limit"))
                     self._log("quota_error" if quota else "provider_error")
-                    if quota and quota_retries < 2:
+                    if quota and quota_retries < 2 and attempt + 1 < attempt_limit:
                         self.budget.sleep(2 ** quota_retries)
                         quota_retries += 1
                         continue
@@ -280,7 +281,7 @@ class LLMService:
                     data = schema.model_validate_json(self._redact(response.text), strict=True).model_dump()
                 except ValidationError:
                     self._log("invalid_json", usage=response)
-                    if invalid_retries == 0:
+                    if invalid_retries == 0 and attempt + 1 < attempt_limit:
                         invalid_retries += 1
                         effective_prompt += "\nYour previous response was invalid. Return only JSON conforming to the supplied schema."
                         continue

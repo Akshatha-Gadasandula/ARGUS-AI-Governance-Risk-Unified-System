@@ -50,6 +50,7 @@ services:
       - ./audit_outputs:/app/audit_outputs
       - ./.llm_cache:/app/.llm_cache
       - ./logs:/app/logs
+      - huggingface_cache:/root/.cache/huggingface
     networks:
       - argus-network
 
@@ -86,6 +87,7 @@ services:
 volumes:
   postgres_data:
   prometheus_data:
+  huggingface_cache:
 
 networks:
   argus-network:
